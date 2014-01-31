@@ -1,0 +1,125 @@
+					value
+Entity Set = [Entity, Entity].attribute
+
+
+
+				value (all things in relationship)
+Entity Set <- Relationship -> Entity Set
+
+
+Relationship 1:1, 1:many, many:many
+(Arrows show :1 relationship)
+
+
+Relationship.attribute
+
+Subclass = ...
+
+
+Key = Attribute Set for entity, s.t. no two 
+entities have same values for all attr
+- Must have key for every Entity Set
+- can be called unique entity set
+
+Do not use entity set if attribute will suffice
+
+Do not overuse weak entity sets
+
+Use unique key for each entity set UIN, SSN, VIN 
+- try to use unique key
+
+
+Relational Data Stored in Tables
+Attribute + tuples
+
+Sponsor
+-----------------
+senator | Bill		<- Attribute
+----------------
+smith	Tax
+jones	defense		<- Tuple
+smith	defense		<- Tuple
+
+
+Relation Schema::
+relation name + list of attributes
+Database:: collection of relations
+Database Schema:: set of ALL relation schemas in database
+
+
+Entity Set -> Relation: Entity relation become Relational Attributes
+
+Relationship -> relation: keys of connected ER entity sets become relational attributes
+
+
+Entity Relation ENTITY SETS: a.k.a relations
+Senator(name, part state); Bill(Name, address)
+
+Entity Relation RELATIONSHIPS:
+Senator(name, party) <- Contributed -> Lobbyiest(Organization, Name)
+therefore...
+Contributed(Senator, Lobbyist)	<- Relations
+
+Relations can be combined
+
+Do NOT combine many:many relations (causes redundancy)
+
+Combine Relations:
+	Many:1
+	Person(name, birthdate, weight, height)
+	NowLocatedIn(person, town)
+
+Do not combine:
+	Many:many
+	Senator(name, party, state)
+	Sponsored(senator, Bill)
+	senator(name, party, state, years, bill)
+
+Subclasses Options:
+
+	Object Oriented Style:
+		One relation for each subset, including all inherited attr
+
+		official
+		----------------
+		Name 	| 	party
+		-----------------
+		x			y
+		z			k
+
+		representetive
+		------------------------
+		Name 	| 	party 	| district
+		-------------------------
+		x			y 			17
+		z			K 			19
+
+	Entity Relationship Style
+		one realtion for each subclass (incld key)
+
+			official
+		----------------
+		Name 	| 	party
+		-----------------
+		x			y
+		z			k
+
+		representetive
+		--------------------
+		Name	| district
+		--------------------
+		x			17
+		z			19
+
+	Null Style:
+		One relation total, nulls for unknown
+		------------------------
+		Name 	| 	party 	| district
+		-------------------------
+		x			y 			17
+		z			K 			19
+		L 			p 			Null 
+
+Key:	functionally determines all other attributes of the relation
+	- given a relation and a key, there is only one tuple that orresponds to it
+
