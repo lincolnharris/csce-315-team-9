@@ -1,0 +1,40 @@
+
+Design - Document - Requirements - Due 2/04/2014
+-----------------------------------------------------
+
++ Need to cover Phase I (Engine and DBMS)
++ Need to cover Phase II (Application)
++ ER Diagram and corresponding relation schema
++ Diagrams...
++ Sections
+	1. Purpose of project
+		Problem? -> Solution
+		Who will use it?
+		Why does it need to exist?
+		Few Paragraphs (Define scope of program)
+
+	2. Define high level entities
+		objects, groups of objects
+		data access layer, controller object, etc
+		few sentences to describe diagrams
+
+	3. For each entity define low level design
+		object->object relationships defined
+		Use models, diagrams to show relationships
+ 		Interaction of objects
+		Usage
+		Describe in paragraph how object is used
+		interface with other objects (how)(show interface)
+		reason for defining object the way we did
+		list pro's and con's.
+		if encapsuled, explain how this adds value/risks
+		Configuration
+		if any special configuration/initialization
+	4. Benefits, assumptions, risks/issues
+		5-6 benefits
+		list ALL risks/issues
+		list ALL assumptions
+		
+
+ 
+
