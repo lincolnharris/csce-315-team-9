@@ -9,9 +9,12 @@
 
 using namespace std;
 
-
 int main()
 {
-	cout << "hello" << endl;
-	return 1;
+    int x;
+    string shit;
+    long d;
+    unsigned int uint = 3;
+    cout << "Testing, testing, test!" << endl;
+    return 1;
 }

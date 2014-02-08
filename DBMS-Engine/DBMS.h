@@ -1,4 +1,3 @@
-// Primary Include
 #pragma once
 
 // Default Include
