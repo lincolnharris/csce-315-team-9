@@ -4,39 +4,43 @@
 #include <string>
 #include <unordered_map>
 
-
 // Class Includes
-class Table;
-
+#include "Table.h"
 
 using namespace std;
+
+
+class Condition; // TODO how to handle conditions? Combining Function Objects returning bool?
 
 class DBMS
 {
 
-	private:
+private:
 
-		unordered_map<string, Table> relations; 	// Constructor....
+    unordered_map<string, Table*> relations; 	// Constructor....
 
-	public:
+public:
 
-		DBMS();
-		~DBMS();
+    DBMS();
+    ~DBMS();
 
-		void Insert_Table();
-		void Delete_Table();
+    Table* open_cmd(string name);
+    void close_cmd(string name);
+    void write_cmd(string name);
+    void exit_cmd();
+    void show_cmd(string name);
+    void create_cmd(string name, Type[] attributes, string[] primaryKey);
+    void update_cmd(string name, tuple<string, string> fieldsToUpdate, Condition cond); // tuple<attributeName, Value>
+    void insert_cmd(string name, string[] values);
+    void insert_cmd(string name, Table* fromRelation);
+    void delete_cmd(string name, Condition cond);
 
-		void Insert_Into();
-		void Update();
-		void Delete_From();
-
-		void Selection();
-		void Projection();
-		void Renaming();
-		void Union();
-		void Difference();
-		void Cross_Product();
-		void Natural_Join();
-
+    Table* selection();
+    Table* projection();
+    void renaming();
+    Table* union_();
+    Table* difference();
+    Table* cross_product();
+    Table* natural_join();
 
 };

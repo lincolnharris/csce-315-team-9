@@ -32,6 +32,9 @@ public:
                                                 // each row is an array of strings
                                                 // each string holds the value of its respective column
 
+    int getInt();
+    string getString();
+
     Table();
     ~Table();
 };
