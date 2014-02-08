@@ -1,9 +1,9 @@
 // Primary Include
-#ifndef DBMS_H          
-#define DBMS_H
+#pragma once
 
 // Default Include
 #include <string>
+#include <unordered_map>
 
 
 // Class Includes
@@ -17,7 +17,7 @@ class DBMS
 
 	private:
 
-		_unordered_map< string, Table > Table_Map; 	// Constructor....
+		unordered_map<string, Table> relations; 	// Constructor....
 
 	public:
 
@@ -41,8 +41,3 @@ class DBMS
 
 
 };
-
-
-
-
-# endif
