@@ -32,6 +32,8 @@ public:
                                                 // each row is an array of strings
                                                 // each string holds the value of its respective column
 
+
+    // Helper functions for the future!
     int getInt();
     string getString();
 
