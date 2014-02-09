@@ -11,7 +11,6 @@ using namespace std;
 
 int main()
 {
-    int x;
     string shit;
     long d;
     unsigned int uint = 3;

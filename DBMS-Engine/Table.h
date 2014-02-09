@@ -10,6 +10,7 @@
 #include <string>
 #include <unordered_map>
 #include <list>
+#include <vector>
 
 using namespace std;
 
@@ -28,7 +29,7 @@ public:
 
     unordered_map<string, Type> attributeMap;   // Mapping <attribute name> to <column index, data type>
 
-    list<string*>               rows;           // The table is stored as a linked list of rows
+    list<vector<string>>        rows;           // The table is stored as a linked list of rows
                                                 // each row is an array of strings
                                                 // each string holds the value of its respective column
 
