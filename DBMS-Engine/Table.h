@@ -20,6 +20,7 @@ struct Type
     int   index;
     short type;     // -1 == int, anything positive is a string of that length
 
+    Type() {}
     Type(int index, short type) : index(index), type(type) {}
 };
 
