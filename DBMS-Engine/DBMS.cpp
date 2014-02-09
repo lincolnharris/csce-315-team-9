@@ -64,28 +64,28 @@ void DBMS::create_cmd(string name, vector<Type> attributes, vector<string> prima
 }
 
 
-void DBMS::delete_cmd(string name, Comparison cond)
+void DBMS::delete_cmd(Table table, Comparison cond)
 {
 	// Lincoln
 }
 
 
 
-void DBMS::update_cmd(string name, vector<pair<int, string>> fieldsToUpdate, Comparison cond) // tuple<attributeName, Value>
+void DBMS::update_cmd(Table table, vector<pair<int, string>> fieldsToUpdate, Comparison cond) // tuple<attributeName, Value>
 {
 	// Dmitry
 }
 
 
 
-void DBMS::insert_cmd(string name, vector<string> values)
+void DBMS::insert_cmd(Table table, vector<string> values)
 {
 	// Shayan
 }
 
 
 
-void DBMS::insert_cmd(string name, Table fromRelation)
+void DBMS::insert_cmd(Table table, Table fromRelation)
 {
 	// Shayan
 }
@@ -110,7 +110,7 @@ Table DBMS::projection(vector<string> attributes, Table relation)
 
 Table DBMS::renaming(vector<string> attributes, Table relation)
 {
-	// Shayan
+
 }
 
 

@@ -30,10 +30,10 @@ public:
     //    void exit_cmd();
     //    void show_cmd(string name);
     void create_cmd(string name, vector<Type> attributes, vector<string> primaryKey);
-    void delete_cmd(string name, Comparison cond);
-    void update_cmd(string name, vector<pair<int, string>> fieldsToUpdate, Comparison cond); // pair<attributeName, Value>
-    void insert_cmd(string name, vector<string> values);
-    void insert_cmd(string name, Table fromRelation);
+    void delete_cmd(Table table, Comparison cond);
+    void update_cmd(Table table, vector<pair<int, string>> fieldsToUpdate, Comparison cond); // pair<attributeName, Value>
+    void insert_cmd(Table table, vector<string> values);
+    void insert_cmd(Table table, Table fromRelation);
 
     Table selection(Comparison cond, Table relation);
     Table projection(vector<string> attributes, Table relation);

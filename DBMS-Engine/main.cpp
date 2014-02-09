@@ -43,7 +43,7 @@ int main()
 
     // Reading from it: Ranged-based for loop
     int ageIndex = attributeMap["Age"].index;
-    for(auto row : table) // auto ~ vector<string>
+    for(auto& row : table) // auto ~ vector<string>
         cout << row[ageIndex] << " - ";
     cout << endl;
 
