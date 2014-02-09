@@ -24,16 +24,16 @@ public:
     DBMS();
     ~DBMS();
 
-    Table open_cmd(string name);
-    void close_cmd(string name);
-    void write_cmd(string name);
-    void exit_cmd();
-    void show_cmd(string name);
+//    Table open_cmd(string name);
+//    void close_cmd(string name);
+//    void write_cmd(string name);
+//    void exit_cmd();
+//    void show_cmd(string name);
     void create_cmd(string name, Type[] attributes, string[] primaryKey);
+    void delete_cmd(string name, Condition cond);
     void update_cmd(string name, tuple<string, string> fieldsToUpdate, Condition cond); // tuple<attributeName, Value>
     void insert_cmd(string name, string[] values);
     void insert_cmd(string name, Table fromRelation);
-    void delete_cmd(string name, Condition cond);
 
     Table selection(Condition cond, Table relation);
     Table projection(string[] attributes, Table relation);
