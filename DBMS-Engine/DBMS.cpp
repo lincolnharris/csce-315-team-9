@@ -1,5 +1,3 @@
-#pragma once
-
 // Class Includes
 #include "DBMS.h"
 
@@ -22,45 +20,45 @@ DBMS::~DBMS()
 
 
 /******************** DBMS General Commands *******************************/
-Table DBMS::open_cmd(string name)
-{
-
-
-}
-
-
-void DBMS::close_cmd(string name)
-{
-
-
-}
-
-
-void DBMS::write_cmd(string name)
-{
-
-
-}
-
-
-void DBMS::exit_cmd()
-{
-
-
-}
-
-
-void DBMS::show_cmd(string name)
-{
-
-
-}
-
+//Table DBMS::open_cmd(string name)
+//{
+//
+//
+//}
+//
+//
+//void DBMS::close_cmd(string name)
+//{
+//
+//
+//}
+//
+//
+//void DBMS::write_cmd(string name)
+//{
+//
+//
+//}
+//
+//
+//void DBMS::exit_cmd()
+//{
+//
+//
+//}
+//
+//
+//void DBMS::show_cmd(string name)
+//{
+//
+//
+//}
+//
 
 
 
 /******************** Table Manipulation *******************************/
-void DBMS::create_cmd(string name, Type[] attributes, string[] primaryKey)
+void DBMS::create_cmd(string name, vector<Type> attributes, vector<string> primaryKey)
 {
 	// Lincoln
 }
@@ -73,14 +71,14 @@ void DBMS::delete_cmd(string name, Condition cond)
 
 
 
-void DBMS::update_cmd(string name, tuple<string, string> fieldsToUpdate, Condition cond) // tuple<attributeName, Value>
+void DBMS::update_cmd(string name, pair<string, string> fieldsToUpdate, Condition cond) // tuple<attributeName, Value>
 {
 	// Dmitry
 }
 
 
 
-void DBMS::insert_cmd(string name, string[] values)
+void DBMS::insert_cmd(string name, vector<string> values)
 {
 	// Shayan
 }
@@ -103,14 +101,14 @@ Table DBMS::selection(Condition cond, Table relation)
 
 
 
-Table DBMS::projection(string[] attributes, Table relation)
+Table DBMS::projection(vector<string> attributes, Table relation)
 {
 	// Lincoln
 }
 
 
 
-Table DBMS::renaming(string[] attributes, Table relation)
+Table DBMS::renaming(vector<string> attributes, Table relation)
 {
 	// Shayan
 }
