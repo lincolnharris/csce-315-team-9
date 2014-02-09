@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class Condition;
+class Comparison;
 // TODO how to handle conditions? Combining Function Objects returning bool?
 
 class DBMS
@@ -30,12 +30,12 @@ public:
     //    void exit_cmd();
     //    void show_cmd(string name);
     void create_cmd(string name, vector<Type> attributes, vector<string> primaryKey);
-    void delete_cmd(string name, Condition cond);
-    void update_cmd(string name, pair<string, string> fieldsToUpdate, Condition cond); // tuple<attributeName, Value>
+    void delete_cmd(string name, Comparison cond);
+    void update_cmd(string name, vector<pair<int, string>> fieldsToUpdate, Comparison cond); // pair<attributeName, Value>
     void insert_cmd(string name, vector<string> values);
     void insert_cmd(string name, Table fromRelation);
 
-    Table selection(Condition cond, Table relation);
+    Table selection(Comparison cond, Table relation);
     Table projection(vector<string> attributes, Table relation);
     Table renaming(vector<string> attributes, Table relation);
     Table union_(Table rel1, Table rel2);

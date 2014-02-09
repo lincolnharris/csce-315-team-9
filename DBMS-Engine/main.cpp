@@ -53,7 +53,7 @@ int main()
     cout << endl;
 
     // OR for_each loop, similar structure to sort, remove_if, transform (VERY useful funtions) all in <algorithm>
-    // For the 3rd argument you could use lambda or any funtion object, basically anything with operator() defined
+    // For the 3rd argument you could use lambda or any function object, basically anything with operator() defined
     for_each(table.begin(), table.end(), [ageIndex](vector<string>& row) {
         cout << row[ageIndex] << " + ";
     });

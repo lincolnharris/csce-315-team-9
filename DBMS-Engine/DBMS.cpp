@@ -1,6 +1,6 @@
 // Class Includes
 #include "DBMS.h"
-
+#include "Comparison.h"
 
 using namespace std;
 
@@ -64,14 +64,14 @@ void DBMS::create_cmd(string name, vector<Type> attributes, vector<string> prima
 }
 
 
-void DBMS::delete_cmd(string name, Condition cond)
+void DBMS::delete_cmd(string name, Comparison cond)
 {
 	// Lincoln
 }
 
 
 
-void DBMS::update_cmd(string name, pair<string, string> fieldsToUpdate, Condition cond) // tuple<attributeName, Value>
+void DBMS::update_cmd(string name, vector<pair<int, string>> fieldsToUpdate, Comparison cond) // tuple<attributeName, Value>
 {
 	// Dmitry
 }
@@ -94,7 +94,7 @@ void DBMS::insert_cmd(string name, Table fromRelation)
 
 
 /******************** Table Logic Algebra *******************************/
-Table DBMS::selection(Condition cond, Table relation)
+Table DBMS::selection(Comparison cond, Table relation)
 {
 	// Lincoln
 }
