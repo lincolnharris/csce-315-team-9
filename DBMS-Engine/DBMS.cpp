@@ -1,15 +1,8 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 // Class Includes
 #include "DBMS.h"
 #include "Comparison.h"
 
-<<<<<<< HEAD
-=======
 // Other Includes
->>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 #include <iostream>
 
 using namespace std;
@@ -68,11 +61,7 @@ DBMS::~DBMS()
 
 
 /******************** Table Manipulation *******************************/
-<<<<<<< HEAD
-void DBMS::create_cmd(string name, Type attributes[], string primaryKey[])
-=======
 void DBMS::create_cmd(string name, vector<Type> attributes, vector<string> primaryKey)
->>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 {
 	// Lincoln
 }
@@ -85,13 +74,7 @@ void DBMS::delete_cmd(Table table, Comparison cond)
 
 
 
-<<<<<<< HEAD
-// pair< attrb_index, value >
-void DBMS::update_cmd(Table table, vector< pair<int, string> > fieldsToUpdate, 
-						Comparison cond) 
-=======
 void DBMS::update_cmd(Table table, vector<pair<int, string>> fieldsToUpdate, Comparison cond) // tuple<attributeName, Value>
->>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 {
 	// Dmitry
 	for(vector<string>& row : table.rows)
@@ -102,11 +85,7 @@ void DBMS::update_cmd(Table table, vector<pair<int, string>> fieldsToUpdate, Com
 
 
 
-<<<<<<< HEAD
-void DBMS::insert_cmd(string name, string values[])
-=======
 void DBMS::insert_cmd(Table table, vector<string> values)
->>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 {
 	// Shayan
 }
@@ -129,40 +108,27 @@ Table DBMS::selection(Comparison cond, Table relation)
 
 
 
-<<<<<<< HEAD
-Table DBMS::projection(string attributes[], Table relation)
-=======
 Table DBMS::projection(vector<string> attributes, Table relation)
->>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 {
 	// Lincoln
 }
 
 
 
-<<<<<<< HEAD
-Table DBMS::renaming(string attributes[], Table relation)
-=======
 Table DBMS::renaming(vector<string> attributes, Table relation)
->>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 {
 
 }
 
 
 
-Table DBMS::union_(Table table1, Table table2)
+Table DBMS::union_(Table rel1, Table rel2)
 {
 	// Dmitry
 
 	// Make new copies of table, to manipulate then display
-<<<<<<< HEAD
-	Table t1 = table1;
-	Table t2 = table2;
-=======
 	Table t1 = rel1;
 	Table t2 = rel2;
->>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 
 	// Does t1 & t2 have same number of attributs?
 	if (t1.attributeMap.size() != t2.attributeMap.size())
@@ -235,18 +201,12 @@ Table DBMS::union_(Table table1, Table table2)
 
 
 
-Table DBMS::difference(Table table1, Table table2)
+Table DBMS::difference(Table rel1, Table rel2)
 {
-
 	// Dmitry
 	
-<<<<<<< HEAD
-	Table t1 = table1;
-	Table t2 = table2;
-=======
 	Table t1 = rel1;
 	Table t2 = rel2;
->>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 	
 	// Does t1 & t2 have same number of attributs?
 	if (t1.attributeMap.size() != t2.attributeMap.size())
@@ -317,10 +277,7 @@ Table DBMS::difference(Table table1, Table table2)
 			duplicate = false;
 		}
 
-<<<<<<< HEAD
-=======
 		return difference;
->>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 }
 
 
