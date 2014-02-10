@@ -151,8 +151,11 @@ Table DBMS::cross_product(const Table& t1, const Table& t2)
 
     // Merging the attributeMaps:
     xprod.attributeMap.insert(t1.attributeMap.begin(), t1.attributeMap.end());
-    for(auto& pair : t2.attributeMap)
+    for(auto pair : t2.attributeMap) // pair<name, (index, type)
+    {
+        pair.second.index += t1.attributeMap.size();
         xprod.attributeMap["_" + pair.first] = pair.second; // Hyphenated to avoid repeated names
+    }
 
     // Creating the cross-producted rows:
     for(auto& row1 : t1.rows)
