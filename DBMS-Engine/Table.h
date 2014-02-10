@@ -29,11 +29,13 @@ class Table
 	
 	public:
 
-	    unordered_map<string, Type> attributeMap;   // Mapping <attribute name> to <column index, data type>
+		// vector <attribute indx> to <column index, data type>
+	    unordered_map<string, Type> attributeMap;
 
-	    list<vector<string>>        rows;           // The table is stored as a linked list of rows
-	                                                // each row is an array of strings
-	                                                // each string holds the value of its respective column
+		// The table is stored as a linked list of rows
+	    // each row is an array of strings
+	    // each string holds the value of its respective column
+	    list<vector<string>>        rows;           
 
 
 	    // Helper functions for the future!
