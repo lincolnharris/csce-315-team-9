@@ -116,19 +116,21 @@ Table DBMS::projection(vector<string>& attributes, const Table& relation)
 
 Table DBMS::renaming(vector<string>& attributes, const Table& table)
 {
-    unordered_map<string, Type> newAttributes;
+    Table renamed;
+    renamed.rows = table.rows;
 
     if(attributes.size() != table.attributeMap.size())
         throw "Not enough attributes were given.";
     for(auto& pair : table.attributeMap)
     {
         const Type& t = pair.second; // pair<name, (index, type)>
-        if(newAttributes.find(attributes[t.index]) != newAttributes.end())
+        if(renamed.attributeMap.find(attributes[t.index]) != renamed.attributeMap.end())
             throw "Repeated attribute name.";
 
-        newAttributes[attributes[t.index]] = t;
+        renamed.attributeMap[attributes[t.index]] = t;
     }
-    // TODO what to return? does rename create a new table?
+
+    return renamed;
 }
 
 
@@ -150,7 +152,7 @@ Table DBMS::cross_product(const Table& t1, const Table& t2)
     Table xprod;
 
     // Merging the attributeMaps:
-    xprod.attributeMap.insert(t1.attributeMap.begin(), t1.attributeMap.end());
+    xprod.attributeMap = t1.attributeMap;
     for(auto pair : t2.attributeMap) // pair<name, (index, type)
     {
         pair.second.index += t1.attributeMap.size();
@@ -161,8 +163,7 @@ Table DBMS::cross_product(const Table& t1, const Table& t2)
     for(auto& row1 : t1.rows)
         for(auto& row2 : t2.rows)
         {
-            xprod.rows.push_back(vector<string>());
-            xprod.rows.back().insert(xprod.rows.back().end(), row1.begin(), row1.end());
+            xprod.rows.push_back(row1); // TODO Consider making it faster by .reserve() beforehand.
             xprod.rows.back().insert(xprod.rows.back().end(), row2.begin(), row2.end());
         }
 

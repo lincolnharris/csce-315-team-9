@@ -10,7 +10,6 @@
 using namespace std;
 
 class Comparison;
-// TODO how to handle conditions? Combining Function Objects returning bool?
 
 class DBMS
 {
