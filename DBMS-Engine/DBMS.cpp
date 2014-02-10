@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 // Class Includes
 #include "DBMS.h"
+#include "Comparison.h"
 
+<<<<<<< HEAD
+=======
+// Other Includes
+>>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 #include <iostream>
 
 using namespace std;
@@ -22,60 +30,68 @@ DBMS::~DBMS()
 
 
 /******************** DBMS General Commands *******************************/
-Table DBMS::open_cmd(string name)
-{
-
-
-}
-
-
-void DBMS::close_cmd(string name)
-{
-
-
-}
-
-
-void DBMS::write_cmd(string name)
-{
-
-
-}
-
-
-void DBMS::exit_cmd()
-{
-
-
-}
-
-
-void DBMS::show_cmd(string name)
-{
-
-
-}
-
+//Table DBMS::open_cmd(string name)
+//{
+//
+//
+//}
+//
+//
+//void DBMS::close_cmd(string name)
+//{
+//
+//
+//}
+//
+//
+//void DBMS::write_cmd(string name)
+//{
+//
+//
+//}
+//
+//
+//void DBMS::exit_cmd()
+//{
+//
+//
+//}
+//
+//
+//void DBMS::show_cmd(string name)
+//{
+//
+//
+//}
+//
 
 
 
 /******************** Table Manipulation *******************************/
+<<<<<<< HEAD
 void DBMS::create_cmd(string name, Type attributes[], string primaryKey[])
+=======
+void DBMS::create_cmd(string name, vector<Type> attributes, vector<string> primaryKey)
+>>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 {
 	// Lincoln
 }
 
 
-void DBMS::delete_cmd(string name, Condition cond)
+void DBMS::delete_cmd(Table table, Comparison cond)
 {
 	// Lincoln
 }
 
 
 
+<<<<<<< HEAD
 // pair< attrb_index, value >
 void DBMS::update_cmd(Table table, vector< pair<int, string> > fieldsToUpdate, 
 						Comparison cond) 
+=======
+void DBMS::update_cmd(Table table, vector<pair<int, string>> fieldsToUpdate, Comparison cond) // tuple<attributeName, Value>
+>>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 {
 	// Dmitry
 	for(vector<string>& row : table.rows)
@@ -86,14 +102,18 @@ void DBMS::update_cmd(Table table, vector< pair<int, string> > fieldsToUpdate,
 
 
 
+<<<<<<< HEAD
 void DBMS::insert_cmd(string name, string values[])
+=======
+void DBMS::insert_cmd(Table table, vector<string> values)
+>>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 {
 	// Shayan
 }
 
 
 
-void DBMS::insert_cmd(string name, Table fromRelation)
+void DBMS::insert_cmd(Table table, Table fromRelation)
 {
 	// Shayan
 }
@@ -102,23 +122,31 @@ void DBMS::insert_cmd(string name, Table fromRelation)
 
 
 /******************** Table Logic Algebra *******************************/
-Table DBMS::selection(Condition cond, Table relation)
+Table DBMS::selection(Comparison cond, Table relation)
 {
 	// Lincoln
 }
 
 
 
+<<<<<<< HEAD
 Table DBMS::projection(string attributes[], Table relation)
+=======
+Table DBMS::projection(vector<string> attributes, Table relation)
+>>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 {
 	// Lincoln
 }
 
 
 
+<<<<<<< HEAD
 Table DBMS::renaming(string attributes[], Table relation)
+=======
+Table DBMS::renaming(vector<string> attributes, Table relation)
+>>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 {
-	// Shayan
+
 }
 
 
@@ -128,8 +156,13 @@ Table DBMS::union_(Table table1, Table table2)
 	// Dmitry
 
 	// Make new copies of table, to manipulate then display
+<<<<<<< HEAD
 	Table t1 = table1;
 	Table t2 = table2;
+=======
+	Table t1 = rel1;
+	Table t2 = rel2;
+>>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 
 	// Does t1 & t2 have same number of attributs?
 	if (t1.attributeMap.size() != t2.attributeMap.size())
@@ -207,8 +240,13 @@ Table DBMS::difference(Table table1, Table table2)
 
 	// Dmitry
 	
+<<<<<<< HEAD
 	Table t1 = table1;
 	Table t2 = table2;
+=======
+	Table t1 = rel1;
+	Table t2 = rel2;
+>>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 	
 	// Does t1 & t2 have same number of attributs?
 	if (t1.attributeMap.size() != t2.attributeMap.size())
@@ -279,6 +317,10 @@ Table DBMS::difference(Table table1, Table table2)
 			duplicate = false;
 		}
 
+<<<<<<< HEAD
+=======
+		return difference;
+>>>>>>> 7f43335645aabef52e63c6659e55f1e0b138a07d
 }
 
 
