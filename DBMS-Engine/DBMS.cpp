@@ -67,22 +67,24 @@ void DBMS::update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate,
 
 void DBMS::insert_cmd(Table& table, vector<string>& values)
 {
+    table.rows.push_back(vector<string>(table.attributeMap.size()));
+
+    if(values.size() != table.attributeMap.size())
+        throw "Not enough attributes were given.";
     for(auto& pair : table.attributeMap)
     {
-        Type& t = pair.second;
-        bool wrong = false;
+        Type& t = pair.second; // pair<name, (index, type)>
+
+        // Type checking:
         if(t.type == -1)
-        {
-            try
-            {
-                string s = values[t.index];
-                stoi(s);
-            }
+            try { stoi(values[t.index]); }
             catch (...)
             {
-                wrong = true;
+                table.rows.pop_back();
+                throw "Wrong type: " + values[t.index];
             }
-        }
+
+        table.rows.back()[t.index] = values[t.index]; // The actual assignment
     }
 }
 
@@ -97,20 +99,36 @@ Table DBMS::selection(Comparison& cond, const Table& relation)
     // Lincoln
 }
 
+
 Table DBMS::projection(vector<string>& attributes, const Table& relation)
 {
     // Lincoln
 }
 
-//TODO make vector<string>& and similar recurrences
-Table DBMS::renaming(vector<string>& attributes, const Table& relation)
+
+Table DBMS::renaming(vector<string>& attributes, const Table& table)
 {
+    unordered_map<string, Type> newAttributes;
+
+    if(attributes.size() != table.attributeMap.size())
+        throw "Not enough attributes were given.";
+    for(auto& pair : table.attributeMap)
+    {
+        const Type& t = pair.second; // pair<name, (index, type)>
+        if(newAttributes.find(attributes[t.index]) != newAttributes.end())
+            throw "Repeated attribute name.";
+
+        newAttributes[attributes[t.index]] = t;
+    }
+    // TODO what to return? does rename create a new table?
 }
+
 
 Table DBMS::union_(const Table& rel1, const Table& rel2)
 {
     // Dmitry
 }
+
 
 Table DBMS::difference(const Table& rel1, const Table& rel2)
 {
