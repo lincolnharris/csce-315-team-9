@@ -37,9 +37,9 @@ class DBMS
 	    void delete_cmd(string name, Condition cond);
 
 		// tuple<attributeName, Value>
-	    void update_cmd(string name, vector< pair<int, string> > fieldsToUpdate, Comparison cond) ; 
-	    void insert_cmd(string name, string values[]);
-	    void insert_cmd(string name, Table fromRelation);
+	    void update_cmd(Table table, vector< pair<int, string> > fieldsToUpdate, Comparison cond) ; 
+	    void insert_cmd(Table table, string values[]);
+	    void insert_cmd(Table table, Table fromRelation);
 
 	    Table selection(Condition cond, Table relation);
 	    Table projection(string attributes[], Table relation);
