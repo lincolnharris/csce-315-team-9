@@ -8,7 +8,10 @@ using namespace std;
 void DBMS::create_cmd(string name, vector<Type> attributes, vector<string> primaryKey)
 {// Lincoln
 	Table table;
-	table.attributeMap = attributes;
+	int size = attributes.size();
+	for{int i=0; i<size; ++i}{
+		table.relations.insert({primaryKey[i],attributes[i]})
+	}
 	table.keys = primaryKey;
 	relations.insert( {name , table} );
 }
