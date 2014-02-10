@@ -20,12 +20,17 @@ struct Type
     int index;
     short type;     // -1 == int, anything positive is a string of that length
 
-    Type() {}
+    Type() = default;
     Type(int index, short type) :
             index(index), type(type)
     {
     }
 };
+
+ostream& operator<<(ostream& out, const Type& t)
+{
+    return out << '[' << t.index << " -> " << t.type << ']';
+}
 
 int main()
 {
@@ -74,5 +79,6 @@ int main()
     for(auto row : table) cout << row[2] << " - ";
     cout << endl;
 
+    cout << attributeMap["Age"] << attributeMap["YanYan"] << endl;
     return 1;
 }

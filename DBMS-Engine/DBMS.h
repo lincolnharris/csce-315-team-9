@@ -29,18 +29,18 @@ public:
     //    void write_cmd(string name);
     //    void exit_cmd();
     //    void show_cmd(string name);
-    void create_cmd(string name, vector<Type> attributes, vector<string> primaryKey);
-    void delete_cmd(Table table, Comparison cond);
-    void update_cmd(Table table, vector<pair<int, string>> fieldsToUpdate, Comparison cond); // pair<attributeName, Value>
-    void insert_cmd(Table table, vector<string> values);
-    void insert_cmd(Table table, Table fromRelation);
+    void create_cmd(string name, vector<Type>& attributes, vector<string>& primaryKey);
+    void delete_cmd(Table& table, Comparison& cond);
+    void update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate, Comparison& cond); // pair<attributeName, Value>
+    void insert_cmd(Table& table, vector<string>& values);
+    void insert_cmd(Table& table, const Table& fromRelation);
 
-    Table selection(Comparison cond, Table relation);
-    Table projection(vector<string> attributes, Table relation);
-    Table renaming(vector<string> attributes, Table relation);
-    Table union_(Table rel1, Table rel2);
-    Table difference(Table rel1, Table rel2);
-    Table cross_product(Table rel1, Table rel2);
-    Table natural_join(Table rel1, Table rel2);
+    Table selection(Comparison& cond, const Table& relation);
+    Table projection(vector<string>& attributes, const Table& relation);
+    Table renaming(vector<string>& attributes, const Table& relation);
+    Table union_(const Table& rel1, const Table& rel2);
+    Table difference(const Table& rel1, const Table& rel2);
+    Table cross_product(const Table& rel1, const Table& rel2);
+    Table natural_join(const Table& rel1, const Table& rel2);
 
 };

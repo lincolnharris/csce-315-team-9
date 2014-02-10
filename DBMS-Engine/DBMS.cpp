@@ -2,22 +2,16 @@
 #include "DBMS.h"
 #include "Comparison.h"
 
-using namespace std;
-
-
 /******************** Constructor / Destructor *******************************/
 DBMS::DBMS()
 {
-	// Nothing
+    // Nothing
 }
-
 
 DBMS::~DBMS()
 {
-	// Nothing
+    // Nothing
 }
-
-
 
 /******************** DBMS General Commands *******************************/
 //Table DBMS::open_cmd(string name)
@@ -54,91 +48,82 @@ DBMS::~DBMS()
 //
 //}
 //
-
-
-
 /******************** Table Manipulation *******************************/
-void DBMS::create_cmd(string name, vector<Type> attributes, vector<string> primaryKey)
+void DBMS::create_cmd(string name, vector<Type>& attributes, vector<string>& primaryKey)
 {
-	// Lincoln
+    // Lincoln
 }
 
-
-void DBMS::delete_cmd(Table table, Comparison cond)
+void DBMS::delete_cmd(Table& table, Comparison& cond)
 {
-	// Lincoln
+    // Lincoln
 }
 
-
-
-void DBMS::update_cmd(Table table, vector<pair<int, string>> fieldsToUpdate, Comparison cond) // tuple<attributeName, Value>
+void DBMS::update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate,
+        Comparison& cond) // tuple<attributeName, Value>
 {
-	// Dmitry
+    // Dmitry
 }
 
-
-
-void DBMS::insert_cmd(Table table, vector<string> values)
+void DBMS::insert_cmd(Table& table, vector<string>& values)
 {
-	// Shayan
+    for(auto& pair : table.attributeMap)
+    {
+        Type& t = pair.second;
+        bool wrong = false;
+        if(t.type == -1)
+        {
+            try
+            {
+                string s = values[t.index];
+                stoi(s);
+            }
+            catch (...)
+            {
+                wrong = true;
+            }
+        }
+    }
 }
 
-
-
-void DBMS::insert_cmd(Table table, Table fromRelation)
+void DBMS::insert_cmd(Table& table, const Table& fromRelation)
 {
-	// Shayan
+    // Shayan
 }
-
-
-
 
 /******************** Table Logic Algebra *******************************/
-Table DBMS::selection(Comparison cond, Table relation)
+Table DBMS::selection(Comparison& cond, const Table& relation)
 {
-	// Lincoln
+    // Lincoln
 }
 
-
-
-Table DBMS::projection(vector<string> attributes, Table relation)
+Table DBMS::projection(vector<string>& attributes, const Table& relation)
 {
-	// Lincoln
+    // Lincoln
 }
 
-
-
-Table DBMS::renaming(vector<string> attributes, Table relation)
+//TODO make vector<string>& and similar recurrences
+Table DBMS::renaming(vector<string>& attributes, const Table& relation)
 {
-
 }
 
-
-
-Table DBMS::union_(Table rel1, Table rel2)
+Table DBMS::union_(const Table& rel1, const Table& rel2)
 {
-	// Dmitry
+    // Dmitry
 }
 
-
-
-Table DBMS::difference(Table rel1, Table rel2)
+Table DBMS::difference(const Table& rel1, const Table& rel2)
 {
-	// Dmitry
+    // Dmitry
 }
 
-
-
-Table DBMS::cross_product(Table rel1, Table rel2)
+Table DBMS::cross_product(const Table& rel1, const Table& rel2)
 {
-	// Shayan
+    // Shayan
 }
 
-
-
-Table DBMS::natural_join(Table rel1, Table rel2)
+Table DBMS::natural_join(const Table& rel1, const Table& rel2)
 {
-	// Dmitry
+    // Dmitry
 }
-
 
