@@ -123,9 +123,92 @@ Table DBMS::renaming(string attributes[], Table relation)
 
 
 
-Table DBMS::union_(Table t1, Table t2)
+Table DBMS::union_(Table table1, Table table2)
 {
 	// Dmitry
+
+	// Make new copies of table, to manipulate then display
+	Table t1 = table1;
+	Table t2 = table2;
+
+	// Does t1 & t2 have same number of attributs?
+	if (t1.attributeMap.size() != t2.attributeMap.size())
+	{
+		cerr << "Not union Compatible" << endl;
+		return;
+	}
+
+	// Do both have the same type of attributes?
+	string name;
+	for (int i = 0; i < t1.attributeMap.size(); i++)
+	{
+		if (t2.attributeMap.find(t1.attributeMap.at[i]) == t2.attributeMap.end())
+		{
+			cerr << "Attributes do not match" << endl;
+		}
+	}
+	
+	// Do the attributes index/location match for t1 & t2?
+	Type type;
+	// iterate through every attribute index
+	for (int i = 0; i < t1.attributeMap.size(); i++)
+	{
+		// If indexes not the same, must relocate
+		if ( t1.attributeMap.at[i] != t2.attributeMap.at[i] )
+		{
+			// Find attribute in t2
+			type = t2.attributeMap.find[t1.attributeMap.at[i]];
+
+			// move attrb values to corresponding indx to t1
+			for(vector<string> row : t2.rows)
+			{
+				row.insert(row.begin() + i, row[type.index]);
+				row.erase(row.begin() + type.index);
+			}
+
+			t2.attributeMap.at[i] = t2.attributeMap.at[type.index];
+			t2.attributeMap.erase(t2.attributeMap.at[type.index]);
+		}
+	}
+
+
+	bool duplicate = false;
+	// Union the tables, while checking for duplicates
+	for (int i = 0; i < t2.rows.size(); i++)
+	{
+		for(vector<string> row1 : t1.rows)	// check t1 
+		{
+			for(vector<string> row2 : t2.rows) // with all of t2 entries
+			{
+				if ( row1[0] == row2[0])
+					duplicate = true;
+			}
+
+			// No duplicate found, copy t1[0] into t2.front
+			if (!duplicate)
+			{
+				t2.rows.push_front(row1);
+			}
+
+			// If duplicate found or not, remove t1[0]
+			t1.rows.erase(t1.rows.begin());
+
+			// Reset duplicate
+			duplicate = false;
+		}
+	}
+	return t2;
+}
+
+
+
+Table DBMS::difference(Table table1, Table table2)
+{
+
+	// Dmitry
+	
+	Table t1 = table1;
+	Table t2 = table2;
 	
 	// Does t1 & t2 have same number of attributs?
 	if (t1.attributeMap.size() != t2.attributeMap.size())
@@ -144,7 +227,7 @@ Table DBMS::union_(Table t1, Table t2)
 		}
 	}
 	
-	// Do the attributes index/location match?
+	// Do the attributes index/location match for t1 & t2?
 	Type type;
 	// iterate through every attribute index
 	for (int i = 0; i < t1.attributeMap.size(); i++)
@@ -155,18 +238,47 @@ Table DBMS::union_(Table t1, Table t2)
 			// Find attribute in t2
 			type = t2.attributeMap.find[t1.attributeMap.at[i]];
 
-			// Now re-organize/shift contents in t2 to match t1 attrbMap
+			// move attrb values to corresponding indx to t1
+			for(vector<string> row : t2.rows)
+			{
+				row.insert(row.begin() + i, row[type.index]);
+				row.erase(row.begin() + type.index);
+			}
 
+			t2.attributeMap.at[i] = t2.attributeMap.at[type.index];
+			t2.attributeMap.erase(t2.attributeMap.at[type.index]);
 		}
 	}
+	// Both tables have same order of attribute types
 
-}
+	// Copy current t1, clean its list, use to fill final table to return
+	Table difference = t1;
+	t1.rows.erase(t1.rows.begin(), t1.rows.end());
 
+	bool duplicate = false;
 
+	// Subtract 
+	for (int i = 0; i < t1.rows.size(); i++)
+	{
+		for(vector<string> row1 : t1.rows)	// check t1 
+		{
+			for(vector<string> row2 : t2.rows) // with all of t2 entries
+			{
+				if ( row1[0] == row2[0] )	// only need to check first value
+				{
+					duplicate = true;
+				}
+			}
 
-Table DBMS::difference(Table rel1, Table rel2)
-{
-	// Dmitry
+			if (!duplicate)
+			{
+				difference.rows.push_back(row1);
+			}
+
+			// Reset duplicate
+			duplicate = false;
+		}
+
 }
 
 
