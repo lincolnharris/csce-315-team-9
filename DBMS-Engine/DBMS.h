@@ -44,3 +44,6 @@ public:
     Table natural_join(const Table& rel1, const Table& rel2);
 
 };
+
+// Helper Function
+bool is_union_compatible(const Table& t1, const Table t2);

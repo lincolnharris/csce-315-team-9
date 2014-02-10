@@ -90,19 +90,27 @@ void DBMS::insert_cmd(Table& table, vector<string>& values)
 
 void DBMS::insert_cmd(Table& table, const Table& fromRelation)
 {
-    // Shayan
+    if(!is_union_compatible(table, fromRelation))
+        throw "Not union compatible.";
+
+    // Just making sure they're the same; they could be different in attribute ordering.
+    table.attributeMap = fromRelation.attributeMap;
+
+    table.rows.insert(table.rows.end(), fromRelation.rows.begin(), fromRelation.rows.end());
 }
 
 /******************** Table Logic Algebra *******************************/
 Table DBMS::selection(Comparison& cond, const Table& relation)
 {
     // Lincoln
+    return Table();
 }
 
 
 Table DBMS::projection(vector<string>& attributes, const Table& relation)
 {
     // Lincoln
+    return Table();
 }
 
 
@@ -124,24 +132,56 @@ Table DBMS::renaming(vector<string>& attributes, const Table& table)
 }
 
 
-Table DBMS::union_(const Table& rel1, const Table& rel2)
+Table DBMS::union_(const Table& t1, const Table& t2)
 {
     // Dmitry
+    return Table();
 }
 
 
-Table DBMS::difference(const Table& rel1, const Table& rel2)
+Table DBMS::difference(const Table& t1, const Table& t2)
 {
     // Dmitry
+    return Table();
 }
 
-Table DBMS::cross_product(const Table& rel1, const Table& rel2)
+Table DBMS::cross_product(const Table& t1, const Table& t2)
 {
-    // Shayan
+    Table xprod;
+
+    // Merging the attributeMaps:
+    xprod.attributeMap.insert(t1.attributeMap.begin(), t1.attributeMap.end());
+    for(auto& pair : t2.attributeMap)
+        xprod.attributeMap["_" + pair.first] = pair.second; // Hyphenated to avoid repeated names
+
+    // Creating the cross-producted rows:
+    for(auto& row1 : t1.rows)
+        for(auto& row2 : t2.rows)
+        {
+            xprod.rows.push_back(vector<string>());
+            xprod.rows.back().insert(xprod.rows.back().end(), row1.begin(), row1.end());
+            xprod.rows.back().insert(xprod.rows.back().end(), row2.begin(), row2.end());
+        }
+
+    return xprod;
 }
 
-Table DBMS::natural_join(const Table& rel1, const Table& rel2)
+Table DBMS::natural_join(const Table& t1, const Table& t2)
 {
     // Dmitry
+    return Table();
 }
 
+bool is_union_compatible(const Table& t1, const Table t2)
+{
+    if(t1.attributeMap.size() != t2.attributeMap.size())
+        return false;
+
+    // Do both have the same type of attributes?
+    string name;
+    for(auto& pair : t1.attributeMap) // pair<name, Type>
+        if(t2.attributeMap.find(pair.first) == t2.attributeMap.end())
+            return false;
+
+    return true;
+}
