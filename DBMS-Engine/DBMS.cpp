@@ -5,22 +5,24 @@
 using namespace std;
 
 /******************** Table Manipulation *******************************/
-void DBMS::create_cmd(string name, vector<Type> attributes, vector<string> primaryKey)
+void DBMS::create_cmd(string name, vector< pair<string,Type> > attributes, vector<string> primaryKey)
 {// Lincoln
 	Table table;
 	int size = attributes.size();
-	for(int i=0; i<size; ++i){
-		table.attributeMap.insert({primaryKey[i],attributes[i]});
+	for(int i=0; i<size; ++i){	//go through each attribute and add it to the attribute map
+		pair<string,Type> temp(attributes[i]);
+		table.attributeMap.insert( temp );
 	}
 	table.keys = primaryKey;
-	relations.insert( {name , table} );
+	pair<string, Table> temp_table(name, table);
+	relations.insert( temp_table );
 }
 
 
 void DBMS::delete_cmd(Table table, Comparison cond)
 {// Lincoln
-	for( list<vector<string>>::iterator it = table.rows.begin(); it != table.rows.end(); ++it){
-		if ( cond(*it) ) table.rows.erase(it);
+	for( list<vector<string>>::iterator it = table.rows.begin(); it != table.rows.end(); ++it){//go through each row
+		if ( cond(*it) ) table.rows.erase(it);//if the row passes the condition, delete the row
 	}	
 }
 
@@ -29,10 +31,10 @@ Table DBMS::selection(Comparison cond, Table table)
 {// Lincoln
 	Table selected;
 	selected.attributeMap = table.attributeMap;
-	selected.keys = table.keys;
-	for( list<vector<string>>::iterator it = table.rows.begin(); it != table.rows.end(); ++it){
-		if ( cond(*it) ) selected.rows.push_back(*it);	
+	for( list<vector<string>>::iterator it = table.rows.begin(); it != table.rows.end(); ++it){ //go through each row
+		if ( cond(*it) ) selected.rows.push_back(*it);	//if the row passes the condition add it to the new table
 	}
+	return selected;
 }
 
 
@@ -40,23 +42,20 @@ Table DBMS::selection(Comparison cond, Table table)
 Table DBMS::projection(vector<string> attributes, Table table)
 {// Lincoln
 	Table proj;
-	proj.attributeMap = table.attributeMap;
-	proj.keys = table.keys;
-	proj.rows = table.rows;
-	int numOfColumns = proj.attributeMap.size();
+	/*
 	int numOfAtts = attributes.size();
-	for(int i=0; i<numOfColumns; ++i){
-		bool found = false;
-		for(int j=0; (j<numOfAtts && !(found) ); ++j){
-			if( proj.keys[i] == attributes[j] ) found = true;
-		}
-		if( !(found) ){
-			for( vector<string> row : proj.rows){
-				row.erase(row.begin() + i);
-			}
-			proj.attributeMap.erase(proj.keys[i]);
-			proj.keys.erase(proj.keys.begin() + i);
-			--i;
+	int numOfRows = table.rows.size();
+	vector<Type> types;
+	list<vector<strings> > lines;
+	for(int i=0; i<numOfRows; ++i;){
+		vector<string> temp;
+		lines.push_back(temp);
+	}
+	for(int i=0; i<numOfAtts; ++i){	//go through all the wanted attributes
+		unordered_map<string,Type>::const_iterator it = table.attributeMap.find(attributes[i]);//get itterator to the attribute
+		
 		}
 	}
+	*/
+	return proj;
 }
