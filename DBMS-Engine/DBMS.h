@@ -6,6 +6,7 @@
 
 // Class Includes
 #include "Table.h"
+#include "Comparison.h"
 
 using namespace std;
 
