@@ -18,7 +18,7 @@ Condition::Condition(ConditionFunc condition) :
 {
 }
 
-bool Comparison::operator()(vector<string>& row)
+bool Comparison::operator()(const vector<string>& row)
 {
     if(node == AND)
         return (*left)(row) && (*right)(row);
@@ -27,7 +27,7 @@ bool Comparison::operator()(vector<string>& row)
     else throw "Comparison cannot be typed CONDITION";
 }
 
-bool Condition::operator ()(vector<string>& row)
+bool Condition::operator ()(const vector<string>& row)
 {
     return condition(row);
 }

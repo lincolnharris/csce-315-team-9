@@ -26,7 +26,7 @@ bool Table::operator==(const Table& t)
         return false;
     for(auto& pair : t.attributeMap)
     {
-        auto& iterator = attributeMap.find(pair.first);
+        auto iterator = attributeMap.find(pair.first);
         if(iterator == attributeMap.end()) return false;
         if(iterator->first != pair.first || iterator->second != pair.second)
             return false;
