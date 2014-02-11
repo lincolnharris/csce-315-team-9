@@ -40,3 +40,4 @@ public:
 
     bool operator()(vector<string>& row);
 };
+ 
