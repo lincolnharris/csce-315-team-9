@@ -176,7 +176,7 @@ Table DBMS::natural_join(const Table& t1, const Table& t2)
     return Table();
 }
 
-bool is_union_compatible(const Table& t1, const Table t2)
+bool is_union_compatible(const Table& t1, const Table& t2)
 {
     if(t1.attributeMap.size() != t2.attributeMap.size())
         return false;

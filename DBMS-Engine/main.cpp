@@ -38,9 +38,9 @@ int main()
     list<vector<string>> table;
 
     // Creating a very simple database
-    vector<string> strings1( {"45", "foo", "bar"} );
-    vector<string> strings2( {"56", "remove", "bar"} );
-    vector<string> strings3( {"2", "foo", "NOTbar"} );
+    vector<string> strings1{"45", "foo", "bar"};
+    vector<string> strings2{"56", "remove", "bar"};
+    vector<string> strings3{"2", "foo", "NOTbar"};
     attributeMap["Age"] = Type(0, -1); // First column, type integer (-1)
     table.push_back(strings1);
     table.push_back(strings2);

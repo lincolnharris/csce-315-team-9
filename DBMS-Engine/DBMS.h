@@ -14,11 +14,10 @@ class Comparison;
 class DBMS
 {
 
-private:
 
-    unordered_map<string, Table> relations; 	// Constructor....
 
 public:
+    unordered_map<string, Table> relations; 	// Constructor....
 
     DBMS();
     ~DBMS();
@@ -45,4 +44,4 @@ public:
 };
 
 // Helper Function
-bool is_union_compatible(const Table& t1, const Table t2);
+bool is_union_compatible(const Table& t1, const Table& t2);
