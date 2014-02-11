@@ -24,7 +24,7 @@ public:
 
     Comparison(NodeType type, Comparison* left, Comparison* right);
 
-    bool operator()(vector<string>& row);
+    bool operator()(const vector<string>& row);
 };
 
 class Condition : public Comparison
@@ -32,11 +32,11 @@ class Condition : public Comparison
 public:
     // This is a function which can be applied to a row in the table
     // like age >= 21, or name == "John"
-    typedef function<bool(vector<string>&)> ConditionFunc;
+    typedef function<bool(const vector<string>&)> ConditionFunc;
 
     ConditionFunc condition;
 
     Condition(ConditionFunc condition);
 
-    bool operator()(vector<string>& row);
+    bool operator()(const vector<string>& row);
 };
