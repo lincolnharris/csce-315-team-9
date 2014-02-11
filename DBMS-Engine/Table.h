@@ -29,6 +29,7 @@ class Table
 	
 	public:
 
+		vector<string> keys;
 	    unordered_map<string, Type> attributeMap;   // Mapping <attribute name> to <column index, data type>
 
 	    list<vector<string>>        rows;           // The table is stored as a linked list of rows
