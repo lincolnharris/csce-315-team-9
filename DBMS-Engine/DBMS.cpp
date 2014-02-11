@@ -9,15 +9,15 @@ void DBMS::create_cmd(string name, vector<Type> attributes, vector<string> prima
 {// Lincoln
 	Table table;
 	int size = attributes.size();
-	for{int i=0; i<size; ++i}{
-		table.relations.insert({primaryKey[i],attributes[i]})
+	for(int i=0; i<size; ++i){
+		table.attributeMap.insert({primaryKey[i],attributes[i]});
 	}
 	table.keys = primaryKey;
 	relations.insert( {name , table} );
 }
 
 
-void DBMS::delete_cmd(Table table, Condition cond)
+void DBMS::delete_cmd(Table table, Comparison cond)
 {// Lincoln
 	for( list<vector<string>>::iterator it = table.rows.begin(); it != table.rows.end(); ++it){
 		if ( cond(*it) ) table.rows.erase(it);
@@ -25,7 +25,7 @@ void DBMS::delete_cmd(Table table, Condition cond)
 }
 
 /******************** Table Logic Algebra *******************************/
-Table DBMS::selection(Condition cond, Table table)
+Table DBMS::selection(Comparison cond, Table table)
 {// Lincoln
 	Table selected;
 	selected.attributeMap = table.attributeMap;
@@ -47,14 +47,15 @@ Table DBMS::projection(vector<string> attributes, Table table)
 	int numOfAtts = attributes.size();
 	for(int i=0; i<numOfColumns; ++i){
 		bool found = false;
-		for(int j=0; (j<numOfAtts || !(found) ); ++j){
-			if( (proj.attributeMap)[i].attrb_name == attributes[j] ) found = true;
+		for(int j=0; (j<numOfAtts && !(found) ); ++j){
+			if( proj.keys[i] == attributes[j] ) found = true;
 		}
 		if( !(found) ){
 			for( vector<string> row : proj.rows){
 				row.erase(row.begin() + i);
 			}
-			proj.attributeMap.erase(proj.attributeMap.begin()+i);
+			proj.attributeMap.erase(proj.keys[i]);
+			proj.keys.erase(proj.keys.begin() + i);
 			--i;
 		}
 	}
