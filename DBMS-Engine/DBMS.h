@@ -36,10 +36,10 @@ public:
     Table selection(Comparison& cond, const Table& relation);
     Table projection(vector<string>& attributes, const Table& relation);
     Table renaming(vector<string>& attributes, const Table& relation);
-    Table union_(const Table& rel1, const Table& rel2);
-    Table difference(const Table& rel1, const Table& rel2);
-    Table cross_product(const Table& rel1, const Table& rel2);
-    Table natural_join(const Table& rel1, const Table& rel2);
+    Table union_(const Table& t1, const Table& t2);
+    Table difference(const Table& t1, const Table& t2);
+    Table cross_product(const Table& t1, const Table& t2);
+    Table natural_join(const Table& t1, const Table& t2);
 
 };
 

@@ -44,6 +44,7 @@ class Table
 
         bool operator==(const Table& t);
         bool operator!=(const Table& t);
+
 	    // Helper functions for the future!
 	    int getInt();
 	    string getString();

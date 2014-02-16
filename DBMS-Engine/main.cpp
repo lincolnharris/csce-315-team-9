@@ -11,6 +11,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include "ParsedResult.h"
 
 using namespace std;
 
@@ -32,8 +33,16 @@ ostream& operator<<(ostream& out, const Type& t)
     return out << '[' << t.index << " -> " << t.type << ']';
 }
 
+ParsedResult<int> test_ParsedResult()
+{
+    return 6;
+}
+
 int main()
 {
+    cout << test_ParsedResult();
+    return 1;
+
     unordered_map<string, Type> attributeMap;
     list<vector<string>> table;
 
@@ -80,5 +89,6 @@ int main()
     cout << endl;
 
     cout << attributeMap["Age"] << attributeMap["YanYan"] << endl;
+
     return 1;
 }
