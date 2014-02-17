@@ -40,7 +40,7 @@ ParsedResult<int> test_ParsedResult()
 
 int main()
 {
-    cout << test_ParsedResult();
+    cout << (int)test_ParsedResult();
     return 1;
 
     unordered_map<string, Type> attributeMap;
