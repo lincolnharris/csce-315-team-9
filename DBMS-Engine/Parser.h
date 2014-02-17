@@ -7,8 +7,11 @@
 
 // Class Includes
 #include "DBMS.h"
-class ParsedResult;
-class Table;
+#include "ParsedResult.h"
+#include "Table.h"
+#include "Tokenizer.h"
+#include "Comparison.h"
+
 class Comparison;
 
 class Parser
@@ -21,13 +24,13 @@ class Parser
 	public:
 
 	// Queries	// not finished TEMPLATE PARAMETERS
-	ParsedResult			query (vector<Token> tokens);
+	ParsedResult<Table>		query (vector<Token> tokens);
 	ParsedResult<string>	relation_name (vector<Token> tokens);
-	ParsedResult			identifier (vector<Token> tokens);
+	ParsedResult<string>	identifier (vector<Token> tokens);
 	ParsedResult<char>		alpha (vector<Token> tokens);
 	ParsedResult<int>		digit (vector<Token> tokens);
-	ParsedResult			expr (vector<Token> tokens);
-	ParsedResult			atomic_expr (vector<Token> tokens);
+	ParsedResult<Table>		expr (vector<Token> tokens);
+	ParsedResult<Table>		atomic_expr (vector<Token> tokens);
 	ParsedResult<Table>		selection (vector<Token> tokens);
 	ParsedResult<Condition>	condition (vector<Token> tokens);
 	ParsedResult<Table>		conjunction (vector<Token> tokens);
@@ -39,7 +42,7 @@ class Parser
 	ParsedResult<Table>		projection (vector<Token> tokens);
 	ParsedResult<string>	attribute_list (vector<Token> tokens);
 	ParsedResult<Table>		renaming (vector<Token> tokens);
-	ParsedResult<Table>		union (vector<Token> tokens);
+	ParsedResult<Table>		union__ (vector<Token> tokens);
 	ParsedResult<Table>		difference (vector<Token> tokens);
 	ParsedResult<Table>		product (vector<Token> tokens);
 	ParsedResult<Table>		natural_join (vector<Token> tokens);
@@ -54,10 +57,10 @@ class Parser
 	bool			update_cmd (vector<Token> tokens);
 	bool			insert_cmd (vector<Token> tokens);
 	bool			delete_cmd (vector<Token> tokens);
-	ParsedResult	type_attribute_list (vector<Token> tokens);
-	ParsedResult	type (vector<Token> tokens);
-	ParsedResult	integer (vector<Token> tokens);
-	ParsedResult	program (vector<Token> tokens);	
+	ParsedResult<vector<string>>	type_attribute_list (vector<Token> tokens);
+	ParsedResult<Type>	type (vector<Token> tokens);
+	ParsedResult<int>	integer (vector<Token> tokens);
+	ParsedResult<Table>	program (vector<Token> tokens);	
 };
 
 

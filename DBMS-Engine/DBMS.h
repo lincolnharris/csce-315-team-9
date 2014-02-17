@@ -22,11 +22,11 @@ public:
     DBMS();
     ~DBMS();
 
-    //    Table open_cmd(string name);
-    //    void close_cmd(string name);
-    //    void write_cmd(string name);
-    //    void exit_cmd();
-    //    void show_cmd(string name);
+    Table open_cmd(string name);
+    void close_cmd(string name);
+	void write_cmd(string name);
+    void exit_cmd();
+    void show_cmd(string name);
     void create_cmd(string name, vector<pair<string, Type>>& attributes, vector<string>& primaryKey);
     void delete_cmd(Table& table, Comparison& cond);
     void update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate, Comparison& cond); // pair<attributeName, Value>

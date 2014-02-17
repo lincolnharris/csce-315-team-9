@@ -7,7 +7,7 @@
 using namespace std;
 
 
-ParsedResult	Parser::query (vector<Token> tokens)
+ParsedResult<Table>	Parser::query (vector<Token> tokens)
 {
 
 }
@@ -20,7 +20,7 @@ ParsedResult<string>	Parser::relation_name (vector<Token> tokens)
 
 
 
-ParsedResult	Parser::identifier (vector<Token> tokens)
+ParsedResult<string>	Parser::identifier (vector<Token> tokens)
 {
 
 }
@@ -39,14 +39,14 @@ ParsedResult<int>	Parser::digit (vector<Token> tokens)
 }
 
 
-ParsedResult	Parser::expr (vector<Token> tokens)
+ParsedResult<Table>	Parser::expr (vector<Token> tokens)
 {
 
 }
 
 
 
-ParsedResult	Parser::atomic_expr (vector<Token> tokens)
+ParsedResult<Table>	Parser::atomic_expr (vector<Token> tokens)
 {
 
 }
@@ -59,7 +59,7 @@ ParsedResult<Table>	Parser::selection (vector<Token> tokens)
 }
 
 
-ParsedResult<conditinon>	Parser::condition (vector<Token> tokens)
+ParsedResult<Condition>	Parser::condition (vector<Token> tokens)
 {
 
 }
@@ -92,7 +92,7 @@ ParsedResult<string>	Parser::operand (vector<Token> tokens)
 
 
 
-ParsedResult<sring>	Parser::attribute_name (vector<Token> tokens)
+ParsedResult<string>	Parser::attribute_name (vector<Token> tokens)
 {
 
 }
@@ -125,7 +125,7 @@ ParsedResult<Table>	Parser::renaming (vector<Token> tokens)
 }
 
 
-ParsedResult<Table>	Parser::union (vector<Token> tokens)
+ParsedResult<Table>	Parser::union__ (vector<Token> tokens)
 {
 
 }
@@ -207,27 +207,27 @@ bool	Parser::delete_cmd (vector<Token> tokens)
 
 
 
-ParsedResult	Parser::type_attribute_list (vector<Token> tokens)
+ParsedResult<vector<string>>	Parser::type_attribute_list (vector<Token> tokens)
 {
 
 }
 
 
-ParsedResult	Parser::type (vector<Token> tokens)
-{
-
-}
-
-
-
-ParsedResult	Parser::integer (vector<Token> tokens)
+ParsedResult<Type>	Parser::type (vector<Token> tokens)
 {
 
 }
 
 
 
-ParsedResult	Parser::program (vector<Token> tokens)
+ParsedResult<int>	Parser::integer (vector<Token> tokens)
+{
+
+}
+
+
+
+ParsedResult<Table>	Parser::program (vector<Token> tokens)
 {
 
 }

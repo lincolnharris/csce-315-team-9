@@ -19,7 +19,7 @@ struct Token
 {
     string s;
 
-    Token() = default;
+	Token() {};
     Token(string token) : s(token) {}
     Token(const char* token) : s(token) {}
 
