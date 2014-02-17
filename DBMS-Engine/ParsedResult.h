@@ -8,9 +8,10 @@
 #pragma once
 #include <string>
 
-// This class is basically used whenever a parser function needs to
-// return a value, which is either false (indicating failure) or the
-// successful parsing of an object.
+/* This class is basically used whenever a parser function needs to
+ * return a value, which is either false (indicating failure) or the
+ * successful parsing of an object.
+ */
 template<typename T>
 class ParsedResult
 {
@@ -27,10 +28,14 @@ public:
         else failed = true;
     }
 
-    ParsedResult(T result) : result(result), failed(false) {}
+    ParsedResult(T result) : failed(false), result(result) {}
 
+    // Returns the boolean representation of this object, which is whether it was
+    // successfully parsed or not.
     operator bool() { return true; }
 
+    // Returns the T& representation of this object, which allows the user
+    // to access the T object (the parser result) within a ParsedResult
     operator T&()
     {
         if(failed) throw "Failed parsing operation does not have a value.";
