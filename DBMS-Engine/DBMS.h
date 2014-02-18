@@ -7,7 +7,7 @@
 // Class Includes
 #include "Table.h"
 
-using namespace std;
+using std::string;
 
 class Comparison;
 

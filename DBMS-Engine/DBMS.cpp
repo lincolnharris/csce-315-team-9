@@ -2,6 +2,8 @@
 #include "DBMS.h"
 #include "Comparison.h"
 
+using namespace std;
+
 /******************** Constructor / Destructor *******************************/
 DBMS::DBMS()
 {

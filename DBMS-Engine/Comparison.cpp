@@ -7,6 +7,7 @@
 
 #include "Comparison.h"
 
+using namespace std;
 
 Comparison::Comparison(NodeType type, Comparison* left, Comparison* right) :
     node(type), left(left), right(right)

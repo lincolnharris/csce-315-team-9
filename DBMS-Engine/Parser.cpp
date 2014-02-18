@@ -1,5 +1,4 @@
 
-
 // Class Include
 #include "Parser.h"
 #include "DBMS.h"
@@ -12,24 +11,17 @@ Parser::Parser(vector<Token>& tokens, DBMS* dbms = nullptr) : tokens(tokens), db
 
 ParsedResult<Table>	Parser::query()
 {
-	return NULL;
-}
-
-
-ParsedResult<string>	Parser::relation_name()
-{
 	
 	return NULL;
 }
 
 
-
-ParsedResult<string>	Parser::identifier()
+ParsedResult<Comparison> Parser::relation_name()
 {
-	// alpha is in here
 	
 	return NULL;
 }
+
 
 
 ParsedResult<Table>	Parser::expr()
@@ -48,56 +40,88 @@ ParsedResult<Table>	Parser::atomic_expr()
 
 ParsedResult<Table>	Parser::selection() 
 {
-	// select ( condition ) 
+	// select 
 	int start = counter;
-	if(tokens[counter].s != "select")
+	if(tokens[counter].str != "select")
 	{
+		// Select did not exist/work, return completely
 		return false;
 	}
-		return false; // We popped something! We should somehow put it back in, OR not
-			// pop it in the first place! and only pop things out if the match is successful
+	counter++;
+
+	// first (
+	if(tokens[counter].str != "(")
+	{
+		counter = start;
+		return false;
+	}
+	counter++;
+
+	// condition
+	auto& condition_result = condition();
+	if(!condition_result)
+	{
+		counter =  start;
+		return false;
+	}
+	counter++;
+
+	// close )
+	if(tokens[counter].str != ")")
+	{
+		counter = start;
+		return false;
+	}
 	counter++;
 	
-	if(tokens[counter].s != "(")
+	//  now check relation name
+	auto& atomic_expr_result = atomic_expr();
+	if (!atomic_expr_result)
+	{
+		counter = start;
 		return false;
+	} 
 	counter++;
 
-	if(condition())
-		return false;
-	counter++;
-	return tokens >> "select" >> "(" >> condition() >> ")" >> Success;
-	return NULL;
+	Table tempT = dbms->selection(condition_result,														atomic_expr_result);
+
+	return tempT;
 }
 
 
-ParsedResult<string>	Parser::condition()
+ParsedResult<Condition>	Parser::condition()
 {
-	return NULL;
-}
-
-
-
-ParsedResult<Table>	Parser::conjunction()
-{
+	// shay
 	return NULL;
 }
 
 
 
-ParsedResult<string>	Parser::comparison()
+ParsedResult<Comparison>	Parser::conjunction()
 {
+	// shay
+	return NULL;
+}
+
+
+
+ParsedResult<Comparison>	Parser::comparison()
+{
+	// shay
 	return NULL;
 }
 
 
 ParsedResult<char>	Parser::op()
 {
+	// shay
 	return " ";
 }
 
 
 ParsedResult<string>	Parser::operand()
 {
+	// shay
 	return NULL;
 }
 
@@ -105,31 +129,82 @@ ParsedResult<string>	Parser::operand()
 
 ParsedResult<string>	Parser::attribute_name()
 {
-	return NULL;
-}
+	if (tokens[counter].isAlnum)
+	{
+		counter++;
+		return tokens[counter].str;
+	}
+	
 
 
-
-ParsedResult<string>	Parser::literal()
-{
-	string valid_string;
-	valid_string = tokens[0].operator std::string &;
-
-	return valid_string;
 }
 
 
 
 ParsedResult<Table>	Parser::projection()
 {
-	return NULL;
+	int start = counter;
+
+	if (tokens[counter].str != "project")
+	{
+		return false;
+	}
+	counter++;
+
+	if (tokens[counter].str != "(")
+	{
+		return false;
+	}
+	counter++;
+
+
+	// Find attribute list
+	vector<string> Atrb_List;
+	Atrb_List = attribute_list();
+	if (!attribute_list())
+	{
+		counter = start;
+		return false;
+	}
+
+	if (tokens[counter].str != ")")
+	{
+		counter = start;
+		return false;
+	}
+	counter++;
+
+	// Find if table exists
+	bool found_table = false;
+	Table table;
+	for(auto& database : dbms->relations)
+	{
+		if (database.first == tokens[counter].str)
+		{
+			table = database.second;
+			found_table = true;
+			counter++;
+		}
+	}
+
+	if (!found_table)
+	{
+		counter = start;
+		return false;
+	}
+
+	return dbms->projection(Atrb_List, table);
 }
 
 
 
-ParsedResult<string>	Parser::attribute_list()
+ParsedResult<vector<string>>	Parser::attribute_list()
 {
-	return NULL;
+
+	if (tokens[counter] != )
+	{
+
+	}
 }
 
 
@@ -142,41 +217,19 @@ ParsedResult<Table>	Parser::renaming()
 
 ParsedResult<Table>	Parser::union__()
 {
-	// union two tables
-
-	// Check if tables exist
-
-
-	Table t1 = tokens[0].operator std::string &;
-	Table t2 = tokens[1].operator std::string &;
-
-	return union_(t1, t2);
+	return NULL;
 }
 
 
 ParsedResult<Table>	Parser::difference()
 {
-	// difference two tables
-	Table t1 = tokens[0].operator std::string &;
-	Table t2 = tokens[1].operator std::string &;
-
-	return difference(t1, t2);
-
+	return NULL;
 }
 
 
 ParsedResult<Table>	Parser::product()
 {
-	// product two tables
-	for ()
-	{
-
-	}
-
-	Table t1 = tokens[0].operator std::string &;
-	Table t2 = tokens[1].operator std::string &;
-
-	return product(t1, t2);
+	return NULL;
 }
 
 
@@ -268,13 +321,4 @@ ParsedResult<int>	Parser::integer()
 ParsedResult<Table>	Parser::program()
 {
 	return NULL;
-}
-
-
-bool Tables_Exists(Table t1, Table t2)
-{
-	bool check1 = false;
-	bool check2 = false;
-	for(auto& table1 : dbms)
-		if 
 }

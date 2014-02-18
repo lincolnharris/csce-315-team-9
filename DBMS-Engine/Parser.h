@@ -29,20 +29,18 @@ class Parser
 	// Queries	
 	// PARAMETERS NEED TO BE CORRECTED
 	ParsedResult<Table>		query();
-	ParsedResult<string>	relation_name();
-	ParsedResult<string>	identifier();
+	ParsedResult<Comparison>relation_name();
 	ParsedResult<Table>		expr();
 	ParsedResult<Table>		atomic_expr();
 	ParsedResult<Table>		selection();
-	ParsedResult<string>	condition();
-	ParsedResult<Table>		conjunction();
-	ParsedResult<string>	comparison();
+	ParsedResult<Condition>	condition();
+	ParsedResult<Comparison>conjunction();
+	ParsedResult<Comparison>comparison();
 	ParsedResult<char>		op();
 	ParsedResult<string>	operand();
 	ParsedResult<string>	attribute_name();
-	ParsedResult<string>	literal();
 	ParsedResult<Table>		projection();
-	ParsedResult<string>	attribute_list();
+	ParsedResult<vector<string>>attribute_list();
 	ParsedResult<Table>		renaming();
 	ParsedResult<Table>		union__();
 	ParsedResult<Table>		difference();
@@ -62,9 +60,6 @@ class Parser
 	ParsedResult<vector<string>>	type_attribute_list();
 	ParsedResult<Type>	type();
 	ParsedResult<int>	integer();
-	ParsedResult<Table>	program();	
+	ParsedResult<Table>	program();
 };
-
-bool Tables_Exists (Table t1, Table t2);
-
 

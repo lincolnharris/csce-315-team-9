@@ -12,7 +12,7 @@
 #include <list>
 #include <vector>
 
-using namespace std;
+using std::string;
 
 
 struct Type

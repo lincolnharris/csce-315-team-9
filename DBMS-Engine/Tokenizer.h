@@ -11,7 +11,7 @@
 #include <vector>
 #include <regex>
 
-using namespace std;
+using std::string;
 
 
 // Basically a string without unwanted content

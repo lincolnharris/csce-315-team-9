@@ -9,7 +9,7 @@
 #include <vector>
 #include <functional>
 
-using namespace std;
+using std::string;
 
 
 enum NodeType { OR, AND, CONDITION };
