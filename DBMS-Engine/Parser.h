@@ -35,6 +35,8 @@ public:
     ParsedResult<Table> selection();
     ParsedResult<Comparison*> condition();
     ParsedResult<Comparison*> conjunction();
+    ParsedResult<Comparison*> comparison1();
+    ParsedResult<Comparison*> comparison2();
     ParsedResult<Comparison*> comparison();
     ParsedResult<string> op();
     ParsedResult<string> operand();
