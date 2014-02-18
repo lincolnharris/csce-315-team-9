@@ -7,130 +7,110 @@
 
 using namespace std;
 
+Parser::Parser(vector<Token>& tokens, DBMS* dbms = nullptr) : tokens(tokens), dbms(dbms)
+{}
 
-ParsedResult<Table>	Parser::query (vector<Token> tokens)
+ParsedResult<Table>	Parser::query()
 {
 	return NULL;
 }
 
 
-ParsedResult<string>	Parser::relation_name (vector<Token> tokens)
+ParsedResult<string>	Parser::relation_name()
+{
+	
+	return NULL;
+}
+
+
+
+ParsedResult<string>	Parser::identifier()
+{
+	// alpha is in here
+	
+	return NULL;
+}
+
+
+ParsedResult<Table>	Parser::expr()
 {
 	return NULL;
 }
 
 
 
-ParsedResult<string>	Parser::identifier (vector<Token> tokens)
+ParsedResult<Table>	Parser::atomic_expr()
 {
 	return NULL;
 }
 
 
 
-ParsedResult<vector<char>>	Parser::alpha (vector<Token> tokens)
+ParsedResult<Table>	Parser::selection() 
 {
-	vector<char> valid_chars;
-	for (int i = 0; i < tokens.size(); i++)
-	{
-		if (isalpha(tokens[i].operator std::string &) )
-		{
-			valid_chars.push_back(tokens[i].operator std::string &);
-		}
-	}
-
-	// If nothing was added to vector_chars then no tokens were valid chars
-	if (valid_chars.size() == 0)
-	{
-		return false;
-	}
-
-	return valid_chars;
-} 
-
-
-ParsedResult<vector<int>>	Parser::digit (vector<Token> tokens)
-{
-	vector<int> valid_int;
-	for (int i = 0; i < tokens.size(); i++)
-	{
-		if (isdigit(tokens[i].operator std::string &) )
-		{
-			valid_int.push_back(tokens[i].operator std::string &);
-		}
-	}
-
-	// If nothing was added to vector_int then all tokens were not int
-	if (valid_int.size() == 0)
+	// select ( condition ) 
+	int start = counter;
+	if(tokens[counter].s != "select")
 	{
 		return false;
 	}
+		return false; // We popped something! We should somehow put it back in, OR not
+			// pop it in the first place! and only pop things out if the match is successful
+	counter++;
+	
+	if(tokens[counter].s != "(")
+		return false;
+	counter++;
 
-	return valid_int;
+	if(condition())
+		return false;
+	counter++;
+	return tokens >> "select" >> "(" >> condition() >> ")" >> Success;
+	return NULL;
 }
 
 
-ParsedResult<Table>	Parser::expr (vector<Token> tokens)
+ParsedResult<string>	Parser::condition()
 {
 	return NULL;
 }
 
 
 
-ParsedResult<Table>	Parser::atomic_expr (vector<Token> tokens)
+ParsedResult<Table>	Parser::conjunction()
 {
 	return NULL;
 }
 
 
 
-ParsedResult<Table>	Parser::selection (vector<Token> tokens)
+ParsedResult<string>	Parser::comparison()
 {
 	return NULL;
 }
 
 
-ParsedResult<string>	Parser::condition (vector<Token> tokens)
-{
-	return NULL;
-}
-
-
-
-ParsedResult<Table>	Parser::conjunction (vector<Token> tokens)
-{
-	return NULL;
-}
-
-
-
-ParsedResult<string>	Parser::comparison (vector<Token> tokens)
-{
-	return NULL;
-}
-
-
-ParsedResult<char>	Parser::op (vector<Token> tokens)
+ParsedResult<char>	Parser::op()
 {
 	return " ";
 }
 
 
-ParsedResult<string>	Parser::operand (vector<Token> tokens)
+ParsedResult<string>	Parser::operand()
 {
 	return NULL;
 }
 
 
 
-ParsedResult<string>	Parser::attribute_name (vector<Token> tokens)
+ParsedResult<string>	Parser::attribute_name()
 {
 	return NULL;
 }
 
 
 
-ParsedResult<string>	Parser::literal (vector<Token> tokens)
+ParsedResult<string>	Parser::literal()
 {
 	string valid_string;
 	valid_string = tokens[0].operator std::string &;
@@ -140,27 +120,27 @@ ParsedResult<string>	Parser::literal (vector<Token> tokens)
 
 
 
-ParsedResult<Table>	Parser::projection (vector<Token> tokens)
+ParsedResult<Table>	Parser::projection()
 {
 	return NULL;
 }
 
 
 
-ParsedResult<string>	Parser::attribute_list (vector<Token> tokens)
+ParsedResult<string>	Parser::attribute_list()
 {
 	return NULL;
 }
 
 
-ParsedResult<Table>	Parser::renaming (vector<Token> tokens)
+ParsedResult<Table>	Parser::renaming()
 {
 	// takes a lot of parameters
 	return NULL;
 }
 
 
-ParsedResult<Table>	Parser::union__ (vector<Token> tokens)
+ParsedResult<Table>	Parser::union__()
 {
 	// union two tables
 
@@ -174,7 +154,7 @@ ParsedResult<Table>	Parser::union__ (vector<Token> tokens)
 }
 
 
-ParsedResult<Table>	Parser::difference (vector<Token> tokens)
+ParsedResult<Table>	Parser::difference()
 {
 	// difference two tables
 	Table t1 = tokens[0].operator std::string &;
@@ -185,7 +165,7 @@ ParsedResult<Table>	Parser::difference (vector<Token> tokens)
 }
 
 
-ParsedResult<Table>	Parser::product (vector<Token> tokens)
+ParsedResult<Table>	Parser::product()
 {
 	// product two tables
 	for ()
@@ -200,91 +180,92 @@ ParsedResult<Table>	Parser::product (vector<Token> tokens)
 }
 
 
-ParsedResult<Table>	Parser::natural_join (vector<Token> tokens)
+ParsedResult<Table>	Parser::natural_join()
 {
 	return NULL;
 }
 
 
 // Commands
-bool	Parser::open_cmd (vector<Token> tokens)
+bool	Parser::open_cmd()
 {
 	return NULL;
 }
 
 
-bool	Parser::close_cmd  (vector<Token> tokens)
+bool	Parser::close_cmd()
 {
 	return NULL;
 }
 
 
-bool	Parser::write_cmd (vector<Token> tokens)
+bool	Parser::write_cmd()
 {
 	return NULL;
 }
 
 
-bool	Parser::exit_cmd (vector<Token> tokens)
+bool	Parser::exit_cmd()
 {
 	return NULL;
 }
 
 
-bool	Parser::show_cmd (vector<Token> tokens)
+bool	Parser::show_cmd()
 {
 	return NULL;
 }
 
 
 	
-bool	Parser::create_cmd (vector<Token> tokens)
+bool	Parser::create_cmd()
 {
 	return NULL;
 }
 
 
-bool	Parser::update_cmd (vector<Token> tokens)
-{
-	return NULL;
-}
-
-
-
-bool	Parser::insert_cmd (vector<Token> tokens)
-{
-	return NULL;
-}
-
-
-bool	Parser::delete_cmd (vector<Token> tokens)
+bool	Parser::update_cmd()
 {
 	return NULL;
 }
 
 
 
-ParsedResult<vector<string>>	Parser::type_attribute_list (vector<Token> tokens)
+bool	Parser::insert_cmd()
 {
 	return NULL;
 }
 
 
-ParsedResult<Type>	Parser::type (vector<Token> tokens)
-{
-	return NULL;
-}
-
-
-
-ParsedResult<int>	Parser::integer (vector<Token> tokens)
+bool	Parser::delete_cmd()
 {
 	return NULL;
 }
 
 
 
-ParsedResult<Table>	Parser::program (vector<Token> tokens)
+ParsedResult<vector<string>> Parser::type_attribute_list()
+{
+	return NULL;
+}
+
+
+ParsedResult<Type>	Parser::type()
+{
+	return NULL;
+}
+
+
+
+ParsedResult<int>	Parser::integer()
+{
+	// uses digit
+	return NULL;
+}
+
+
+
+ParsedResult<Table>	Parser::program()
 {
 	return NULL;
 }
@@ -294,6 +275,6 @@ bool Tables_Exists(Table t1, Table t2)
 {
 	bool check1 = false;
 	bool check2 = false;
-	for(auto& table1 : relations)..................
+	for(auto& table1 : dbms)
 		if 
 }

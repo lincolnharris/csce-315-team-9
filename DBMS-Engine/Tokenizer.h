@@ -30,6 +30,11 @@ struct Token
         return (s[0] == '"' && s.back() == '"');
     }
 
+	bool isAlnum()
+	{
+		// waiting
+	}
+
     // This function assumes that the input is quoted
     // It doesn't modify the object
     string removeQuotes()

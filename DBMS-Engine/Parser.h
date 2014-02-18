@@ -12,56 +12,57 @@
 #include "Tokenizer.h"
 #include "Comparison.h"
 
-class Comparison;
-
 class Parser
 {
 
 	private:	
 
-		//
+		vector<Token>& tokens;
+		DBMS* dbms;
+		int counter;
 
 	public:
 
+	// Constructor
+	Parser(vector<Token>& tokens, DBMS* dbms = nullptr);
+
 	// Queries	
 	// PARAMETERS NEED TO BE CORRECTED
-	ParsedResult<Table>		query (vector<Token> tokens);
-	ParsedResult<string>	relation_name (vector<Token> tokens);
-	ParsedResult<string>	identifier (vector<Token> tokens);
-	ParsedResult<vector<char>>alpha (vector<Token> tokens);
-	ParsedResult<vector<int>>digit (vector<Token> tokens);
-	ParsedResult<Table>		expr (vector<Token> tokens);
-	ParsedResult<Table>		atomic_expr (vector<Token> tokens);
-	ParsedResult<Table>		selection (vector<Token> tokens);
-	ParsedResult<string>	condition (vector<Token> tokens);
-	ParsedResult<Table>		conjunction (vector<Token> tokens);
-	ParsedResult<string>	comparison (vector<Token> tokens);
-	ParsedResult<char>		op (vector<Token> tokens);
-	ParsedResult<string>	operand (vector<Token> tokens);
-	ParsedResult<string>	attribute_name (vector<Token> tokens);
-	ParsedResult<string>	literal (vector<Token> tokens);
-	ParsedResult<Table>		projection (vector<Token> tokens);
-	ParsedResult<string>	attribute_list (vector<Token> tokens);
-	ParsedResult<Table>		renaming (vector<Token> tokens);
-	ParsedResult<Table>		union__ (vector<Token> tokens);
-	ParsedResult<Table>		difference (vector<Token> tokens);
-	ParsedResult<Table>		product (vector<Token> tokens);
-	ParsedResult<Table>		natural_join (vector<Token> tokens);
+	ParsedResult<Table>		query();
+	ParsedResult<string>	relation_name();
+	ParsedResult<string>	identifier();
+	ParsedResult<Table>		expr();
+	ParsedResult<Table>		atomic_expr();
+	ParsedResult<Table>		selection();
+	ParsedResult<string>	condition();
+	ParsedResult<Table>		conjunction();
+	ParsedResult<string>	comparison();
+	ParsedResult<char>		op();
+	ParsedResult<string>	operand();
+	ParsedResult<string>	attribute_name();
+	ParsedResult<string>	literal();
+	ParsedResult<Table>		projection();
+	ParsedResult<string>	attribute_list();
+	ParsedResult<Table>		renaming();
+	ParsedResult<Table>		union__();
+	ParsedResult<Table>		difference();
+	ParsedResult<Table>		product();
+	ParsedResult<Table>		natural_join();
 
 	// Commands
-	bool			open_cmd (vector<Token> tokens);
-	bool			close_cmd  (vector<Token> tokens);
-	bool			write_cmd (vector<Token> tokens);
-	bool			exit_cmd (vector<Token> tokens);
-	bool			show_cmd (vector<Token> tokens);	
-	bool			create_cmd (vector<Token> tokens);
-	bool			update_cmd (vector<Token> tokens);
-	bool			insert_cmd (vector<Token> tokens);
-	bool			delete_cmd (vector<Token> tokens);
-	ParsedResult<vector<string>>	type_attribute_list (vector<Token> tokens);
-	ParsedResult<Type>	type (vector<Token> tokens);
-	ParsedResult<int>	integer (vector<Token> tokens);
-	ParsedResult<Table>	program (vector<Token> tokens);	
+	bool			open_cmd();
+	bool			close_cmd();
+	bool			write_cmd();
+	bool			exit_cmd();
+	bool			show_cmd();	
+	bool			create_cmd();
+	bool			update_cmd();
+	bool			insert_cmd();
+	bool			delete_cmd();
+	ParsedResult<vector<string>>	type_attribute_list();
+	ParsedResult<Type>	type();
+	ParsedResult<int>	integer();
+	ParsedResult<Table>	program();	
 };
 
 bool Tables_Exists (Table t1, Table t2);
