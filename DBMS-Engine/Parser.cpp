@@ -83,7 +83,7 @@ ParsedResult<Table>	Parser::selection()
 	} 
 	counter++;
 
-	Table tempT = dbms->selection(condition_result,														atomic_expr_result);
+	Table tempT = dbms->selection(condition_result,	atomic_expr_result);
 
 	return tempT;
 }
@@ -129,14 +129,8 @@ ParsedResult<string>	Parser::operand()
 
 ParsedResult<string>	Parser::attribute_name()
 {
-	if (tokens[counter].isAlnum)
-	{
-		counter++;
-		return tokens[counter].str;
-	}
-	
-
-
+	// identifier function
+		// alpha digit functions
 }
 
 
@@ -200,10 +194,13 @@ ParsedResult<Table>	Parser::projection()
 
 ParsedResult<vector<string>>	Parser::attribute_list()
 {
+	int start = counter;
 
-	if (tokens[counter] != )
+	// grab attribute name
+	auto tempString = attribute_name();
+	if (!tempString )
 	{
-
+		return false;
 	}
 }
 
@@ -217,6 +214,43 @@ ParsedResult<Table>	Parser::renaming()
 
 ParsedResult<Table>	Parser::union__()
 {
+	// is next word a table name? or is it another expression
+	int start = counter;
+	
+	// check if current word is a table
+	if (dbms->relations.find(tokens[counter].s) != 
+							dbms->relations.end())
+	{
+		// then table1 found
+		Table table1 = dbms->relations.find(tokens[counter].s)->second;
+	}
+
+	// check if current word is an expression
+	else
+	{
+		if (true)
+		{
+
+		}
+	}
+
+
+	counter++;
+
+
+
+
+
+	// check that + is next char
+	if (tokens[counter].s != "+")
+	{
+		counter = start;
+		return false;
+	}
+
+
+
+
 	return NULL;
 }
 
