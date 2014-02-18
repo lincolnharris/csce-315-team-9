@@ -94,15 +94,11 @@ ParsedResult<Condition*> Parser::comparison1()
         return false;
     }
 
-    // Create the Condition object TODO
-
-//    string op = op_result;
-//    if(op == "==")
-//    {
-//        return new Condition([](const vector<string>& row) {
-//           return true;
-//        });
-//    }
+    // Create the Condition object
+    pair<string, bool> op1 = operand1_result, op2 = operand2_result;
+    Operand::Type op1t = op1.second ? Operand::Type::ATTRIBUTE : Operand::Type::LITERAL;
+    Operand::Type op2t = op2.second ? Operand::Type::ATTRIBUTE : Operand::Type::LITERAL;
+    return new Comparison(new Operand(op1.first, op1t), op_result, new Operand(op2.first, op2t));
 
     counter = start;
     return false;
@@ -169,7 +165,27 @@ ParsedResult<string> Parser::op()
     return op_result;
 }
 
-ParsedResult<string> Parser::operand()
+ParsedResult<pair<string, bool>> Parser::operand()
+{
+    int start = counter; // Saving where we started from in case we need to backtrack
+    auto attname_result = attribute_name();
+    if(attname_result)
+    {
+        return pair<string, bool>(attname_result, true);
+    }
+    else
+    {
+        auto literal_result = literal();
+        if(literal_result)
+        {
+            return pair<string, bool>(literal_result, false);
+        }
+    }
+    counter = start; // Backtrack
+    return false;
+}
+
+ParsedResult<string> Parser::literal()
 {
     int start = counter; // Saving where we started from in case we need to backtrack
     auto attname_result = attribute_name();
@@ -179,10 +195,10 @@ ParsedResult<string> Parser::operand()
     }
     else
     {
-        auto literal_result = literal();
-        if(literal_result)
+        auto int_result = integer();
+        if(int_result)
         {
-            return literal_result;
+            return to_string((int)int_result);
         }
     }
     counter = start; // Backtrack

@@ -63,7 +63,7 @@ void DBMS::create_cmd(string name, vector< pair<string,Type> >& attributes, vect
 void DBMS::delete_cmd(Table& table, Condition& cond)
 {// Lincoln
     for( list<vector<string>>::iterator it = table.rows.begin(); it != table.rows.end(); ++it){//go through each row
-        if ( cond(*it) ) table.rows.erase(it);//if the row passes the condition, delete the row
+        if ( cond(*it, table) ) table.rows.erase(it);//if the row passes the condition, delete the row
     }
     // TODO make it efficient with remove_if, right now it makes a pass
     // over the list on each .erase() call
@@ -73,7 +73,7 @@ void DBMS::update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate, C
 {
     // Dmitry
     for(vector<string>& row : table.rows)
-        if(cond(row))
+        if(cond(row, table))
             for(int i = 0; i < fieldsToUpdate.size(); ++i)
                 row[fieldsToUpdate[i].first] = fieldsToUpdate[i].second;
 }
@@ -120,7 +120,7 @@ Table DBMS::selection(Condition& cond, const Table& table)
     Table selected;
     selected.attributeMap = table.attributeMap;
     for(auto it = table.rows.begin(); it != table.rows.end(); ++it){ //go through each row
-        if ( cond(*it) ) selected.rows.push_back(*it);  //if the row passes the condition add it to the new table
+        if ( cond(*it, table) ) selected.rows.push_back(*it);  //if the row passes the condition add it to the new table
     }
     return selected;
 }

@@ -39,7 +39,11 @@ public:
     ParsedResult<Condition*> comparison2();
     ParsedResult<Condition*> comparison();
     ParsedResult<string> op();
-    ParsedResult<string> operand();
+
+    // The string is the parsed value, the boolean indicates whether it's a
+    // literal (false) or an attribute name (true)
+    ParsedResult<pair<string, bool>> operand();
+
     ParsedResult<string> attribute_name();
     ParsedResult<string> literal();
     ParsedResult<Table> projection();

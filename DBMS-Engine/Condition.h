@@ -9,6 +9,8 @@
 #include <vector>
 #include <functional>
 #include <string>
+#include "Tokenizer.h"
+#include "Table.h"
 
 using std::string;
 using std::vector;
@@ -26,23 +28,23 @@ public:
     Condition() = default;
     Condition(Condition* left, Condition* right);
 
+    void referenceTable(const Table& table);
+
     // Takes in a row and recursively applies the condition tree on the row
-    virtual bool operator()(const vector<string>& row) = 0;
+    virtual bool operator()(const vector<string>& row, const Table& table) = 0;
 
 };
 
 class Comparison : public Condition
 {
 public:
-    //          ==   !=   <    >   <=    >=
-    enum Type { EQ, INEQ, LT, GT, LTEQ, GTEQ };
 
-    Comparison(Condition* left, Type op, Condition* right);
+    Comparison(Condition* left, string op, Condition* right);
 
-    virtual bool operator()(const vector<string>& row);
+    virtual bool operator()(const vector<string>& row, const Table& table);
 
 private:
-    Type node;
+    string op;
 };
 
 class Logical : public Condition
@@ -52,7 +54,7 @@ public:
 
     Logical(Condition* left, Type op, Condition* right);
 
-    virtual bool operator()(const vector<string>& row);
+    virtual bool operator()(const vector<string>& row, const Table& table);
 
 private:
     Type node;
@@ -61,10 +63,13 @@ private:
 class Operand : public Condition
 {
 public:
+    enum Type { LITERAL, ATTRIBUTE };
 
+    Operand(string operand, Type type);
+
+    virtual bool operator()(const vector<string>& row, const Table& table);
+
+private:
     string operand;
-
-    Operand(string operand);
-
-    virtual bool operator()(const vector<string>& row);
+    Type   node;
 };

@@ -14,49 +14,54 @@ Condition::Condition(Condition* left, Condition* right) :
 
 
 
-Comparison::Comparison(Condition* left, Type op, Condition* right) :
-        Condition(left, right), node(op)
+Comparison::Comparison(Condition* left, string op, Condition* right) :
+        Condition(left, right), op(op)
 {
 }
 
-bool Comparison::operator()(const vector<string>& row)
+bool Comparison::operator()(const vector<string>& row, const Table& table)
 {
-    if(node == EQ)
-        return (*left)(row) == (*right)(row);
-    else if(node == INEQ)
-        return (*left)(row) != (*right)(row);
-    else if(node == LT)
-        return (*left)(row) <  (*right)(row);
-    else if(node == LTEQ)
-        return (*left)(row) <= (*right)(row);
-    else if(node == GT)
-        return (*left)(row) >  (*right)(row);
-    else if(node == GTEQ)
-        return (*left)(row) >= (*right)(row);
+    if(op == "==")
+        return (*left)(row, table) == (*right)(row, table);
+    else if(op == "!=")
+        return (*left)(row, table) != (*right)(row, table);
+    else if(op == "<")
+        return (*left)(row, table) <  (*right)(row, table);
+    else if(op == "<=")
+        return (*left)(row, table) <= (*right)(row, table);
+    else if(op == ">")
+        return (*left)(row, table) >  (*right)(row, table);
+    else if(op == ">=")
+        return (*left)(row, table) >= (*right)(row, table);
 
     else throw "Something went wrong!";
 }
+
+
 
 Logical::Logical(Condition* left, Type op, Condition* right) :
         Condition(left, right), node(op)
 {
 }
 
-bool Logical::operator()(const vector<string>& row)
+bool Logical::operator()(const vector<string>& row, const Table& table)
 {
     if(node == AND)
-        return (*left)(row) && (*right)(row);
+        return (*left)(row, table) && (*right)(row, table);
     else if(node == OR)
-        return (*left)(row) || (*right)(row);
+        return (*left)(row, table) || (*right)(row, table);
 
     else throw "Something went wrong!";
 }
 
-Operand::Operand(string operand) :
-        Condition(nullptr, nullptr), operand(operand)
+
+
+Operand::Operand(string operand, Type type) :
+        Condition(nullptr, nullptr), operand(operand), node(type)
 {
 }
 
-bool Operand::operator()(const vector<string>& row)
+bool Operand::operator()(const vector<string>& row, const Table& table)
 {
+
 }
