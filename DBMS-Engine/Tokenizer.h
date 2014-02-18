@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 #include <regex>
+#include <algorithm>
+#include <locale>
 
 using namespace std;
 
@@ -25,9 +27,14 @@ struct Token
 
     operator string&() { return s; }
 
-    bool isQuoted(const string& s)
+    bool isQuoted()
     {
         return (s[0] == '"' && s.back() == '"');
+    }
+
+    bool isAlnum()
+    {
+        return all_of(s.begin(), s.end(), [](char c) { return isalnum(c); });
     }
 
     // This function assumes that the input is quoted

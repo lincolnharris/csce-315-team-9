@@ -12,6 +12,7 @@
 #include <string>
 #include <algorithm>
 #include "ParsedResult.h"
+#include "Tokenizer.h"
 
 using namespace std;
 
@@ -38,10 +39,14 @@ ParsedResult<int> test_ParsedResult()
     return 6;
 }
 
+
 int main()
 {
-    cout << (int)test_ParsedResult();
-    return 1;
+    cout << (int)test_ParsedResult() << endl;
+
+    for(string& s : Tokenizer().tokenize("old_dogs <- select (age> 10>==<=) dogs;"))
+        cout << s << " | ";
+    cout << endl;
 
     unordered_map<string, Type> attributeMap;
     list<vector<string>> table;
