@@ -16,24 +16,100 @@ ParsedResult<Table>	Parser::query()
 }
 
 
-ParsedResult<Comparison> Parser::relation_name()
+ParsedResult<string> Parser::relation_name()
 {
-	
-	return NULL;
+	int start = counter;
+
+	string result;
+	result = identifier();
+	if (!result)
+	{
+		counter = start;
+		return false;
+	}
+
+	return result;
 }
 
 
 
 ParsedResult<Table>	Parser::expr()
 {
-	return NULL;
+	int start = counter;
+
+	// atomic expression, OR one of the following operations
+	// check if atomic expression
+
+	if (tokens[counter].str == "selection")
+	{
+		table = selection();
+	}
+
+	else if ( (tokens[counter].str == "project") ||
+		 (tokens[counter].str == "rename") )
+	{
+		table = project_AND_rename();
+	}
+
+	else if ( (tokens[counter].s == "union") ||
+		 (tokens[counter].s == "difference") ||
+		 (tokens[counter].s == "natural-join") ||
+		 (tokens[counter].s == "project") )
+	{
+		table = relational_algebra();
+	}
+
+	else
+	{
+		counter = start;
+		return false;
+	}
+
+	return table;
 }
 
 
 
 ParsedResult<Table>	Parser::atomic_expr()
 {
-	return NULL;
+	int start = counter;
+
+	Table table
+	// Is current word a TABLE?
+	if (dbms->relations.find(tokens[counter].str) != 
+							dbms->relations.end())
+	{
+		// then table found
+		table = dbms->relations.find(tokens[counter].str)->second;
+		counter++;
+	}
+
+	// Is current word a EXPRESSION?
+	else
+	{	
+		if (tokens[counter].str != "(")
+		{
+			counter = start;
+			return false;
+		}
+		counter++;
+
+		table = expr();
+		if (!table)
+		{
+			counter = start;
+			return false;
+		}
+
+		if (tokens[counter].str != ")")
+		{
+			counter = start;
+			return false;
+		}
+		counter++;
+	}
+
+	return table;
 }
 
 
@@ -64,7 +140,6 @@ ParsedResult<Table>	Parser::selection()
 		counter =  start;
 		return false;
 	}
-	counter++;
 
 	// close )
 	if(tokens[counter].str != ")")
@@ -75,17 +150,15 @@ ParsedResult<Table>	Parser::selection()
 	counter++;
 	
 	//  now check relation name
-	auto& atomic_expr_result = atomic_expr();
-	if (!atomic_expr_result)
+	Table table;
+	table = atomic_expr();
+	if (!table)
 	{
 		counter = start;
 		return false;
-	} 
-	counter++;
+	}
 
-	Table tempT = dbms->selection(condition_result,	atomic_expr_result);
-
-	return tempT;
+	return dbms->selection(condition_result, table);
 }
 
 
@@ -126,27 +199,46 @@ ParsedResult<string>	Parser::operand()
 }
 
 
-
 ParsedResult<string>	Parser::attribute_name()
 {
-	// identifier function
-		// alpha digit functions
+	int start = counter;
+
+	if (!tokens[counter].isAlnum())
+	{
+		counter = start;
+		return false;
+	}
+
+	return tokens[counter].str;
 }
 
 
 
-ParsedResult<Table>	Parser::projection()
+ParsedResult<Table>	Parser::project_AND_rename() /////////////////////////////////
 {
+	// Project/Rename:: = ( attribute-list) atomic_expr
+
 	int start = counter;
 
-	if (tokens[counter].str != "project")
+	// Is it project or rename
+	string Op;
+	if ( (tokens[counter].str == "project") ||
+		 (tokens[counter].str == "rename") )
 	{
+		Op =  tokens[counter].str;
+		counter++;
+	}
+	else	// not project OR rename
+	{
+		counter = start;
 		return false;
 	}
-	counter++;
+	
 
+	// is next string (
 	if (tokens[counter].str != "(")
 	{
+		counter = start;
 		return false;
 	}
 	counter++;
@@ -168,32 +260,31 @@ ParsedResult<Table>	Parser::projection()
 	}
 	counter++;
 
-	// Find if table exists
-	bool found_table = false;
+	// Read atomic_expr
 	Table table;
-	for(auto& database : dbms->relations)
-	{
-		if (database.first == tokens[counter].str)
-		{
-			table = database.second;
-			found_table = true;
-			counter++;
-		}
-	}
-
-	if (!found_table)
+	table = atomic_expr();
+	if (!table)
 	{
 		counter = start;
 		return false;
 	}
 
-	return dbms->projection(Atrb_List, table);
+	if (Op == "project")
+	{
+		return dbms->projection(Atrb_List, table);
+	}
+
+	if (Op == "rename")
+	{
+		return dbms->rename(Atrb_List, table);
+	}
 }
 
 
 
 ParsedResult<vector<string>>	Parser::attribute_list()
 {
+	/*
 	int start = counter;
 
 	// grab attribute name
@@ -202,74 +293,49 @@ ParsedResult<vector<string>>	Parser::attribute_list()
 	{
 		return false;
 	}
+	*/
 }
 
 
-ParsedResult<Table>	Parser::renaming()
-{
-	// takes a lot of parameters
-	return NULL;
-}
-
-
-ParsedResult<Table>	Parser::union__()
+// Union, Diff, Projection, NaturalJoin
+ParsedResult<Table>	Parser::relational_algebra()
 {
 	// is next word a table name? or is it another expression
 	int start = counter;
 	
-	// check if current word is a table
-	if (dbms->relations.find(tokens[counter].s) != 
-							dbms->relations.end())
-	{
-		// then table1 found
-		Table table1 = dbms->relations.find(tokens[counter].s)->second;
-	}
+	// Takes Table OR expression
+	// either result is a table
+	Table table1;
+	Table table2;
 
-	// check if current word is an expression
-	else
-	{
-		if (true)
-		{
-
-		}
-	}
-
-
-	counter++;
-
-
-
-
-
-	// check that + is next char
-	if (tokens[counter].s != "+")
+	// Read first atomic expr
+	table1 = atomic_expr();
+	if (!table1)
 	{
 		counter = start;
 		return false;
 	}
 
+	// Store operator for the operation
+	string Op = tokens[counter].str;
+	counter++;
 
+	// Read second atomic expr
+	table2 = atomic_expr();
+	if (!table2)
+	{
+		counter = start;
+		return false;
+	}
 
-
-	return NULL;
-}
-
-
-ParsedResult<Table>	Parser::difference()
-{
-	return NULL;
-}
-
-
-ParsedResult<Table>	Parser::product()
-{
-	return NULL;
-}
-
-
-ParsedResult<Table>	Parser::natural_join()
-{
-	return NULL;
+	switch	(Op)
+	{
+		case "+": return dbms->union_(table1, table2);
+		case "-": return dbms->differene(table1, table2);
+		case "*": return dbms->product(table1, table2);
+		case "J": return dbms->natural_join(table1, table2);	 // Join
+		default:	return false;
+	}
 }
 
 
