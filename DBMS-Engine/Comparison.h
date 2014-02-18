@@ -22,6 +22,7 @@ public:
     Comparison* left;
     Comparison* right;
 
+    Comparison() = default;
     Comparison(NodeType type, Comparison* left, Comparison* right);
 
     bool operator()(const vector<string>& row);

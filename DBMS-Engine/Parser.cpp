@@ -1,237 +1,70 @@
-
-
 // Class Include
 #include "Parser.h"
+#include "DBMS.h"
 
+#include <regex>
 
-using namespace std;
-
-
-ParsedResult	Parser::query (vector<Token> tokens)
+Parser::Parser(vector<Token>& tokens, DBMS* dbms) : tokens(tokens), dbms(dbms), counter(0)
 {
+}
+
+ParsedResult<Comparison*> Parser::condition()
+{
+//    condition ::= conjunction { || conjunction }
+//
+//    conjunction ::= comparison { && comparison }
+//
+//    comparison ::= operand op operand
+//                         | ( condition )
 
 }
 
-
-ParsedResult<string>	Parser::relation_name (vector<Token> tokens)
+ParsedResult<Comparison*> Parser::conjunction()
 {
+    int start = counter; // Saving where we started from in case we need to backtrack
+    auto conj_result = comparison();
+    if(!conj_result)
+    {
+        counter = start; // Backtrack
+        return false;
+    }
+    counter++;
 
+    Comparison* compTree = conj_result;
+
+    while(true)
+    {
+        if(tokens[counter].str == "&&")
+        {
+            counter++;
+            auto conj_result_list = comparison();
+            if(!conj_result)
+            {
+                counter = start; // Backtrack
+                return false;
+            }
+            counter++;
+            compTree = new Comparison(AND, compTree, conj_result_list);
+        }
+        else break;
+    }
+    return compTree;
 }
 
-
-
-ParsedResult	Parser::identifier (vector<Token> tokens)
+ParsedResult<Comparison*> Parser::comparison()
 {
-
 }
 
-
-
-ParsedResult<char>	Parser::alpha (vector<Token> tokens)
+ParsedResult<string> Parser::op()
 {
+    int start = counter; // Saving where we started from in case we need to backtrack
+    string op_result = tokens[counter];
+    if(!regex_match(tokens[counter].str, regex("==|!=|<=|>=|<|>")))
+    {
+        counter = start; // Backtrack
+        return false;
+    }
+    counter++;
 
+    return op_result;
 }
-
-
-ParsedResult<int>	Parser::digit (vector<Token> tokens)
-{
-
-}
-
-
-ParsedResult	Parser::expr (vector<Token> tokens)
-{
-
-}
-
-
-
-ParsedResult	Parser::atomic_expr (vector<Token> tokens)
-{
-
-}
-
-
-
-ParsedResult<Table>	Parser::selection (vector<Token> tokens)
-{
-
-}
-
-
-ParsedResult<conditinon>	Parser::condition (vector<Token> tokens)
-{
-
-}
-
-
-
-ParsedResult<Table>	Parser::conjunction (vector<Token> tokens)
-{
-
-}
-
-
-
-ParsedResult<Comparison>	Parser::comparison (vector<Token> tokens)
-{
-
-}
-
-
-ParsedResult<char>	Parser::op (vector<Token> tokens)
-{
-
-}
-
-
-ParsedResult<string>	Parser::operand (vector<Token> tokens)
-{
-
-}
-
-
-
-ParsedResult<sring>	Parser::attribute_name (vector<Token> tokens)
-{
-
-}
-
-
-
-ParsedResult<string>	Parser::literal (vector<Token> tokens)
-{
-
-}
-
-
-
-ParsedResult<Table>	Parser::projection (vector<Token> tokens)
-{
-
-}
-
-
-
-ParsedResult<string>	Parser::attribute_list (vector<Token> tokens)
-{
-
-}
-
-
-ParsedResult<Table>	Parser::renaming (vector<Token> tokens)
-{
-
-}
-
-
-ParsedResult<Table>	Parser::union (vector<Token> tokens)
-{
-
-}
-
-
-ParsedResult<Table>	Parser::difference (vector<Token> tokens)
-{
-
-}
-
-
-ParsedResult<Table>	Parser::product (vector<Token> tokens)
-{
-
-}
-
-
-ParsedResult<Table>	Parser::natural_join (vector<Token> tokens)
-{
-
-}
-
-
-// Commands
-bool	Parser::open_cmd (vector<Token> tokens)
-{
-
-}
-
-
-bool	Parser::close_cmd  (vector<Token> tokens)
-{
-
-}
-
-
-bool	Parser::write_cmd (vector<Token> tokens)
-{
-
-}
-
-
-bool	Parser::exit_cmd (vector<Token> tokens)
-{
-
-}
-
-
-bool	Parser::show_cmd (vector<Token> tokens)
-{
-
-}
-
-
-	
-bool	Parser::create_cmd (vector<Token> tokens)
-{
-
-}
-
-
-bool	Parser::update_cmd (vector<Token> tokens)
-{
-
-}
-
-
-
-bool	Parser::insert_cmd (vector<Token> tokens)
-{
-
-}
-
-
-bool	Parser::delete_cmd (vector<Token> tokens)
-{
-
-}
-
-
-
-ParsedResult	Parser::type_attribute_list (vector<Token> tokens)
-{
-
-}
-
-
-ParsedResult	Parser::type (vector<Token> tokens)
-{
-
-}
-
-
-
-ParsedResult	Parser::integer (vector<Token> tokens)
-{
-
-}
-
-
-
-ParsedResult	Parser::program (vector<Token> tokens)
-{
-
-}
-
-
-
-
