@@ -8,7 +8,7 @@
 #include "ParsedResult.h"
 #include "Table.h"
 #include "Tokenizer.h"
-#include "Comparison.h"
+#include "Condition.h"
 #include "DBMS.h"
 
 class Parser
@@ -33,11 +33,11 @@ public:
     ParsedResult<Table> expr();
     ParsedResult<Table> atomic_expr();
     ParsedResult<Table> selection();
-    ParsedResult<Comparison*> condition();
-    ParsedResult<Comparison*> conjunction();
-    ParsedResult<Comparison*> comparison1();
-    ParsedResult<Comparison*> comparison2();
-    ParsedResult<Comparison*> comparison();
+    ParsedResult<Condition*> condition();
+    ParsedResult<Condition*> conjunction();
+    ParsedResult<Condition*> comparison1();
+    ParsedResult<Condition*> comparison2();
+    ParsedResult<Condition*> comparison();
     ParsedResult<string> op();
     ParsedResult<string> operand();
     ParsedResult<string> attribute_name();

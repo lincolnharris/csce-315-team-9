@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class Comparison;
+class Condition;
 
 class DBMS
 {
@@ -28,12 +28,12 @@ public:
     void exit_cmd();
     void show_cmd(string name);
     void create_cmd(string name, vector<pair<string, Type>>& attributes, vector<string>& primaryKey);
-    void delete_cmd(Table& table, Comparison& cond);
-    void update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate, Comparison& cond); // pair<attributeName, Value>
+    void delete_cmd(Table& table, Condition& cond);
+    void update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate, Condition& cond); // pair<attributeName, Value>
     void insert_cmd(Table& table, vector<string>& values);
     void insert_cmd(Table& table, const Table& fromRelation);
 
-    Table selection(Comparison& cond, const Table& relation);
+    Table selection(Condition& cond, const Table& relation);
     Table projection(vector<string>& attributes, const Table& relation);
     Table renaming(vector<string>& attributes, const Table& relation);
     Table union_(const Table& t1, const Table& t2);

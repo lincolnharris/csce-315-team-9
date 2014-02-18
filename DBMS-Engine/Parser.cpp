@@ -8,7 +8,7 @@ Parser::Parser(vector<Token>& tokens, DBMS* dbms) : tokens(tokens), dbms(dbms), 
 {
 }
 
-ParsedResult<Comparison*> Parser::condition()
+ParsedResult<Condition*> Parser::condition()
 {
     int start = counter; // Saving where we started from in case we need to backtrack
     auto conj_result = conjunction();
@@ -18,7 +18,7 @@ ParsedResult<Comparison*> Parser::condition()
         return false;
     }
 
-    Comparison* compTree = conj_result;
+    Condition* condTree = conj_result;
 
     while(true)
     {
@@ -31,14 +31,14 @@ ParsedResult<Comparison*> Parser::condition()
                 counter = start; // Backtrack
                 return false;
             }
-            compTree = new Comparison(OR, compTree, conj_result_list);
+            condTree = new Logical(condTree, Logical::Type::OR, conj_result_list);
         }
         else break;
     }
-    return compTree;
+    return condTree;
 }
 
-ParsedResult<Comparison*> Parser::conjunction()
+ParsedResult<Condition*> Parser::conjunction()
 {
     int start = counter; // Saving where we started from in case we need to backtrack
     auto comp_result = comparison();
@@ -48,7 +48,7 @@ ParsedResult<Comparison*> Parser::conjunction()
         return false;
     }
 
-    Comparison* compTree = comp_result;
+    Condition* condTree = comp_result;
 
     while(true)
     {
@@ -61,15 +61,15 @@ ParsedResult<Comparison*> Parser::conjunction()
                 counter = start; // Backtrack
                 return false;
             }
-            compTree = new Comparison(AND, compTree, comp_result_list);
+            condTree = new Logical(condTree, Logical::Type::AND, comp_result_list);
         }
         else break;
     }
-    return compTree;
+    return condTree;
 }
 
 
-ParsedResult<Comparison*> Parser::comparison1()
+ParsedResult<Condition*> Parser::comparison1()
 {
     // operand op operand
     int start = counter; // Saving where we started from in case we need to backtrack
@@ -94,21 +94,21 @@ ParsedResult<Comparison*> Parser::comparison1()
         return false;
     }
 
-    // Create the Condition object
+    // Create the Condition object TODO
 
-    string op = op_result;
-    if(op == "==")
-    {
-        return new Condition([](const vector<string>& row) {
-           return true;
-        });
-    }
+//    string op = op_result;
+//    if(op == "==")
+//    {
+//        return new Condition([](const vector<string>& row) {
+//           return true;
+//        });
+//    }
 
     counter = start;
     return false;
 }
 //== | != | < | > | <= | >=
-ParsedResult<Comparison*> Parser::comparison2()
+ParsedResult<Condition*> Parser::comparison2()
 {
     int start = counter;
     if(tokens[counter].str != "(")
@@ -135,7 +135,7 @@ ParsedResult<Comparison*> Parser::comparison2()
     return condition_result;
 }
 
-ParsedResult<Comparison*> Parser::comparison()
+ParsedResult<Condition*> Parser::comparison()
 {
     int start = counter; // Saving where we started from in case we need to backtrack
     auto comp_result = comparison1();
@@ -171,4 +171,20 @@ ParsedResult<string> Parser::op()
 
 ParsedResult<string> Parser::operand()
 {
+    int start = counter; // Saving where we started from in case we need to backtrack
+    auto attname_result = attribute_name();
+    if(attname_result)
+    {
+        return attname_result;
+    }
+    else
+    {
+        auto literal_result = literal();
+        if(literal_result)
+        {
+            return literal_result;
+        }
+    }
+    counter = start; // Backtrack
+    return false;
 }

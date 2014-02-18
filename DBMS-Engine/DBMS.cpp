@@ -1,6 +1,6 @@
 // Class Includes
 #include "DBMS.h"
-#include "Comparison.h"
+#include "Condition.h"
 
 /******************** Constructor / Destructor *******************************/
 DBMS::DBMS()
@@ -60,7 +60,7 @@ void DBMS::create_cmd(string name, vector< pair<string,Type> >& attributes, vect
 }
 
 
-void DBMS::delete_cmd(Table& table, Comparison& cond)
+void DBMS::delete_cmd(Table& table, Condition& cond)
 {// Lincoln
     for( list<vector<string>>::iterator it = table.rows.begin(); it != table.rows.end(); ++it){//go through each row
         if ( cond(*it) ) table.rows.erase(it);//if the row passes the condition, delete the row
@@ -69,7 +69,7 @@ void DBMS::delete_cmd(Table& table, Comparison& cond)
     // over the list on each .erase() call
 }
 
-void DBMS::update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate, Comparison& cond) // tuple<attributeName, Value>
+void DBMS::update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate, Condition& cond) // tuple<attributeName, Value>
 {
     // Dmitry
     for(vector<string>& row : table.rows)
@@ -115,7 +115,7 @@ void DBMS::insert_cmd(Table& table, const Table& fromRelation)
 }
 
 /******************** Table Logic Algebra *******************************/
-Table DBMS::selection(Comparison& cond, const Table& table)
+Table DBMS::selection(Condition& cond, const Table& table)
 {// Lincoln
     Table selected;
     selected.attributeMap = table.attributeMap;
