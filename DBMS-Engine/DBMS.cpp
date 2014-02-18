@@ -364,7 +364,7 @@ Table DBMS::natural_join(const Table& t1, const Table& t2)
     unordered_map<string, int> new_index;   
     vector<string> similar_attrb;
     int indx_temp = 0;
-    string attrb_temp_name;s
+    string attrb_temp_name;
 
     // find max index size sin table2
     int max2 = 0;
@@ -379,13 +379,13 @@ Table DBMS::natural_join(const Table& t1, const Table& t2)
     int i = 1;
     for (auto& map1 : table1.attributeMap)  // check table1 
     {
-s
+
         // Hold attrb name in temp string
         attrb_temp_name = table2.attributeMap.find(map1.first)->first;
-s
+
         // Similar Attribute
         if (table2.attributeMap.find(map1.first) != table2.attributeMap.end())
-        {s
+        {
             // give a new_indesx to table1's attrb value, so that it will match
             // into table2 attrb column
             indx_temp = table2.attributeMap.find(map1.first)->second.index;
@@ -397,7 +397,7 @@ s
         
         // Not Similar Attribute
         else
-        {s
+        {
             // new index = map2 + counter. This will be a new attrb column
             // in table2, hence it needs new proper index.
             indx_temp = max2 + i;
@@ -421,6 +421,7 @@ s
         {
             for (int i = 0; i < rows2.size(); i++)
             {
+				/*
                 // if values match, continue
                 if (rows2[i] == new_index.find(rows2[i])->second)
                 {
@@ -432,6 +433,7 @@ s
                 {
 
                 }
+				*/
             }
         }
     }

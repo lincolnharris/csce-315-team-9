@@ -21,7 +21,7 @@ struct Type
     int index;
     short type;     // -1 == int, anything positive is a string of that length
 
-    Type() = default;
+	Type() {};
     Type(int index, short type) :
             index(index), type(type)
     {
@@ -40,6 +40,7 @@ ParsedResult<int> test_ParsedResult()
 
 int main()
 {
+	/*
     cout << (int)test_ParsedResult();
     return 1;
 
@@ -90,5 +91,7 @@ int main()
 
     cout << attributeMap["Age"] << attributeMap["YanYan"] << endl;
 
+
+	*/
     return 1;
 }

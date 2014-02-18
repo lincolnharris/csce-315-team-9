@@ -23,7 +23,8 @@ class Parser
 
 	public:
 
-	// Queries	// not finished TEMPLATE PARAMETERS
+	// Queries	
+	// PARAMETERS NEED TO BE CORRECTED
 	ParsedResult<Table>		query (vector<Token> tokens);
 	ParsedResult<string>	relation_name (vector<Token> tokens);
 	ParsedResult<string>	identifier (vector<Token> tokens);
@@ -32,9 +33,9 @@ class Parser
 	ParsedResult<Table>		expr (vector<Token> tokens);
 	ParsedResult<Table>		atomic_expr (vector<Token> tokens);
 	ParsedResult<Table>		selection (vector<Token> tokens);
-	ParsedResult<Condition>	condition (vector<Token> tokens);
+	ParsedResult<string>	condition (vector<Token> tokens);
 	ParsedResult<Table>		conjunction (vector<Token> tokens);
-	ParsedResult<Comparison>comparison (vector<Token> tokens);
+	ParsedResult<string>	comparison (vector<Token> tokens);
 	ParsedResult<char>		op (vector<Token> tokens);
 	ParsedResult<string>	operand (vector<Token> tokens);
 	ParsedResult<string>	attribute_name (vector<Token> tokens);
