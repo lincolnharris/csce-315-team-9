@@ -26,7 +26,7 @@ public:
     void close_cmd(string name);
 	void write_cmd(string name);
     void exit_cmd();
-    void show_cmd(string name);
+    void show_cmd(Table& table);
     void create_cmd(string name, vector<pair<string, Type>>& attributes, vector<string>& primaryKey);
     void delete_cmd(Table& table, Condition& cond);
     void update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate, Condition& cond); // pair<attributeName, Value>

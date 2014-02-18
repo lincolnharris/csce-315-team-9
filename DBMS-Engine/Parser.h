@@ -47,12 +47,14 @@ public:
     ParsedResult<string> attribute_name();
     ParsedResult<string> literal();
     ParsedResult<Table> projection();
-    ParsedResult<string> attribute_list();
+    ParsedResult<vector<string>> attribute_list();
     ParsedResult<Table> renaming();
     ParsedResult<Table> union__();
     ParsedResult<Table> difference();
     ParsedResult<Table> product();
     ParsedResult<Table> natural_join();
+    ParsedResult<Table> project_AND_rename();
+    ParsedResult<Table> relational_algebra();
 
     // Commands
     bool open_cmd();
@@ -64,7 +66,7 @@ public:
     bool update_cmd();
     bool insert_cmd();
     bool delete_cmd();
-    ParsedResult<vector<string>> type_attribute_list();
+    ParsedResult<vector<pair<string, Type>>> typed_attribute_list();
     ParsedResult<Type> type();
     ParsedResult<int> integer();
     ParsedResult<Table> program();
