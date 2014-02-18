@@ -28,8 +28,8 @@ class Parser
 	ParsedResult<Table>		query (vector<Token> tokens);
 	ParsedResult<string>	relation_name (vector<Token> tokens);
 	ParsedResult<string>	identifier (vector<Token> tokens);
-	ParsedResult<char>		alpha (vector<Token> tokens);
-	ParsedResult<int>		digit (vector<Token> tokens);
+	ParsedResult<vector<char>>alpha (vector<Token> tokens);
+	ParsedResult<vector<int>>digit (vector<Token> tokens);
 	ParsedResult<Table>		expr (vector<Token> tokens);
 	ParsedResult<Table>		atomic_expr (vector<Token> tokens);
 	ParsedResult<Table>		selection (vector<Token> tokens);
@@ -64,5 +64,6 @@ class Parser
 	ParsedResult<Table>	program (vector<Token> tokens);	
 };
 
+bool Tables_Exists (Table t1, Table t2);
 
 

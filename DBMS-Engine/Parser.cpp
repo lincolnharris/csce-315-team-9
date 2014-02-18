@@ -2,6 +2,7 @@
 
 // Class Include
 #include "Parser.h"
+#include "DBMS.h"
 
 
 using namespace std;
@@ -27,15 +28,45 @@ ParsedResult<string>	Parser::identifier (vector<Token> tokens)
 
 
 
-ParsedResult<char>	Parser::alpha (vector<Token> tokens)
+ParsedResult<vector<char>>	Parser::alpha (vector<Token> tokens)
 {
-	return " ";
+	vector<char> valid_chars;
+	for (int i = 0; i < tokens.size(); i++)
+	{
+		if (isalpha(tokens[i].operator std::string &) )
+		{
+			valid_chars.push_back(tokens[i].operator std::string &);
+		}
+	}
+
+	// If nothing was added to vector_chars then no tokens were valid chars
+	if (valid_chars.size() == 0)
+	{
+		return false;
+	}
+
+	return valid_chars;
 } 
 
 
-ParsedResult<int>	Parser::digit (vector<Token> tokens)
+ParsedResult<vector<int>>	Parser::digit (vector<Token> tokens)
 {
-	return NULL;
+	vector<int> valid_int;
+	for (int i = 0; i < tokens.size(); i++)
+	{
+		if (isdigit(tokens[i].operator std::string &) )
+		{
+			valid_int.push_back(tokens[i].operator std::string &);
+		}
+	}
+
+	// If nothing was added to vector_int then all tokens were not int
+	if (valid_int.size() == 0)
+	{
+		return false;
+	}
+
+	return valid_int;
 }
 
 
@@ -101,7 +132,10 @@ ParsedResult<string>	Parser::attribute_name (vector<Token> tokens)
 
 ParsedResult<string>	Parser::literal (vector<Token> tokens)
 {
-	return NULL;
+	string valid_string;
+	valid_string = tokens[0].operator std::string &;
+
+	return valid_string;
 }
 
 
@@ -121,25 +155,48 @@ ParsedResult<string>	Parser::attribute_list (vector<Token> tokens)
 
 ParsedResult<Table>	Parser::renaming (vector<Token> tokens)
 {
+	// takes a lot of parameters
 	return NULL;
 }
 
 
 ParsedResult<Table>	Parser::union__ (vector<Token> tokens)
 {
-	return NULL;
+	// union two tables
+
+	// Check if tables exist
+
+
+	Table t1 = tokens[0].operator std::string &;
+	Table t2 = tokens[1].operator std::string &;
+
+	return union_(t1, t2);
 }
 
 
 ParsedResult<Table>	Parser::difference (vector<Token> tokens)
 {
-	return NULL;
+	// difference two tables
+	Table t1 = tokens[0].operator std::string &;
+	Table t2 = tokens[1].operator std::string &;
+
+	return difference(t1, t2);
+
 }
 
 
 ParsedResult<Table>	Parser::product (vector<Token> tokens)
 {
-	return NULL;
+	// product two tables
+	for ()
+	{
+
+	}
+
+	Table t1 = tokens[0].operator std::string &;
+	Table t2 = tokens[1].operator std::string &;
+
+	return product(t1, t2);
 }
 
 
@@ -233,5 +290,10 @@ ParsedResult<Table>	Parser::program (vector<Token> tokens)
 }
 
 
-
-
+bool Tables_Exists(Table t1, Table t2)
+{
+	bool check1 = false;
+	bool check2 = false;
+	for(auto& table1 : relations)..................
+		if 
+}
