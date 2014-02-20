@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 #include <regex>
+#include <algorithm>
+#include <locale>
 
 using namespace std;
 
@@ -17,24 +19,29 @@ using namespace std;
 // Basically a string without unwanted content
 struct Token
 {
-    string s;
+    string str;
 
-    Token() = default;
-    Token(string token) : s(token) {}
-    Token(const char* token) : s(token) {}
+	Token() {};
+    Token(string token) : str(token) {}
+    Token(const char* token) : str(token) {}
 
-    operator string&() { return s; }
+    operator string&() { return str; }
 
-    bool isQuoted(const string& s)
+    bool isQuoted()
     {
-        return (s[0] == '"' && s.back() == '"');
+        return (str[0] == '"' && str.back() == '"');
+    }
+
+    bool isAlnum()
+    {
+        return all_of(str.begin(), str.end(), [](char c) { return isalnum(c); });
     }
 
     // This function assumes that the input is quoted
     // It doesn't modify the object
     string removeQuotes()
     {
-        return s.substr(1, s.length() - 1);
+        return str.substr(1, str.length() - 1);
     }
 };
 

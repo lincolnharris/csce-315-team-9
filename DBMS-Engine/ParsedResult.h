@@ -38,7 +38,7 @@ public:
     // to access the T object (the parser result) within a ParsedResult
     operator T&()
     {
-        if(failed) throw "Failed parsing operation does not have a value.";
+        if(failed) throw "Failed parsing operation, does not have a value.";
         return result;
     }
 

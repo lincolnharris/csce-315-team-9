@@ -15,14 +15,14 @@
  * Since \ is also used for escaping in C++, they have to be double-escaped:
  * E.g. ( is operator in regex, \( matches ( in regex, "\\(" matches ( in C++ regex
  */
-const regex Tokenizer::OPERATORS = regex("<-|<=|>=|>|<|!=|==|\\(|\\)|&&|\\|\\||,|;");
+const regex Tokenizer::OPERATORS = regex("(<-|<=|>=|>|<|!=|==|\\(|\\)|&&|\\|\\||,|;)");
 
 
 vector<Token> Tokenizer::tokenize(const string& in)
 {
     stringstream ss;
     // Find the operators and pad them with whitespace so they're easier tokenize
-    ss << regex_replace(in, OPERATORS, " \\1 ");
+    ss << regex_replace(in, OPERATORS, " $1 ");
 
     vector<Token> tokens;
     string token;
@@ -31,3 +31,4 @@ vector<Token> Tokenizer::tokenize(const string& in)
 
     return tokens;
 }
+

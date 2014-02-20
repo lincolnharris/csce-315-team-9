@@ -20,7 +20,7 @@ struct Type
     int   index;
     short type;     // -1 == int, anything positive is a string of that length
 
-    Type() = default;
+	Type() {};
     Type(int index, short type) : index(index), type(type) {}
 
     bool operator==(const Type& t)

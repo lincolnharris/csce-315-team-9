@@ -12,6 +12,7 @@
 #include <string>
 #include <algorithm>
 #include "ParsedResult.h"
+#include "Tokenizer.h"
 
 using namespace std;
 
@@ -21,7 +22,7 @@ struct Type
     int index;
     short type;     // -1 == int, anything positive is a string of that length
 
-    Type() = default;
+	Type() {};
     Type(int index, short type) :
             index(index), type(type)
     {
@@ -38,8 +39,14 @@ ParsedResult<int> test_ParsedResult()
     return 6;
 }
 
+
 int main()
 {
+    cout << (int)test_ParsedResult() << endl;
+
+    for(string& s : Tokenizer().tokenize("old_dogs <- select (age> 10>==<=) dogs;"))
+        cout << s << " | ";
+    cout << endl;
     cout << (int)test_ParsedResult();
     return 1;
 
