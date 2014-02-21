@@ -63,5 +63,5 @@ Operand::Operand(string operand, Type type) :
 
 bool Operand::operator()(const vector<string>& row, const Table& table)
 {
-//TODO
+
 }
