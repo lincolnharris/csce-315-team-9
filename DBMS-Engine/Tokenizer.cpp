@@ -12,10 +12,14 @@
 
 /* This is a list of operators separated by regex alternation operator |
  * Some characters are used in regex patterns themselves, so they have to be escaped
- * Since \ is also used for escaping in C++, they have to be double-escaped:
- * E.g. ( is operator in regex, \( matches ( in regex, "\\(" matches ( in C++ regex
+ * Since \ is also used for escaping in C++, the R prefix disables escaping:
+ * E.g. ( is operator in regex, \( matches ( in regex, R"\(" matches ( in C++ regex
  */
-const regex Tokenizer::OPERATORS = regex("(<-|<=|>=|>|<|!=|==|\\(|\\)|&&|\\|\\||,|;)");
+const regex Tokenizer::OPERATORS
+        = regex(R"((\\"|\"|<-|<=|>=|>|<|!=|==|\(|\)|&&|\|\||,|;))");
+
+const regex Tokenizer::SPACED_OPERATORS
+        = regex(R"( (\\"|\"|<-|<=|>=|>|<|!=|==|\(|\)|&&|\|\||,|;) )");
 
 
 vector<Token> Tokenizer::tokenize(const string& in)
@@ -28,16 +32,20 @@ vector<Token> Tokenizer::tokenize(const string& in)
     string token;
     while(ss >> token)
     {
-        if(token == "\"")
+        if(token == "\"") // Matching literal strings: too complicated to explain here :P
         {
-            string prev = "", next;
-            while(ss >> next)
+            token = ' ' + token;
+            char prev = 0, next;
+            while((next = ss.get()) != EOF)
             {
                 token += next;
-                if(prev != "\\" && next == "\"")
+                if(prev != '\\' && next == '"')
                     break;
+
                 prev = next;
             }
+            token += ' ';
+            token = regex_replace(token, SPACED_OPERATORS, "$1");
         }
         tokens.push_back(token);
     }

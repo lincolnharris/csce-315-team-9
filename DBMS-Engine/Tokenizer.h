@@ -37,6 +37,9 @@ class Tokenizer
 {
     // Order matters! E.g. if ">" matches first, then ">=" will never find a match [REGEX]
     static const regex OPERATORS;
+    static const regex SPACED_OPERATORS; // To undo padding operators in string literals
+
+    Tokenizer();
 
 public:
 
