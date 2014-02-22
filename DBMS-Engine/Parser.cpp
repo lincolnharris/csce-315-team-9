@@ -936,6 +936,7 @@ ParsedResult<vector<string>>    Parser::attribute_list()
         return false;
     }
     */
+    return vector<string>();
 }
 
 
@@ -982,6 +983,8 @@ ParsedResult<Table> Parser::relational_algebra()
 
 ParsedResult<string> Parser::identifier()
         {
-
+    return "";
         }
-ParsedResult<Table> Parser::query() {}
+ParsedResult<Table> Parser::query() {
+    return Table();
+}
