@@ -100,17 +100,19 @@ ParsedResult<Condition*> Parser::comparison1()
     }
 
     // Create the Condition object
+    typedef Operand::Type OPT;
     pair<string, bool> op1 = operand1_result, op2 = operand2_result;
-    Operand::Type op1t = op1.second ? Operand::Type::ATTRIBUTE : Operand::Type::LITERAL;
-    Operand::Type op2t = op2.second ? Operand::Type::ATTRIBUTE : Operand::Type::LITERAL;
+    OPT op1t = op1.second ? OPT::ATTRIBUTE : OPT::LITERAL;
+    OPT op2t = op2.second ? OPT::ATTRIBUTE : OPT::LITERAL;
     return new Comparison(new Operand(op1.first, op1t), op_result, new Operand(op2.first, op2t));
 
     counter = start;
     return false;
 }
-//== | != | < | > | <= | >=
+
 ParsedResult<Condition*> Parser::comparison2()
 {
+    // ( condition )
     int start = counter;
     if(tokens[counter].str != "(")
     {
@@ -193,10 +195,9 @@ ParsedResult<pair<string, bool>> Parser::operand()
 ParsedResult<string> Parser::literal()
 {
     int start = counter; // Saving where we started from in case we need to backtrack
-    auto attname_result = attribute_name();
-    if(attname_result)
+    if(isQuoted(tokens[counter]))
     {
-        return attname_result;
+        return (string)tokens[counter++];
     }
     else
     {
@@ -214,7 +215,7 @@ ParsedResult<string> Parser::literal()
 bool Parser::open_cmd(){
     int start = counter;
 
-    if( tokens[counter].str != "OPEN" ){
+    if( tokens[counter] != "OPEN" ){
         counter = start;
         return false;
     }
@@ -845,7 +846,7 @@ ParsedResult<string>    Parser::attribute_name()
 {
     int start = counter;
 
-    if (!tokens[counter].isAlnum())
+    if (!isAlnum(tokens[counter]))
     {
         counter = start;
         return false;

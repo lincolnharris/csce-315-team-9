@@ -26,24 +26,11 @@ struct Token
     Token(const char* token) : str(token) {}
 
     operator string&() { return str; }
+    bool operator==(const string& s) { return str == s; }
+    bool operator!=(const string& s) { return !((*this) == s); }
 
-    bool isQuoted()
-    {
-        return (str[0] == '"' && str.back() == '"');
-    }
-
-    bool isAlnum()
-    {
-        return all_of(str.begin(), str.end(), [](char c) { return isalnum(c); });
-    }
-
-    // This function assumes that the input is quoted
-    // It doesn't modify the object
-    string removeQuotes()
-    {
-        return str.substr(1, str.length() - 1);
-    }
 };
+
 
 // Functions that help tokenize the input
 class Tokenizer
@@ -58,3 +45,13 @@ public:
 
 };
 
+
+// String helper Functions
+int stringToInt(const string& str);
+
+bool isQuoted(const string& str);
+
+bool isAlnum(const string& str);
+
+// This function assumes that the input is quoted. It doesn't modify the object
+string removeQuotes(const string& str);

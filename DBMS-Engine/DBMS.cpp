@@ -1,6 +1,7 @@
 // Class Includes
 #include "DBMS.h"
 #include "Condition.h"
+#include "Tokenizer.h"
 
 #include <iostream>
 #include <sstream>
@@ -231,7 +232,7 @@ void DBMS::insert_cmd(Table& table, vector<string>& values)
 
         // Type checking:
         if(t.type == -1)
-            try { stoi(values[t.index]); }
+            try { stringToInt(values[t.index]); }
             catch (...)
             {
                 table.rows.pop_back();
