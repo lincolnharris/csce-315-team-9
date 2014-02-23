@@ -219,7 +219,8 @@ void DBMS::update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate, C
                 row[fieldsToUpdate[i].first] = fieldsToUpdate[i].second;
 }
 
-void DBMS::insert_cmd(Table& table, vector<string>& values)
+
+void DBMS::insert_cmd(Table& table, vector<string> values)
 {
     // Shayan
     if(values.size() != table.attributeMap.size())
@@ -241,6 +242,22 @@ void DBMS::insert_cmd(Table& table, vector<string>& values)
 
         table.rows.back()[t.index] = values[t.index]; // The actual assignment
     }
+
+    // If it's a duplicate, pop it out!
+    if(find_if(table.rows.begin(), --table.rows.end(),
+        [&table, &values](const vector<string>& row)
+        {
+        //  Are there any other rows with the exact same primary key values as the newly added row?
+            for(string s : table.keys)
+            {
+                int index = table.attributeMap[s].index;
+                if(row[index] != values[index])
+                    return false;
+            }
+            return true;
+        }) == --table.rows.end()) // --rows.end() to exclude the newly added element
+        table.rows.pop_back();
+    // endif
 }
 
 void DBMS::insert_cmd(Table& table, const Table& fromRelation)
@@ -249,10 +266,8 @@ void DBMS::insert_cmd(Table& table, const Table& fromRelation)
     if(!is_union_compatible(table, fromRelation))
         throw "Not union compatible.";
 
-    // Just making sure they're the same; they could be different in attribute ordering.
-    table.attributeMap = fromRelation.attributeMap;
-
-    table.rows.insert(table.rows.end(), fromRelation.rows.begin(), fromRelation.rows.end());
+    for(auto& row : fromRelation.rows)
+        insert_cmd(table, row);
 }
 
 /******************** Table Logic Algebra *******************************/
@@ -588,11 +603,22 @@ bool is_union_compatible(const Table& t1, const Table& t2)
     if(t1.attributeMap.size() != t2.attributeMap.size())
         return false;
 
-    // Do both have the same type of attributes?
-    string name;
-    for(auto& pair : t1.attributeMap) // pair<name, Type>
-        if(t2.attributeMap.find(pair.first) == t2.attributeMap.end())
+    for(auto& pair1 : t1.attributeMap) // pair<name, Type>
+    {
+        auto pair2 = t2.attributeMap.find(pair1.first);
+
+        // Has attribute with the same name?
+        if(pair2 == t2.attributeMap.end())
             return false;
+
+        // Same place?
+        if(pair2->second.index != pair1.second.index)
+            return false;
+
+        // Same type? int == -1, so negative means different types
+        if(pair2->second.type * pair1.second.type < 0)
+            return false;
+    }
 
     return true;
 }

@@ -30,7 +30,7 @@ public:
     void create_cmd(string name, vector<pair<string, Type>>& attributes, vector<string>& primaryKey);
     void delete_cmd(Table& table, Condition& cond);
     void update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate, Condition& cond); // pair<attributeName, Value>
-    void insert_cmd(Table& table, vector<string>& values);
+    void insert_cmd(Table& table, vector<string> values);
     void insert_cmd(Table& table, const Table& fromRelation);
 
     Table selection(Condition& cond, const Table& relation);
