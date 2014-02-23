@@ -3,6 +3,7 @@
 #include "DBMS.h"
 
 #include <regex>
+#include <iostream>
 
 using namespace std;
 
@@ -27,12 +28,12 @@ ParsedResult<Condition*> Parser::condition()
 
     while(true)
     {
-        if(tokens[counter].str == "||")
+        if(match("||"))
         {
-            counter++;
             auto conj_result_list = conjunction();
-            if(!conj_result)
+            if(!conj_result_list)
             {
+                delete condTree;
                 counter = start; // Backtrack
                 return false;
             }
@@ -40,6 +41,7 @@ ParsedResult<Condition*> Parser::condition()
         }
         else break;
     }
+    cout << condTree->toString() << endl; //todo
     return condTree;
 }
 
@@ -57,12 +59,12 @@ ParsedResult<Condition*> Parser::conjunction()
 
     while(true)
     {
-        if(tokens[counter].str == "&&")
+        if(match("&&"))
         {
-            counter++;
             auto comp_result_list = comparison();
             if(!comp_result)
             {
+                delete condTree;
                 counter = start; // Backtrack
                 return false;
             }
@@ -70,6 +72,7 @@ ParsedResult<Condition*> Parser::conjunction()
         }
         else break;
     }
+    cout << condTree->toString() << endl; //todo
     return condTree;
 }
 
@@ -105,21 +108,17 @@ ParsedResult<Condition*> Parser::comparison1()
     OPT op1t = op1.second ? OPT::ATTRIBUTE : OPT::LITERAL;
     OPT op2t = op2.second ? OPT::ATTRIBUTE : OPT::LITERAL;
     return new Comparison(new Operand(op1.first, op1t), op_result, new Operand(op2.first, op2t));
-
-    counter = start;
-    return false;
 }
 
 ParsedResult<Condition*> Parser::comparison2()
 {
     // ( condition )
     int start = counter;
-    if(tokens[counter].str != "(")
+    if(!match("("))
     {
         counter = start;
         return false;
     }
-    counter++;
 
     auto condition_result = condition();
     if(!condition_result)
@@ -128,12 +127,11 @@ ParsedResult<Condition*> Parser::comparison2()
         return false;
     }
 
-    if(tokens[counter].str != ")")
+    if(!match(")"))
     {
         counter = start;
         return false;
     }
-    counter++;
 
     return condition_result;
 }
@@ -144,6 +142,8 @@ ParsedResult<Condition*> Parser::comparison()
     auto comp_result = comparison1();
     if(comp_result)
     {
+        Condition* ccp = comp_result;
+        cout << ccp->toString() << endl; //todo
         return comp_result;
     }
     else
@@ -151,6 +151,8 @@ ParsedResult<Condition*> Parser::comparison()
         comp_result = comparison2();
         if(comp_result)
         {
+            Condition* ccp = comp_result;
+            cout << ccp->toString() << endl; //todo
             return comp_result;
         }
     }
@@ -161,6 +163,8 @@ ParsedResult<Condition*> Parser::comparison()
 ParsedResult<string> Parser::op()
 {
     int start = counter; // Saving where we started from in case we need to backtrack
+    if(counter >= tokens.size()) return false;
+
     string op_result = tokens[counter];
     if(!regex_match(op_result, regex("==|!=|<=|>=|<|>")))
     {
@@ -169,6 +173,7 @@ ParsedResult<string> Parser::op()
     }
     counter++;
 
+    cout << (string)op_result << endl;
     return op_result;
 }
 
@@ -178,6 +183,7 @@ ParsedResult<pair<string, bool>> Parser::operand()
     auto attname_result = attribute_name();
     if(attname_result)
     {
+        cout << (string)attname_result << endl;//todo
         return pair<string, bool>(attname_result, true);
     }
     else
@@ -185,6 +191,7 @@ ParsedResult<pair<string, bool>> Parser::operand()
         auto literal_result = literal();
         if(literal_result)
         {
+            cout << (string)literal_result << endl; //todo
             return pair<string, bool>(literal_result, false);
         }
     }
@@ -195,7 +202,7 @@ ParsedResult<pair<string, bool>> Parser::operand()
 ParsedResult<string> Parser::literal()
 {
     int start = counter; // Saving where we started from in case we need to backtrack
-    if(isQuoted(tokens[counter]))
+    if(counter < tokens.size() && isQuoted(tokens[counter]))
     {
         return (string)tokens[counter++];
     }
@@ -210,6 +217,18 @@ ParsedResult<string> Parser::literal()
     counter = start; // Backtrack
     return false;
 }
+
+
+bool Parser::match(string toMatch)
+{
+    if(counter < tokens.size() && tokens[counter] == toMatch)
+    {
+        counter++;
+        return true;
+    }
+    return false;
+}
+
 
 ///////////////////////// LINCOLN /////////////////////////////
 bool Parser::open_cmd(){
@@ -671,7 +690,7 @@ ParsedResult<Type> Parser::type(){
 
 ParsedResult<int> Parser::integer(){
     int start = counter;
-
+    if(counter >= tokens.size()) return false;
     int integr = atoi(tokens[counter].str.c_str());
     if( integr == 0){
         counter = start;
@@ -846,13 +865,13 @@ ParsedResult<string>    Parser::attribute_name()
 {
     int start = counter;
 
-    if (!isAlnum(tokens[counter]))
+    if (counter >= tokens.size() || !isAlnum(tokens[counter]))
     {
         counter = start;
         return false;
     }
 
-    return tokens[counter].str;
+    return tokens[counter++].str;
 }
 
 

@@ -12,6 +12,12 @@ Condition::Condition(Condition* left, Condition* right) :
 {
 }
 
+Condition::~Condition()
+{
+    delete left;
+    delete right;
+}
+
 
 
 Comparison::Comparison(Condition* left, string op, Condition* right) :
@@ -112,4 +118,19 @@ pair<string, bool> Operand::getValue(const vector<string>& row, const Table& tab
 bool Operand::operator()(const vector<string>& row, const Table& table)
 {
     throw "This function was not supposed to be called. Possible error in tree structure.";
+}
+
+string Comparison::toString()
+{
+    return '(' + left->toString() + ' ' + op + ' ' + right->toString() + ')';
+}
+
+string Logical::toString()
+{
+    return '(' + left->toString() + (node == OR ? " || " : " && ") + right->toString() + ')';
+}
+
+string Operand::toString()
+{
+    return operand;
 }

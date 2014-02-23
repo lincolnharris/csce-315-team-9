@@ -70,4 +70,7 @@ public:
     ParsedResult<Type> type();
     ParsedResult<int> integer();
     ParsedResult<Table> program();
+
+    // Helper
+    bool match(string toMatch);
 };

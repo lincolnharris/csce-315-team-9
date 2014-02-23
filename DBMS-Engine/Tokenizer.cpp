@@ -60,14 +60,14 @@ bool isQuoted(const string& str)
 
 bool isAlnum(const string& str)
 {
-    return all_of(str.begin(), str.end(), [](char c) { return isalnum(c); });
+    return regex_match(str, regex(R"([a-zA-Z_]\w*)"));
 }
 
 // This function assumes that the input is quoted
 // It doesn't modify the object
 string removeQuotes(const string& str)
 {
-    return str.substr(1, str.length() - 1);
+    return str.substr(1, str.length() - 2);
 }
 
 int stringToInt(const string& str)

@@ -22,7 +22,7 @@ public:
     Condition* left;
     Condition* right;
 
-    virtual ~Condition() = default;
+    virtual ~Condition();
     Condition() = default;
     Condition(Condition* left, Condition* right);
 
@@ -33,6 +33,8 @@ public:
     //      value could be an integer stored as a string or an actual string
     //      type is true for integers, false for strings
     virtual pair<string, bool> getValue(const vector<string>& row, const Table& table) = 0;
+
+    virtual string toString() = 0;
 };
 
 class Comparison : public Condition
@@ -44,6 +46,8 @@ public:
 
     virtual bool operator()(const vector<string>& row, const Table& table);
     virtual pair<string, bool> getValue(const vector<string>& row, const Table& table);
+
+    virtual string toString();
 };
 
 class Logical : public Condition
@@ -56,6 +60,8 @@ public:
 
     virtual bool operator()(const vector<string>& row, const Table& table);
     virtual pair<string, bool> getValue(const vector<string>& row, const Table& table);
+
+    virtual string toString();
 };
 
 class Operand : public Condition
@@ -69,4 +75,6 @@ public:
 
     virtual bool operator()(const vector<string>& row, const Table& table);
     virtual pair<string, bool> getValue(const vector<string>& row, const Table& table);
+
+    virtual string toString();
 };
