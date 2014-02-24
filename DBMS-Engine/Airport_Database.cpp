@@ -71,37 +71,41 @@ void Airport_Database::addAirline(string name, string HQ, string list)
 
 void Airport_Database::board(string passengerName, string planeModel)
 {
-
+    dbms.execute("INSERT INTO Boarding VALUES FROM (\"" + passengerName + "\", "
+                                                   "\"" + planeModel    + "\")");
 }
 
 void Airport_Database::own(string airlineName, string planeModel)
 {
-
+    dbms.execute("INSERT INTO Owns VALUES FROM (\"" + airlineName + "\", "
+                                               "\"" + planeModel  + "\")");
 }
 
 void Airport_Database::removePassenger(string name, string list)
 {
-
+    dbms.execute("DELETE FROM " + list + " WHERE name == \"" + name + '"');
 }
 
 void Airport_Database::removePlane(string model, string list)
 {
-
+    dbms.execute("DELETE FROM " + list + " WHERE model == \"" + model + '"');
 }
 
 void Airport_Database::removeAirline(string name, string list)
 {
-
+    dbms.execute("DELETE FROM " + list + " WHERE name == \"" + name + '"');
 }
 
 void Airport_Database::disembark(string passengerName, string planeModel)
 {
-
+    dbms.execute("DELETE FROM Boarding WHERE passengerName == \"" + passengerName + '"'
+                                       + "&& planeModel    == \"" + planeModel    + '"');
 }
 
 void Airport_Database::disown(string airlineName, string planeModel)
 {
-
+    dbms.execute("DELETE FROM Boarding WHERE airlineName == \"" + airlineName + '"'
+                                       + "&& planeModel  == \"" + planeModel  + '"');
 }
 
 void Airport_Database::updatePassenger(string name, string list, int updatedBaggage)
