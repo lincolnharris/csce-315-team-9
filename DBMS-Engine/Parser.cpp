@@ -8,7 +8,7 @@
 using namespace std;
 
 
-Parser::Parser(vector<Token>& tokens, DBMS* dbms) : tokens(tokens), dbms(dbms), counter(0)
+Parser::Parser(vector<Token> tokens, DBMS* dbms) : tokens(tokens), dbms(dbms), counter(0)
 {
 }
 

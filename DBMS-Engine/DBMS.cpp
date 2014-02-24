@@ -2,6 +2,7 @@
 #include "DBMS.h"
 #include "Condition.h"
 #include "Tokenizer.h"
+#include "Parser.h"
 
 #include <iostream>
 #include <sstream>
@@ -269,6 +270,41 @@ void DBMS::insert_cmd(Table& table, const Table& fromRelation)
     for(auto& row : fromRelation.rows)
         insert_cmd(table, row);
 }
+
+// Shayan
+vector<string> DBMS::execute(string input)
+{
+    Parser(Tokenizer::tokenize(input), this).program();
+    return vector<string>(); // TODO What to return?
+}
+
+// Shayan
+bool is_union_compatible(const Table& t1, const Table& t2)
+{
+    if(t1.attributeMap.size() != t2.attributeMap.size())
+        return false;
+
+    for(auto& pair1 : t1.attributeMap) // pair<name, Type>
+    {
+        auto pair2 = t2.attributeMap.find(pair1.first);
+
+        // Has attribute with the same name?
+        if(pair2 == t2.attributeMap.end())
+            return false;
+
+        // Same place?
+        if(pair2->second.index != pair1.second.index)
+            return false;
+
+        // Same type? int == -1, so negative means different types
+        if(pair2->second.type * pair1.second.type < 0)
+            return false;
+    }
+
+    return true;
+}
+
+
 
 /******************** Table Logic Algebra *******************************/
 Table DBMS::selection(Condition& cond, const Table& table)
@@ -596,29 +632,4 @@ Table DBMS::natural_join(const Table& t1, const Table& t2)
 
 
     return t2;
-}
-
-bool is_union_compatible(const Table& t1, const Table& t2)
-{
-    if(t1.attributeMap.size() != t2.attributeMap.size())
-        return false;
-
-    for(auto& pair1 : t1.attributeMap) // pair<name, Type>
-    {
-        auto pair2 = t2.attributeMap.find(pair1.first);
-
-        // Has attribute with the same name?
-        if(pair2 == t2.attributeMap.end())
-            return false;
-
-        // Same place?
-        if(pair2->second.index != pair1.second.index)
-            return false;
-
-        // Same type? int == -1, so negative means different types
-        if(pair2->second.type * pair1.second.type < 0)
-            return false;
-    }
-
-    return true;
 }

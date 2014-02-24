@@ -8,10 +8,10 @@
 
 using namespace std;
 
+
 Airport_Database::Airport_Database()
 {
 }
-
 
 Airport_Database::~Airport_Database()
 {
@@ -19,7 +19,7 @@ Airport_Database::~Airport_Database()
 
 void Airport_Database::newAirlineList(const string& name)
 {
-
+    
 }
 
 void Airport_Database::newPassengerList(const string& name)

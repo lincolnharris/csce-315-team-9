@@ -41,6 +41,8 @@ public:
     Table cross_product(const Table& t1, const Table& t2);
     Table natural_join(const Table& t1, const Table& t2);
 
+    // App Interaction
+    vector<string> execute(string input); // Returns multiple lines of output, if any.
 };
 
 // Helper Function

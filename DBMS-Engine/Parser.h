@@ -23,7 +23,7 @@ private:
 public:
 
     // Constructor
-    Parser(vector<Token>& tokens, DBMS* dbms = nullptr);
+    Parser(vector<Token> tokens, DBMS* dbms = nullptr);
 
     // Queries
     // PARAMETERS NEED TO BE CORRECTED
