@@ -19,17 +19,25 @@ Airport_Database::~Airport_Database()
 
 void Airport_Database::newAirlineList(const string& name)
 {
-    
+    dbms.execute("CREATE TABLE " + name + " (name VARCHAR(20),"
+                                            "HQ   VARCHAR(10),"
+                                            "PRIMARY KEY (name);");
 }
 
 void Airport_Database::newPassengerList(const string& name)
 {
-
+    dbms.execute("CREATE TABLE " + name + " (name        VARCHAR(20),"
+                                            "age         INTEGER,"
+                                            "baggage     INTEGER,"
+                                            "destination VARCHAR(10),"
+                                            "PRIMARY KEY (name);");
 }
 
 void Airport_Database::newPlaneList(const string& name)
 {
-
+    dbms.execute("CREATE TABLE " + name + " (model     VARCHAR(20),"
+                                            "capacity  INTEGER,"
+                                            "PRIMARY KEY (model);");
 }
 
 void Airport_Database::addPlane(const string& model, int capacity, const string& list)
