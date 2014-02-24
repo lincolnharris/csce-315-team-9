@@ -255,7 +255,7 @@ void DBMS::insert_cmd(Table& table, vector<string> values)
                     return false;
             }
             return true;
-        }) == --table.rows.end()) // --rows.end() to exclude the newly added element
+        }) != --table.rows.end()) // --rows.end() to exclude the newly added element
         table.rows.pop_back();
     // endif
 }
