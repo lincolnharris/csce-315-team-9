@@ -44,7 +44,7 @@ class Tokenizer
 public:
 
     // Breaking down the input into a list of meaningful words and operators
-    static vector<Token> tokenize(const string& in);
+    static vector<Token> tokenize(string in);
 
 };
 

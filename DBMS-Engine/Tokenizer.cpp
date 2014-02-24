@@ -22,7 +22,7 @@ const regex Tokenizer::SPACED_OPERATORS
         = regex(R"( (\\"|\"|<-|<=|>=|>|<|!=|==|\(|\)|&&|\|\||,|;) )");
 
 
-vector<Token> Tokenizer::tokenize(const string& in)
+vector<Token> Tokenizer::tokenize(string in)
 {
     stringstream ss;
     // Find the operators and pad them with whitespace so they're easier tokenize

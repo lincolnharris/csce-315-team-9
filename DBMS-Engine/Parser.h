@@ -16,7 +16,7 @@ class Parser
 
 private:
 
-    vector<Token>& tokens;
+    vector<Token> tokens;
     DBMS* dbms;
     int counter;
 
