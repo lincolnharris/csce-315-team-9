@@ -31,6 +31,10 @@ void Airport_Database::newAirlineList(string name)
     dbms.execute("CREATE TABLE " + name + " (name VARCHAR(20),"
                                             "HQ   VARCHAR(10),"
                                             "PRIMARY KEY (name);");
+
+    if(airlineLists.find(name) != airlineLists.end())
+        throw "Duplicate list!";
+    airlineLists.insert(name);
 }
 
 void Airport_Database::newPassengerList(string name)
@@ -40,6 +44,10 @@ void Airport_Database::newPassengerList(string name)
                                             "baggage     INTEGER,"
                                             "destination VARCHAR(10),"
                                             "PRIMARY KEY (name);");
+
+    if(passengerLists.find(name) != passengerLists.end())
+        throw "Duplicate list!";
+    passengerLists.insert(name);
 }
 
 void Airport_Database::newPlaneList(string name)
@@ -47,16 +55,26 @@ void Airport_Database::newPlaneList(string name)
     dbms.execute("CREATE TABLE " + name + " (model     VARCHAR(20),"
                                             "capacity  INTEGER,"
                                             "PRIMARY KEY (model);");
+
+    if(planeLists.find(name) != planeLists.end())
+        throw "Duplicate list!";
+    planeLists.insert(name);
 }
 
 void Airport_Database::addPlane(string model, int capacity, string list)
 {
+    if(planeLists.find(list) == planeLists.end())
+        throw "List not found!";
+
     dbms.execute("INSERT INTO " + list + " VALUES FROM (\"" + model               + "\", "
                                                             + to_string(capacity) + ")");
 }
 
 void Airport_Database::addPassenger(string name, int age, int baggage, string destination, string list)
 {
+    if(passengerLists.find(list) == passengerLists.end())
+    throw "List not found!";
+
     dbms.execute("INSERT INTO " + list + " VALUES FROM (\"" + name               + "\", "
                                                             + to_string(age)     + ", "
                                                             + to_string(baggage) + ", "
@@ -65,6 +83,9 @@ void Airport_Database::addPassenger(string name, int age, int baggage, string de
 
 void Airport_Database::addAirline(string name, string HQ, string list)
 {
+    if(airlineLists.find(list) == airlineLists.end())
+            throw "List not found!";
+
     dbms.execute("INSERT INTO " + list + " VALUES FROM (\"" + name + "\", "
                                                        "\"" + HQ   + "\")");
 }
@@ -83,16 +104,25 @@ void Airport_Database::own(string airlineName, string planeModel)
 
 void Airport_Database::removePassenger(string name, string list)
 {
+    if(passengerLists.find(list) == passengerLists.end())
+            throw "List not found!";
+
     dbms.execute("DELETE FROM " + list + " WHERE name == \"" + name + '"');
 }
 
 void Airport_Database::removePlane(string model, string list)
 {
+    if(planeLists.find(list) == planeLists.end())
+            throw "List not found!";
+
     dbms.execute("DELETE FROM " + list + " WHERE model == \"" + model + '"');
 }
 
 void Airport_Database::removeAirline(string name, string list)
 {
+    if(airlineLists.find(list) == airlineLists.end())
+            throw "List not found!";
+
     dbms.execute("DELETE FROM " + list + " WHERE name == \"" + name + '"');
 }
 
@@ -110,16 +140,19 @@ void Airport_Database::disown(string airlineName, string planeModel)
 
 void Airport_Database::updatePassenger(string name, string list, int updatedBaggage)
 {
-
+    dbms.execute("UPDATE " + list + " SET baggage = " + to_string(updatedBaggage)
+                                  + " WHERE name == \"" + name + '"');
 }
 
 void Airport_Database::updateAirline(string name, string list, string newHQ)
 {
-
+    dbms.execute("UPDATE " + list + " SET baggage = \"" + name  + '"'
+                                  + " WHERE name == \"" + newHQ + '"');
 }
 
 void Airport_Database::save(string list)
 {
+
 }
 
 void Airport_Database::load(string list)

@@ -7,15 +7,21 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <unordered_set>
 
 #include "DBMS.h"
 
 using std::string;
 using std::vector;
+using std::unordered_set;
 
 class Airport_Database
 {
     DBMS dbms;
+
+    unordered_set<string> airlineLists;
+    unordered_set<string> passengerLists;
+    unordered_set<string> planeLists;
 
 public:
     Airport_Database();
