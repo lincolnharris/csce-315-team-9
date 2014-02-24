@@ -67,7 +67,7 @@ void Airport_Database::addPlane(string model, int capacity, string list)
         throw "List not found!";
 
     dbms.execute("INSERT INTO " + list + " VALUES FROM (\"" + model               + "\", "
-                                                            + to_string(capacity) + ")");
+                                                            + to_string(capacity) + ");");
 }
 
 void Airport_Database::addPassenger(string name, int age, int baggage, string destination, string list)
@@ -78,7 +78,7 @@ void Airport_Database::addPassenger(string name, int age, int baggage, string de
     dbms.execute("INSERT INTO " + list + " VALUES FROM (\"" + name               + "\", "
                                                             + to_string(age)     + ", "
                                                             + to_string(baggage) + ", "
-                                                       "\"" + destination        + "\")");
+                                                       "\"" + destination        + "\");");
 }
 
 void Airport_Database::addAirline(string name, string HQ, string list)
@@ -87,19 +87,19 @@ void Airport_Database::addAirline(string name, string HQ, string list)
             throw "List not found!";
 
     dbms.execute("INSERT INTO " + list + " VALUES FROM (\"" + name + "\", "
-                                                       "\"" + HQ   + "\")");
+                                                       "\"" + HQ   + "\");");
 }
 
 void Airport_Database::board(string passengerName, string planeModel)
 {
     dbms.execute("INSERT INTO Boarding VALUES FROM (\"" + passengerName + "\", "
-                                                   "\"" + planeModel    + "\")");
+                                                   "\"" + planeModel    + "\");");
 }
 
 void Airport_Database::own(string airlineName, string planeModel)
 {
     dbms.execute("INSERT INTO Owns VALUES FROM (\"" + airlineName + "\", "
-                                               "\"" + planeModel  + "\")");
+                                               "\"" + planeModel  + "\");");
 }
 
 void Airport_Database::removePassenger(string name, string list)
@@ -107,7 +107,7 @@ void Airport_Database::removePassenger(string name, string list)
     if(passengerLists.find(list) == passengerLists.end())
             throw "List not found!";
 
-    dbms.execute("DELETE FROM " + list + " WHERE name == \"" + name + '"');
+    dbms.execute("DELETE FROM " + list + " WHERE name == \"" + name + "\";");
 }
 
 void Airport_Database::removePlane(string model, string list)
@@ -115,7 +115,7 @@ void Airport_Database::removePlane(string model, string list)
     if(planeLists.find(list) == planeLists.end())
             throw "List not found!";
 
-    dbms.execute("DELETE FROM " + list + " WHERE model == \"" + model + '"');
+    dbms.execute("DELETE FROM " + list + " WHERE model == \"" + model + "\";");
 }
 
 void Airport_Database::removeAirline(string name, string list)
@@ -123,40 +123,56 @@ void Airport_Database::removeAirline(string name, string list)
     if(airlineLists.find(list) == airlineLists.end())
             throw "List not found!";
 
-    dbms.execute("DELETE FROM " + list + " WHERE name == \"" + name + '"');
+    dbms.execute("DELETE FROM " + list + " WHERE name == \"" + name + "\";");
 }
 
 void Airport_Database::disembark(string passengerName, string planeModel)
 {
     dbms.execute("DELETE FROM Boarding WHERE passengerName == \"" + passengerName + '"'
-                                       + "&& planeModel    == \"" + planeModel    + '"');
+                                       + "&& planeModel    == \"" + planeModel    + "\";");
 }
 
 void Airport_Database::disown(string airlineName, string planeModel)
 {
     dbms.execute("DELETE FROM Boarding WHERE airlineName == \"" + airlineName + '"'
-                                       + "&& planeModel  == \"" + planeModel  + '"');
+                                       + "&& planeModel  == \"" + planeModel  + "\";");
 }
 
 void Airport_Database::updatePassenger(string name, string list, int updatedBaggage)
 {
     dbms.execute("UPDATE " + list + " SET baggage = " + to_string(updatedBaggage)
-                                  + " WHERE name == \"" + name + '"');
+                                  + " WHERE name == \"" + name + "\";");
 }
 
 void Airport_Database::updateAirline(string name, string list, string newHQ)
 {
     dbms.execute("UPDATE " + list + " SET baggage = \"" + name  + '"'
-                                  + " WHERE name == \"" + newHQ + '"');
+                                  + " WHERE name == \"" + newHQ + "\";");
 }
 
 void Airport_Database::save(string list)
 {
+    dbms.execute("WRITE Boarding;");
+    dbms.execute("WRITE Owns;");
+    for(string list : planeLists)
+        dbms.execute("WRITE " + list + ";");
+    for(string list : passengerLists)
+        dbms.execute("WRITE " + list + ";");
+    for(string list : airlineLists)
+        dbms.execute("WRITE " + list + ";");
 
 }
 
 void Airport_Database::load(string list)
 {
+    dbms.execute("OPEN Boarding;");
+    dbms.execute("OPEN Owns;");
+    for(string list : planeLists)
+        dbms.execute("OPEN " + list + ";");
+    for(string list : passengerLists)
+        dbms.execute("OPEN " + list + ";");
+    for(string list : airlineLists)
+        dbms.execute("OPEN " + list + ";");
 }
 
 void Airport_Database::merge(string list1, string list2)
