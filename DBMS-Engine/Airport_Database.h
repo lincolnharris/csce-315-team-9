@@ -22,42 +22,42 @@ public:
     ~Airport_Database();
 
     // Creation
-    void newAirlineList(const string& name);
-    void newPassengerList(const string& name);
-    void newPlaneList(const string& name);
+    void newAirlineList(string name);
+    void newPassengerList(string name);
+    void newPlaneList(string name);
 
     // Adding
-    void addAirline(const string& name, const string& HQ, const string& list);
-    void addPassenger(const string& name, int age, int baggage, 
-                      const string& destination, const string& list);
-    void addPlane(const string& model, int capacity, const string& list);
+    void addAirline(string name, string HQ, string list);
+    void addPassenger(string name, int age, int baggage,
+                      string destination, string list);
+    void addPlane(string model, int capacity, string list);
 
-    void board(const string& passengerName, const string& planeModel);
-    void own(const string& airlineName, const string& planeModel);
+    void board(string passengerName, string planeModel);
+    void own(string airlineName, string planeModel);
 
     // Removing
-    void removePassenger(const string& name, const string& list);
-    void removePlane(const string& model, const string& list);
-    void removeAirline(const string& name, const string& list);
+    void removePassenger(string name, string list);
+    void removePlane(string model, string list);
+    void removeAirline(string name, string list);
 
-    void disembark(const string& passengerName, const string& planeModel);
-    void disown(const string& airlineName, const string& planeModel);
+    void disembark(string passengerName, string planeModel);
+    void disown(string airlineName, string planeModel);
 
     // Updating
-    void updatePassenger(const string& name, const string& list, int updatedBaggage);
-    void updateAirline(const string& name, const string& list, const string& newHQ);
+    void updatePassenger(string name, string list, int updatedBaggage);
+    void updateAirline(string name, string list, string newHQ);
 
     // File IO
-    void save(const string& list);
-    void load(const string& list);
+    void save(string list);
+    void load(string list);
 
     // Relational
-    void merge(const string& list1, const string& list2);    // Union
-    void subtract(const string& list1, const string& list2); // Subtraction
+    void merge(string list1, string list2);    // Union
+    void subtract(string list1, string list2); // Subtraction
 
-    vector<string> listPassengerNames(const string& list);   // Projection
+    vector<string> listPassengerNames(string list);   // Projection
                                                              // Selection
-    vector<string> filterHeavyBaggage(const string& list, int baggageLimit = 23); 
+    vector<string> filterHeavyBaggage(string list, int baggageLimit = 23);
 
 };
 
