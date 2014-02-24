@@ -5,10 +5,12 @@
 *      Author: Synix
 */
 #include "Airport_Database.h"
+#include <sstream>
 
 using namespace std;
 
 
+// Shayan
 Airport_Database::Airport_Database()
 {
     dbms.execute("CREATE TABLE Boarding (passengerName VARCHAR(20),"
@@ -175,22 +177,60 @@ void Airport_Database::load(string list)
         dbms.execute("OPEN " + list + ";");
 }
 
+// Lincoln
 void Airport_Database::merge(string list1, string list2)
 {
-
+	if (airlineLists.find(list1) != airlineLists.end()
+	        && airlineLists.find(list2) != airlineLists.end()){
+		airlineLists.insert(list1 + "AND" + list2);
+	}
+	else if (passengerLists.find(list1) != passengerLists.end()
+	        && passengerLists.find(list2) != passengerLists.end()){
+		passengerLists.insert(list1 + "AND" + list2);
+	}
+	else if (planeLists.find(list1) != planeLists.end()
+	        && planeLists.find(list2) != planeLists.end()){
+		planeLists.insert(list1 + "AND" + list2);
+	}
+	else return;
+	dbms.execute(list1 + "AND" + list2 + " <-" + list1 + " + " + list2 + ";");
 }
 
 void Airport_Database::subtract(string list1, string list2)
 {
-
+	if (airlineLists.find(list1) != airlineLists.end()
+	        && airlineLists.find(list2) != airlineLists.end()){
+		airlineLists.insert(list1 + "MINUS" + list2);
+	}
+	else if (passengerLists.find(list1) != passengerLists.end()
+        && passengerLists.find(list2) != passengerLists.end()){
+		passengerLists.insert(list1 + "MINUS" + list2);
+	}
+    else if (planeLists.find(list1) != planeLists.end()
+        && planeLists.find(list2) != planeLists.end()){
+		planeLists.insert(list1 + "MINUS" + list2);
+	}
+	else return;
+	dbms.execute(list1 + "MINUS" + list2 + "<-" + list1 + " - " + list2 + ";");
 }
 
 vector<string> Airport_Database::listPassengerNames(string list)
 {
-    return vector<string>();
+	dbms.execute(list + "Passengers" + " <- project (name) " + list + ";");
+	dbms.execute("SHOW " + list + "Passengers"); //TODO what to do here?
+	planeLists.insert(list + "Passengers");
+
+	return vector<string>();
 }
 
-vector<string> Airport_Database::filterHeavyBaggage(string list, int baggageLimit /*= 23*/)
+vector<string> Airport_Database::filterHeavyBaggage(string list, int baggageLimit)
 {
-    return vector<string>();
+	stringstream ss;
+	ss << baggageLimit;
+	string baggageMax;
+	ss >> baggageMax;
+	dbms.execute(list + "WithoutHeavyBaggage <- select (baggage < " + baggageMax + ") " + list + ";");
+	passengerLists.insert(list + "WithoutHeavyBaggage"); //TODO what to do here?
+	return vector<string>();
 }
+

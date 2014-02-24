@@ -12,7 +12,10 @@
 #include <list>
 #include <vector>
 
-using namespace std;
+using std::string;
+using std::vector;
+using std::unordered_map;
+using std::list;
 
 
 struct Type
@@ -20,7 +23,7 @@ struct Type
     int   index;
     short type;     // -1 == int, anything positive is a string of that length
 
-	Type() {};
+	Type() = default;
     Type(int index, short type) : index(index), type(type) {}
 
     bool operator==(const Type& t)
@@ -45,9 +48,6 @@ class Table
         bool operator==(const Table& t);
         bool operator!=(const Table& t);
 
-	    // Helper functions for the future!
-	    int getInt();
-	    string getString();
 
 	    Table();
 	    ~Table();
