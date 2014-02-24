@@ -6,42 +6,46 @@
 
 // Class Includes
 #include "Table.h"
-#include "Comparison.h"
 
-using namespace std;
+using std::string;
+using std::vector;
+using std::pair;
 
-class Comparison;
-// TODO how to handle conditions? Combining Function Objects returning bool?
+class Condition;
 
 class DBMS
 {
 
-private:
 
-    unordered_map<string, Table> relations; 	// Constructor....
 
 public:
+	unordered_map<string, Table> relations; 	// Constructor....
 
-    DBMS();
-    ~DBMS();
+	DBMS();
+	~DBMS();
 
-    //    Table open_cmd(string name);
-    //    void close_cmd(string name);
-    //    void write_cmd(string name);
-    //    void exit_cmd();
-    //    void show_cmd(string name);
-    void create_cmd(string name, vector<Type> attributes, vector<string> primaryKey);
-    void delete_cmd(Table table, Comparison cond);
-    void update_cmd(Table table, vector<pair<int, string>> fieldsToUpdate, Comparison cond); // pair<attributeName, Value>
-    void insert_cmd(Table table, vector<string> values);
-    void insert_cmd(Table table, Table fromRelation);
+	Table open_cmd(string name);
+	void close_cmd(string name);
+	void write_cmd(string name);
+	void exit_cmd();
+	void show_cmd(const Table& table);
+	void create_cmd(string name, vector<pair<string, Type>>& attributes, vector<string>& primaryKey);
+	void delete_cmd(Table& table, Condition& cond);
+	void update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate, Condition& cond); // pair<attributeName, Value>
+	void insert_cmd(Table& table, vector<string>& values);
+	void insert_cmd(Table& table, const Table& fromRelation);
 
-    Table selection(Comparison cond, Table relation);
-    Table projection(vector<string> attributes, Table relation);
-    Table renaming(vector<string> attributes, Table relation);
-    Table union_(Table rel1, Table rel2);
-    Table difference(Table rel1, Table rel2);
-    Table cross_product(Table rel1, Table rel2);
-    Table natural_join(Table rel1, Table rel2);
+	Table selection(Condition& cond, const Table& relation);
+	Table projection(vector<string>& attributes, const Table& table);
+	Table renaming(vector<string>& attributes, const Table& relation);
+	Table union_(const Table& t1, const Table& t2);
+	Table difference(const Table& t1, const Table& t2);
+	Table cross_product(const Table& t1, const Table& t2);
+	Table natural_join(const Table& t1, const Table& t2);
 
+	// App Interaction
+	vector<string> execute(string input); // Returns multiple lines of output, if any.
 };
+
+// Helper Function
+bool is_union_compatible(const Table& t1, const Table& t2);
