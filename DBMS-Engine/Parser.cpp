@@ -196,6 +196,35 @@ ParsedResult<string> Parser::literal()
     return false;
 }
 
+ParsedResult<vector<string>> Parser::attribute_list()
+{
+    int start = counter; // Saving where we started from in case we need to backtrack
+    auto attribute_result = attribute_name();
+    if(!attribute_result)
+    {
+        counter = start; // Backtrack
+        return false;
+    }
+
+    vector<string> attributeList;
+    attributeList.push_back(attribute_result);
+    while(true)
+    {
+        if(match(","))
+        {
+            auto attribute_result = attribute_name();
+            if(!attribute_result)
+            {
+                counter = start; // Backtrack
+                return false;
+            }
+            attributeList.push_back(attribute_result);
+        }
+        else break;
+    }
+    return attributeList;
+}
+
 ParsedResult<Table> Parser::query()
 {
     //relation-name <- expr
@@ -974,23 +1003,6 @@ ParsedResult<Table> Parser::project_AND_rename() ///////////////////////////////
     {
         return dbms->renaming(Atrb_List, table);
     }
-}
-
-
-
-ParsedResult<vector<string>>    Parser::attribute_list()
-{
-    /*
-    int start = counter;
-
-    // grab attribute name
-    auto tempString = attribute_name();
-    if (!tempString )
-    {
-        return false;
-    }
-    */
-    return vector<string>();
 }
 
 
