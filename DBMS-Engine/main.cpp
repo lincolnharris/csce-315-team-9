@@ -46,6 +46,8 @@ int main()
     t.rows.push_back({ "19", "Johnny", "19", "Pine" });
     t.rows.push_back({ "17", "Johnny", "17", "PotatoZ ARE cOOL" });
 
+    t.keys = vector<string>{"Age", "Tree"};
+
     vector<Token> tokens = Tokenizer::tokenize("(Age == Tree &&  \"Pine\" == Flower) || First_Name == \"Johnny\" ");
     Parser p(tokens, &db);
     Condition& cond = *p.condition();
