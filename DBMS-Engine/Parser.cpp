@@ -338,9 +338,9 @@ ParsedResult<Table> Parser::program()
     return false;
 }
 
-bool Parser::match(string toMatch)
+bool Parser::match(string match)
 {
-    if(counter < tokens.size() && tokens[counter] == toMatch)
+    if(counter < tokens.size() && tokens[counter] == match)
     {
         counter++;
         return true;
@@ -839,18 +839,18 @@ ParsedResult<Table> Parser::expr()
     // atomic expression, OR one of the following operations
     // check if atomic expression
     Table table;
-    if ( toMatch("select") )
+    if ( match("select") )
     {
         table = selection();
     }
 
-    else if ( (toMatch("project")) || (toMatch("rename")) )
+    else if ( match("project") || match("rename") )
     {
         table = project_AND_rename();
     }
 
-    else if ( (toMatch("union")) || ((toMatch("difference")) ||
-         ( (toMatch("natural-join")) || ((toMatch("project")) )
+    else if ( (match("union")) || match("difference") ||
+          match("natural-join") || match("project") )
     {
         table = relational_algebra();
     }
@@ -885,7 +885,7 @@ ParsedResult<Table> Parser::atomic_expr()
     // Is current word a EXPRESSION?
     else
     {
-        if ( !toMatch("(") )
+        if ( !match("(") )
         {
             counter = start;
             return false;
@@ -898,7 +898,7 @@ ParsedResult<Table> Parser::atomic_expr()
             return false;
         }
 
-        if ( !toMatch(")") ) 
+        if ( !match(")") )
         {
             counter = start;
             return false;
@@ -916,7 +916,7 @@ ParsedResult<Table> Parser::selection()
     int start = counter;
 
     // first (
-    if( !toMatch("(") )
+    if( !match("(") )
     {
         counter = start;
         return false;
@@ -931,7 +931,7 @@ ParsedResult<Table> Parser::selection()
     }
 
     // close )
-    if( !toMatch(")") )
+    if( !match(")") )
     {
         counter = start;
         return false;
@@ -958,7 +958,7 @@ ParsedResult<string>    Parser::attribute_name()
         return false;
     }
 
-    return tokens[counter++];
+    return (string)tokens[counter++];
 }
 
 
@@ -971,9 +971,9 @@ ParsedResult<Table> Parser::project_AND_rename() ///////////////////////////////
 
     // Is it project or rename
     string Op;
-    if ( (toMatch("project")) || (toMatch("rename")) )
+    if ( (match("project")) || (match("rename")) )
     {
-        Op =  tokens[counter-1]; // counter got incremented in toMatch
+        Op =  tokens[counter-1]; // counter got incremented in match
     }
     else    // not project OR rename
     {
@@ -983,7 +983,7 @@ ParsedResult<Table> Parser::project_AND_rename() ///////////////////////////////
 
 
     // is next string (
-    if ( !toMatch("(") )
+    if ( !match("(") )
     {
         counter = start;
         return false;
@@ -998,7 +998,7 @@ ParsedResult<Table> Parser::project_AND_rename() ///////////////////////////////
         return false;
     }
 
-    if ( !toMatch(")") )
+    if ( !match(")") )
     {
         counter = start;
         return false;
@@ -1032,8 +1032,6 @@ ParsedResult<Table> Parser::relational_algebra()
 
     // Takes Table OR expression
     // either result is a table
-    Table table1;
-    Table table2;
 
     // Read first atomic expr
     auto table1 = atomic_expr();
