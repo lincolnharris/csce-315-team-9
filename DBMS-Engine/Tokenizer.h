@@ -10,49 +10,52 @@
 #include <string>
 #include <vector>
 #include <regex>
+#include <algorithm>
+#include <locale>
 
+using std::regex;
 using std::string;
-
+using std::vector;
 
 // Basically a string without unwanted content
 struct Token
 {
-    string s;
+    string str;
 
 	Token() {};
-    Token(string token) : s(token) {}
-    Token(const char* token) : s(token) {}
+    Token(string token) : str(token) {}
+    Token(const char* token) : str(token) {}
 
-    operator string&() { return s; }
+    operator string&() { return str; }
+    bool operator==(const string& s) { return str == s; }
+    bool operator!=(const string& s) { return !((*this) == s); }
 
-    bool isQuoted(const string& s)
-    {
-        return (s[0] == '"' && s.back() == '"');
-    }
-
-	bool isAlnum()
-	{
-		// waiting
-	}
-
-    // This function assumes that the input is quoted
-    // It doesn't modify the object
-    string removeQuotes()
-    {
-        return s.substr(1, s.length() - 1);
-    }
 };
+
 
 // Functions that help tokenize the input
 class Tokenizer
 {
     // Order matters! E.g. if ">" matches first, then ">=" will never find a match [REGEX]
     static const regex OPERATORS;
+    static const regex SPACED_OPERATORS; // To undo padding operators in string literals
+
+    Tokenizer();
 
 public:
 
     // Breaking down the input into a list of meaningful words and operators
-    static vector<Token> tokenize(const string& in);
+    static vector<Token> tokenize(string in);
 
 };
 
+
+// String helper Functions
+int stringToInt(const string& str);
+
+bool isQuoted(const string& str);
+
+bool isAlnum(const string& str);
+
+// This function assumes that the input is quoted. It doesn't modify the object
+string removeQuotes(const string& str);

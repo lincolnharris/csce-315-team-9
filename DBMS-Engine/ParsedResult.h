@@ -32,7 +32,7 @@ public:
 
     // Returns the boolean representation of this object, which is whether it was
     // successfully parsed or not.
-    operator bool() { return true; }
+    operator bool() { return !failed; }
 
     // Returns the T& representation of this object, which allows the user
     // to access the T object (the parser result) within a ParsedResult

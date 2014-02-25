@@ -1,8 +1,15 @@
 // Class Includes
 #include "DBMS.h"
-#include "Comparison.h"
+#include "Condition.h"
+#include "Tokenizer.h"
+#include "Parser.h"
+
+#include <iostream>
+#include <sstream>
+#include <fstream>
 
 using namespace std;
+
 
 /******************** Constructor / Destructor *******************************/
 DBMS::DBMS()
@@ -16,71 +23,207 @@ DBMS::~DBMS()
 }
 
 /******************** DBMS General Commands *******************************/
-//Table DBMS::open_cmd(string name)
-//{
-//
-//
-//}
-//
-//
-//void DBMS::close_cmd(string name)
-//{
-//
-//
-//}
-//
-//
-//void DBMS::write_cmd(string name)
-//{
-//
-//
-//}
-//
-//
-//void DBMS::exit_cmd()
-//{
-//
-//
-//}
-//
-//
-//void DBMS::show_cmd(string name)
-//{
-//
-//
-//}
-//
+using namespace std;
+
+const string fileType = ".db";
+const string VARCHAR = "VARCHAR";
+const string INTEGER = "INTEGER";
+
+
+Table DBMS::open_cmd(string name){
+	//initialize some basic data
+	ifstream file;
+	file.open(name + fileType);
+	if (!file.is_open()) return Table(); //could not open the file
+	vector< vector<string> > rows;
+
+	//get all the rows
+	string line;
+	int counter = 0;
+	while (getline(file, line)) {
+		rows.push_back(vector<string>());
+		stringstream ss;
+		ss << line;
+		string word;
+		while (ss >> word){
+			rows[counter].push_back(word);
+		}
+		++counter;
+	}
+
+	//get the attributes and their types
+	vector<pair<string, Type> > attributes;
+	int size = rows[0].size();
+	for (int i = 0; i < size; i += 2){
+		string type = (rows[0])[i + 1];
+		Type t;
+		t.index = i / 2;
+		if (type.substr(0, 7) == VARCHAR) {
+			int j = VARCHAR.size() + 1;
+			string c = "";
+			while (type[j] != ')'){
+				c += type[j];
+				++j;
+			}
+			t.type = atoi(c.c_str());
+		}
+		else {
+			t.type = -1;
+		}
+		pair<string, Type> temp((rows[0])[i], t);
+		attributes.push_back(temp);
+	}
+	file.close();
+
+	//create the table
+	vector<string> tempToCompile;
+	create_cmd(name, attributes, tempToCompile);
+	//get a pointer to the table
+	unordered_map<string, Table>::iterator it = relations.find(name);
+	//insert all of the rows into the table
+	for (int i = 1; i<rows.size(); ++i){
+		insert_cmd(it->second, rows[i]);
+	}
+
+	return it->second;
+}
+
+void DBMS::close_cmd(string name){
+	//initialize some basic data
+	unordered_map<string, Table>::iterator it = relations.find(name);
+	if (it == relations.end()) return; //could not find the relation
+	ofstream file;
+	file.open(name + fileType);
+	if (!file.is_open()) return; //could not open the file
+
+	//get the first line (attributes)
+	vector<string> attributes;
+	vector<int> sizes;
+	Table* ptable = &(it->second);
+	for (auto& attribute : ptable->attributeMap){
+		attributes.push_back(attribute.first);
+		int size = attribute.second.type;
+		if (size == -1){
+			attributes.push_back(INTEGER);
+			sizes.push_back(15);
+		}
+		else{
+			sizes.push_back(size);
+			attributes.push_back(VARCHAR + "(" + to_string(size) + ")");
+		}
+	}
+
+	//add to file
+	int numOfColumns = sizes.size();
+	for (int i = 0; i<numOfColumns * 2; i += 2){
+		string temp = attributes[i] + " " + attributes[i + 1]+ " ";
+		while (temp.size() <= sizes[i / 2]){
+			temp += " ";
+		}
+		file << temp;
+	}
+	file << '\n';
+
+	//add the rows to the file
+	for (vector<string> row : ptable->rows){
+		for (int i = 0; i<numOfColumns; ++i){
+			string line = row[i];
+			while (line.size() < sizes[i]) line += " ";
+			file << line;
+		}
+		file << '\n';
+	}
+	file.close();
+}
+
+void DBMS::write_cmd(string name){
+    ofstream file;
+    file.open(name+fileType);
+    file.close();
+    close_cmd(name);
+}
+
+void DBMS::exit_cmd(){ exit(0);
+    }
+
+
+void DBMS::show_cmd(Table& table){
+    //get the first line (attributes)
+    vector<string> attributes;
+    vector<int> sizes;
+    for (auto& attribute : table.attributeMap){
+        attributes.push_back(attribute.first);
+        int size = attribute.second.type;
+        if (size == -1){
+            attributes.push_back(INTEGER);
+            sizes.push_back(15);
+        }
+        else{
+            sizes.push_back(size);
+            attributes.push_back(VARCHAR + "(" + to_string(size) + ")");
+        }
+    }
+
+    //write to screen
+    int numOfColumns = sizes.size();
+    for (int i = 0; i<numOfColumns * 2; i += 2){
+        string temp = attributes[i] + " " + attributes[i + 1]+ " ";
+        while (temp.size() < sizes[i / 2]){
+            temp += " ";
+        }
+        cout << temp;
+    }
+    cout << '\n';
+
+    //print the rows
+    if (table.rows.size() == 0) cout << "NO DATA IN TABLE" << '\n';
+    else{
+        for (vector<string> row : table.rows){
+            for (int i = 0; i < numOfColumns; ++i){
+                string line = row[i];
+                while (line.size() < sizes[i]) line += " ";
+                cout << line;
+            }
+            cout << '\n';
+        }
+    }
+}
+
 /******************** Table Manipulation *******************************/
-void DBMS::create_cmd(string name, vector< pair<string,Type> >& attributes, vector<string>& primaryKey)
+void DBMS::create_cmd(string name, vector< pair<string, Type> >& attributes, vector<string>& primaryKey)
 { // Lincoln
     Table table;
     int size = attributes.size();
-    for(int i = 0; i < size; ++i) //go through each attribute and add it to the attribute map
+    for (int i = 0; i < size; ++i) //go through each attribute and add it to the attribute map
         table.attributeMap.insert(attributes[i]);
     table.keys = primaryKey;
     relations[name] = table;
 }
 
 
-void DBMS::delete_cmd(Table& table, Comparison& cond)
-{// Lincoln
-    for( list<vector<string>>::iterator it = table.rows.begin(); it != table.rows.end(); ++it){//go through each row
-        if ( cond(*it) ) table.rows.erase(it);//if the row passes the condition, delete the row
-    }
-    // TODO make it efficient with remove_if, right now it makes a pass
-    // over the list on each .erase() call
+void DBMS::delete_cmd(string name)
+{ // Shayan
+    relations.erase(name);
 }
 
-void DBMS::update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate, Comparison& cond) // tuple<attributeName, Value>
+void DBMS::delete_cmd(Table& table, Condition& cond)
+{// Lincoln
+    table.rows.remove_if([&table, &cond](const vector<string>& row) {
+       return cond(row, table);
+    });
+}
+
+void DBMS::update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate, Condition& cond) // tuple<attributeName, Value>
 {
     // Dmitry
     for(vector<string>& row : table.rows)
-        if(cond(row))
+        if(cond(row, table))
             for(int i = 0; i < fieldsToUpdate.size(); ++i)
                 row[fieldsToUpdate[i].first] = fieldsToUpdate[i].second;
 }
 
-void DBMS::insert_cmd(Table& table, vector<string>& values)
+
+void DBMS::insert_cmd(Table& table, vector<string> values)
 {
     // Shayan
     if(values.size() != table.attributeMap.size())
@@ -93,7 +236,7 @@ void DBMS::insert_cmd(Table& table, vector<string>& values)
 
         // Type checking:
         if(t.type == -1)
-            try { stoi(values[t.index]); }
+            try { stringToInt(values[t.index]); }
             catch (...)
             {
                 table.rows.pop_back();
@@ -102,6 +245,22 @@ void DBMS::insert_cmd(Table& table, vector<string>& values)
 
         table.rows.back()[t.index] = values[t.index]; // The actual assignment
     }
+
+    // If it's a duplicate, pop it out!
+    if(find_if(table.rows.begin(), --table.rows.end(),
+        [&table, &values](const vector<string>& row)
+        {
+        //  Are there any other rows with the exact same primary key values as the newly added row?
+            for(string s : table.keys)
+            {
+                int index = table.attributeMap[s].index;
+                if(row[index] != values[index])
+                    return false;
+            }
+            return true;
+        }) != --table.rows.end()) // --rows.end() to exclude the newly added element
+        table.rows.pop_back();
+    // endif
 }
 
 void DBMS::insert_cmd(Table& table, const Table& fromRelation)
@@ -110,19 +269,62 @@ void DBMS::insert_cmd(Table& table, const Table& fromRelation)
     if(!is_union_compatible(table, fromRelation))
         throw "Not union compatible.";
 
-    // Just making sure they're the same; they could be different in attribute ordering.
-    table.attributeMap = fromRelation.attributeMap;
-
-    table.rows.insert(table.rows.end(), fromRelation.rows.begin(), fromRelation.rows.end());
+    for(auto& row : fromRelation.rows)
+        insert_cmd(table, row);
 }
 
+// Shayan
+list<vector<string>> DBMS::execute(string input)
+{
+    ParsedResult<Table> result(false);
+    try
+    {
+        result = Parser(Tokenizer::tokenize(input), this).program();
+    }
+    catch (const char* c)
+    {
+        cout << "!!!ERROR!!!" << endl;;
+        cout << c << endl;
+    }
+    if(!result) return list<vector<string>>();
+    return ((Table)result).rows;
+}
+
+// Shayan
+bool is_union_compatible(const Table& t1, const Table& t2)
+{
+    if(t1.attributeMap.size() != t2.attributeMap.size())
+        return false;
+
+    for(auto& pair1 : t1.attributeMap) // pair<name, Type>
+    {
+        auto pair2 = t2.attributeMap.find(pair1.first);
+
+        // Has attribute with the same name?
+        if(pair2 == t2.attributeMap.end())
+            return false;
+
+        // Same place?
+        if(pair2->second.index != pair1.second.index)
+            return false;
+
+        // Same type? int == -1, so negative means different types
+        if(pair2->second.type * pair1.second.type < 0)
+            return false;
+    }
+
+    return true;
+}
+
+
+
 /******************** Table Logic Algebra *******************************/
-Table DBMS::selection(Comparison& cond, const Table& table)
+Table DBMS::selection(Condition& cond, const Table& table)
 {// Lincoln
     Table selected;
     selected.attributeMap = table.attributeMap;
-    for(auto it = table.rows.begin(); it != table.rows.end(); ++it){ //go through each row
-        if ( cond(*it) ) selected.rows.push_back(*it);  //if the row passes the condition add it to the new table
+    for (auto it = table.rows.begin(); it != table.rows.end(); ++it){ //go through each row
+        if (cond(*it, table)) selected.rows.push_back(*it);  //if the row passes the condition add it to the new table
     }
     return selected;
 }
@@ -132,21 +334,28 @@ Table DBMS::selection(Comparison& cond, const Table& table)
 Table DBMS::projection(vector<string>& attributes, const Table& table)
 {// Lincoln
     Table proj;
-    /*
     int numOfAtts = attributes.size();
     int numOfRows = table.rows.size();
-    vector<Type> types;
-    list<vector<strings> > lines;
-    for(int i=0; i<numOfRows; ++i;){
+    list<vector<string> > lines;    //hold the rows for the project for now
+    for (int i = 0; i < numOfRows; ++i){//set up all the rows for the projection, but leave them empty for now
         vector<string> temp;
         lines.push_back(temp);
     }
-    for(int i=0; i<numOfAtts; ++i){ //go through all the wanted attributes
-        unordered_map<string,Type>::const_iterator it = table.attributeMap.find(attributes[i]);//get itterator to the attribute
-
+    for (int i = 0; i < numOfAtts; ++i){    //go through all the wanted attributes
+        auto it = table.attributeMap.find(attributes[i]); //get an iterator to the Type of the attribute
+        auto itA = lines.begin(); //iterator to the row where the attribute needs to be inserted
+        auto itB = table.rows.begin(); //iterator to the attribute that needs to be inserted into new table
+        for (int j = 0; j < numOfRows; ++j){    //go through every row
+            itA->push_back((*itB)[(it->second).index]); //add the correct string, based on the types index, from the old table to the projection
+            ++itA;  //go to next line for the projection
+            ++itB;  //go to next line for the old table
         }
+        Type temp = it->second;
+        temp.index = i; //change the index of the type to the new index
+        proj.attributeMap[attributes[i]] = temp; //add the attribute to the projection
+
     }
-    */
+    proj.rows = lines;  //add all of the rows to the project
     return proj;
 }
 
@@ -442,18 +651,4 @@ Table DBMS::natural_join(const Table& t1, const Table& t2)
 
 
     return t2;
-}
-
-bool is_union_compatible(const Table& t1, const Table& t2)
-{
-    if(t1.attributeMap.size() != t2.attributeMap.size())
-        return false;
-
-    // Do both have the same type of attributes?
-    string name;
-    for(auto& pair : t1.attributeMap) // pair<name, Type>
-        if(t2.attributeMap.find(pair.first) == t2.attributeMap.end())
-            return false;
-
-    return true;
 }

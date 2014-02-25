@@ -12,21 +12,12 @@
 #include <string>
 #include <algorithm>
 #include "ParsedResult.h"
+#include "Tokenizer.h"
+#include "Parser.h"
 
 using namespace std;
 
 
-struct Type
-{
-    int index;
-    short type;     // -1 == int, anything positive is a string of that length
-
-	Type() {};
-    Type(int index, short type) :
-            index(index), type(type)
-    {
-    }
-};
 
 ostream& operator<<(ostream& out, const Type& t)
 {
@@ -38,9 +29,56 @@ ParsedResult<int> test_ParsedResult()
     return 6;
 }
 
+
 int main()
 {
-	/*
+    // Testing parsing and evaluation of Conditions
+    DBMS db;
+    db.relations["Test"] = Table();
+    Table& t = db.relations["Test"];
+    t.attributeMap["Age"] = Type(0, -1);
+    t.attributeMap["First_Name"] = Type(1, 10);
+    t.attributeMap["Tree"] = Type(2, -1);
+    t.attributeMap["Flower"] = Type(3, 10);
+
+    t.rows.push_back({ "44", "John", "44", "Pine" });
+    t.rows.push_back({ "21", "John", "12345", "PotatoZ ARE cOOL" });
+    t.rows.push_back({ "19", "Johnny", "19", "Pine" });
+    t.rows.push_back({ "17", "Johnny", "17", "PotatoZ ARE cOOL" });
+
+    t.keys = vector<string>{"Age", "Tree"};
+
+    vector<Token> tokens = Tokenizer::tokenize("(Age == Tree &&  \"Pine\" == Flower) || First_Name == \"Johnny\" ");
+    Parser p(tokens, &db);
+    Condition& cond = *p.condition();
+
+    auto it = t.rows.begin();
+    if(!cond(*it, t)) throw "";
+
+    it++;
+    if(cond(*it, t)) throw "";
+
+    it++;
+    if(!cond(*it, t)) throw "";
+
+    it++;
+    if(!cond(*it, t)) throw "";
+    return 1;
+
+    // TESTING TOKENIZER!
+//    string in = "INSERT INTO animals VALUES FROM (\"Joe\", \"cat\", 4);";
+//    string in = "common_names <- project (name) (select (aname == name && akind != kind) (a * animals));";
+    string in = "dogs <-select(kind == \"dog + shit such>\\\"vow\")            animals;";
+//    string in = "INSERT \"hello how are you good sir?";
+    cout << in << endl;
+    for(string s : Tokenizer::tokenize(in))
+        cout << s << " ' ";
+    cout << endl;
+    return 1;
+
+    for(string& s : Tokenizer::tokenize("old_dogs <- select (age> 10>==<=) dogs;"))
+        cout << s << " | ";
+    cout << endl;
     cout << (int)test_ParsedResult();
     return 1;
 
@@ -91,7 +129,5 @@ int main()
 
     cout << attributeMap["Age"] << attributeMap["YanYan"] << endl;
 
-
-	*/
     return 1;
 }
