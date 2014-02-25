@@ -216,21 +216,24 @@ void Airport_Database::subtract(string list1, string list2)
 
 vector<string> Airport_Database::listPassengerNames(string list)
 {
-	dbms.execute(list + "Passengers" + " <- project (name) " + list + ";");
-	dbms.execute("SHOW " + list + "Passengers"); //TODO what to do here?
-	planeLists.insert(list + "Passengers");
+    // Store the result in some temporary table
+	auto data = dbms.execute(list + "PASSENGERS" + " <- project (name) " + list + ";");
 
-	return vector<string>();
+	// Delete the temporary table
+	dbms.execute("DELETE " + list + "PASSENGERS;");
+
+	vector<string> names;
+	for(vector<string>& row : data)
+	    names.push_back(row[0]);
+
+	return names;
 }
 
-vector<string> Airport_Database::filterHeavyBaggage(string list, int baggageLimit)
+list<vector<string>> Airport_Database::filterHeavyBaggage(string list, int baggageLimit)
 {
-	stringstream ss;
-	ss << baggageLimit;
-	string baggageMax;
-	ss >> baggageMax;
-	dbms.execute(list + "WithoutHeavyBaggage <- select (baggage < " + baggageMax + ") " + list + ";");
-	passengerLists.insert(list + "WithoutHeavyBaggage"); //TODO what to do here?
-	return vector<string>();
+	string baggageMax = to_string(baggageLimit);
+	auto data = dbms.execute(list + "WithoutHeavyBaggage <- select (baggage < " + baggageMax + ") " + list + ";");
+	dbms.execute("DELETE " + list + "WithoutHeavyBaggage");
+	return data;
 }
 

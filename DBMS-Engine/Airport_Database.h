@@ -8,12 +8,14 @@
 #include <string>
 #include <vector>
 #include <unordered_set>
+#include <list>
 
 #include "DBMS.h"
 
 using std::string;
 using std::vector;
 using std::unordered_set;
+using std::list;
 
 class Airport_Database
 {
@@ -63,7 +65,6 @@ public:
 
     vector<string> listPassengerNames(string list);   // Projection
                                                              // Selection
-    vector<string> filterHeavyBaggage(string list, int baggageLimit = 23);
-
+    list<vector<string>> filterHeavyBaggage(string list, int baggageLimit);
 };
 

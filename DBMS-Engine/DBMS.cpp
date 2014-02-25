@@ -201,6 +201,11 @@ void DBMS::create_cmd(string name, vector< pair<string, Type> >& attributes, vec
 }
 
 
+void DBMS::delete_cmd(string name)
+{ // Shayan
+    relations.erase(name);
+}
+
 void DBMS::delete_cmd(Table& table, Condition& cond)
 {// Lincoln
     table.rows.remove_if([&table, &cond](const vector<string>& row) {

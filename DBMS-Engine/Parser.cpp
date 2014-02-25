@@ -196,6 +196,26 @@ ParsedResult<string> Parser::literal()
     return false;
 }
 
+bool Parser::delete_relation_cmd()
+{
+    int start = counter; // Saving where we started from in case we need to backtrack
+    if(!match("DELETE"))
+    {
+        counter = start; // Backtrack
+        return false;
+    }
+
+    auto relname_result = relation_name();
+    if(!relname_result)
+    {
+        counter = start; // Backtrack
+        return false;
+    }
+
+    dbms->delete_cmd(relname_result);
+    return true;
+}
+
 ParsedResult<vector<string>> Parser::attribute_list()
 {
     int start = counter; // Saving where we started from in case we need to backtrack
@@ -293,13 +313,26 @@ bool Parser::command()
 ParsedResult<Table> Parser::program()
 {
     int start = counter; // Saving where we started from in case we need to backtrack
+    Table result;
+
     auto query_result = query();
     if(query_result)
-        return query_result;
-
-    auto cmd_result = command();
-    if(cmd_result)
-        return Table();
+    {
+        result = query_result;
+    }
+    else
+    {
+        auto cmd_result = command();
+        if(cmd_result)
+            result = Table();
+        else
+        {
+            counter = start; // Backtrack
+            return false;
+        }
+    }
+    if(match(";"))
+        return result;
 
     counter = start; // Backtrack
     return false;
@@ -653,6 +686,7 @@ bool Parser::insert_cmd(){
         }
     }
 }
+
 
 bool Parser::delete_cmd(){
     int start = counter;
