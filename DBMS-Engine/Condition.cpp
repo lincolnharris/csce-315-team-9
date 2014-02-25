@@ -7,6 +7,10 @@
 
 #include "Condition.h"
 
+
+using namespace std;
+
+
 Condition::Condition(Condition* left, Condition* right) :
         left(left), right(right)
 {

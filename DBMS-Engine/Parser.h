@@ -11,6 +11,8 @@
 #include "Condition.h"
 #include "DBMS.h"
 
+
+
 class Parser
 {
 
@@ -29,7 +31,7 @@ public:
     // PARAMETERS NEED TO BE CORRECTED
     ParsedResult<Table> query();
     ParsedResult<string> relation_name();
-    ParsedResult<string> identifier();
+//    ParsedResult<string> identifier(); Same as attribute-name
     ParsedResult<Table> expr();
     ParsedResult<Table> atomic_expr();
     ParsedResult<Table> selection();
@@ -66,6 +68,7 @@ public:
     bool update_cmd();
     bool insert_cmd();
     bool delete_cmd();
+    bool command();
     ParsedResult<vector<pair<string, Type>>> typed_attribute_list();
     ParsedResult<Type> type();
     ParsedResult<int> integer();

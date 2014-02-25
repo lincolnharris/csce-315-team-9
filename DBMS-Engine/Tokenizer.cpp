@@ -9,6 +9,8 @@
 
 #include <sstream>
 
+using namespace std;
+
 
 /* This is a list of operators separated by regex alternation operator |
  * Some characters are used in regex patterns themselves, so they have to be escaped

@@ -13,8 +13,9 @@
 #include <algorithm>
 #include <locale>
 
-using namespace std;
-
+using std::regex;
+using std::string;
+using std::vector;
 
 // Basically a string without unwanted content
 struct Token

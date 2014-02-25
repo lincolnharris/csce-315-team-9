@@ -141,7 +141,6 @@ ParsedResult<Condition*> Parser::comparison()
     auto comp_result = comparison1();
     if(comp_result)
     {
-        Condition* ccp = comp_result;
         return comp_result;
     }
     else
@@ -149,7 +148,6 @@ ParsedResult<Condition*> Parser::comparison()
         comp_result = comparison2();
         if(comp_result)
         {
-            Condition* ccp = comp_result;
             return comp_result;
         }
     }
@@ -213,6 +211,30 @@ ParsedResult<string> Parser::literal()
     return false;
 }
 
+ParsedResult<Table> Parser::query()
+{
+    return Table();
+}
+
+bool Parser::command()
+{
+
+}
+
+ParsedResult<Table> Parser::program()
+{
+    int start = counter; // Saving where we started from in case we need to backtrack
+    auto query_result = query();
+    if(query_result)
+        return query_result;
+
+    auto cmd_result = command();
+    if(cmd_result)
+        return cmd_result;
+
+    counter = start; // Backtrack
+    return false;
+}
 
 bool Parser::match(string toMatch)
 {
@@ -688,30 +710,14 @@ ParsedResult<int> Parser::integer(){
     return integr;
 }
 
-ParsedResult<Table> Parser::program(){
-    int start = counter;
 
-    auto qry = query();
-    if (!qry){
-        //auto cmmd = command();
-        //if ( !cmmd ){
-        //  counter = start;
-        //  return false;
-        //}
-        //else{
-        //
-        //}
-        return Table(); //just for now until command() is made
-    }
-    else return qry;
-}
 
 /////////////////// DMITRY /////////////////////////
 ParsedResult<string> Parser::relation_name()
 {
     int start = counter;
 
-    auto result = identifier();
+    auto result = attribute_name();
     if (!result)
     {
         counter = start;
@@ -989,10 +995,3 @@ ParsedResult<Table> Parser::relational_algebra()
     }
 }
 
-ParsedResult<string> Parser::identifier()
-        {
-    return "";
-        }
-ParsedResult<Table> Parser::query() {
-    return Table();
-}
