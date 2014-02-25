@@ -269,10 +269,20 @@ void DBMS::insert_cmd(Table& table, const Table& fromRelation)
 }
 
 // Shayan
-vector<string> DBMS::execute(string input)
+list<vector<string>> DBMS::execute(string input)
 {
-    Parser(Tokenizer::tokenize(input), this).program();
-    return vector<string>(); // TODO What to return?
+    ParsedResult<Table> result(false);
+    try
+    {
+        result = Parser(Tokenizer::tokenize(input), this).program();
+    }
+    catch (const char* c)
+    {
+        cout << "!!!ERROR!!!" << endl;;
+        cout << c << endl;
+    }
+    if(!result) return list<vector<string>>();
+    return ((Table)result).rows;
 }
 
 // Shayan

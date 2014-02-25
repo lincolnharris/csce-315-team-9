@@ -140,17 +140,12 @@ ParsedResult<Condition*> Parser::comparison()
     int start = counter; // Saving where we started from in case we need to backtrack
     auto comp_result = comparison1();
     if(comp_result)
-    {
         return comp_result;
-    }
-    else
-    {
-        comp_result = comparison2();
-        if(comp_result)
-        {
-            return comp_result;
-        }
-    }
+
+    comp_result = comparison2();
+    if(comp_result)
+        return comp_result;
+
     counter = start; // Backtrack
     return false;
 }
@@ -177,17 +172,12 @@ ParsedResult<pair<string, bool>> Parser::operand()
     int start = counter; // Saving where we started from in case we need to backtrack
     auto attname_result = attribute_name();
     if(attname_result)
-    {
         return pair<string, bool>(attname_result, true);
-    }
-    else
-    {
-        auto literal_result = literal();
-        if(literal_result)
-        {
-            return pair<string, bool>(literal_result, false);
-        }
-    }
+
+    auto literal_result = literal();
+    if(literal_result)
+        return pair<string, bool>(literal_result, false);
+
     counter = start; // Backtrack
     return false;
 }
@@ -196,29 +186,79 @@ ParsedResult<string> Parser::literal()
 {
     int start = counter; // Saving where we started from in case we need to backtrack
     if(counter < tokens.size() && isQuoted(tokens[counter]))
-    {
         return (string)tokens[counter++];
-    }
-    else
-    {
-        auto int_result = integer();
-        if(int_result)
-        {
-            return to_string((int)int_result);
-        }
-    }
+
+    auto int_result = integer();
+    if(int_result)
+        return to_string((int)int_result);
+
     counter = start; // Backtrack
     return false;
 }
 
 ParsedResult<Table> Parser::query()
 {
-    return Table();
+    //relation-name <- expr
+    int start = counter; // Saving where we started from in case we need to backtrack
+
+    auto relname_result = relation_name();
+    if(!relname_result)
+    {
+        counter = start; // Backtrack
+        return false;
+    }
+
+    if(!match("<-"))
+    {
+        counter = start; // Backtrack
+        return false;
+    }
+
+    auto expr_result = expr();
+    if(!expr_result)
+    {
+        counter = start; // Backtrack
+        return false;
+    }
+
+    if(dbms->relations.find(relname_result) != dbms->relations.end())
+        throw "A relation with this name already exists!";
+    dbms->relations[relname_result] = expr_result;
+    return expr_result;
 }
 
 bool Parser::command()
 {
+    int start = counter; // Saving where we started from in case we need to backtrack
+    auto result = open_cmd();
+    if(result) return true;
 
+    result = close_cmd();
+    if(result) return true;
+
+    result = write_cmd();
+    if(result) return true;
+
+    result = exit_cmd();
+    if(result) return true;
+
+    result = show_cmd();
+    if(result) return true;
+
+    result = create_cmd();
+    if(result) return true;
+
+    result = update_cmd();
+    if(result) return true;
+
+    result = insert_cmd();
+    if(result) return true;
+
+    result = delete_cmd();
+    if(result) return true;
+
+    counter = start; // Backtrack
+    return false;
 }
 
 ParsedResult<Table> Parser::program()
@@ -230,7 +270,7 @@ ParsedResult<Table> Parser::program()
 
     auto cmd_result = command();
     if(cmd_result)
-        return cmd_result;
+        return Table();
 
     counter = start; // Backtrack
     return false;

@@ -10,6 +10,7 @@
 using std::string;
 using std::vector;
 using std::pair;
+using std::list;
 
 class Condition;
 
@@ -44,7 +45,7 @@ public:
     Table natural_join(const Table& t1, const Table& t2);
 
     // App Interaction
-    vector<string> execute(string input); // Returns multiple lines of output, if any.
+    list<vector<string>> execute(string input); // Returns multiple lines of output, if any.
 };
 
 // Helper Function
