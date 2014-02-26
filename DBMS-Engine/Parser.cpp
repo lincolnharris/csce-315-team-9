@@ -621,7 +621,9 @@ ParsedResult<vector<pair<string, Type>>> Parser::typed_attribute_list(){
 		counter = start;
 		return false;
 	}
-
+	int index = 0;
+	t.index = index;
+	++index;
 	vector<string> names;
 	vector<Type> ts;
 	names.push_back(name);
@@ -642,6 +644,8 @@ ParsedResult<vector<pair<string, Type>>> Parser::typed_attribute_list(){
 			counter = tempStart;
 			break;
 		}
+		t.index = index;
+		++index;
 		names.push_back(name);
 		ts.push_back(t);
 	}
