@@ -855,10 +855,14 @@ ParsedResult<Table> Parser::expr()
         table = relational_algebra();
     }
 
-    else
-    {
-        counter = start;
-        return false;
+    else // If current word is not an expression function
+    {    // then it must be atomic expression
+        auto atomic_table = atomic_expr();
+        if( !atomic_table)
+        {
+            counter = start;
+            return false;
+        }
     }
 
     return table;
