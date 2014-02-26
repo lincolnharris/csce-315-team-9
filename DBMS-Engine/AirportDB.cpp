@@ -4,14 +4,14 @@
 *  Created on: Feb 23, 2014
 *      Author: Synix
 */
-#include "Airport_Database.h"
+#include "AirportDB.h"
 #include <sstream>
 
 using namespace std;
 
 
 // Shayan
-Airport_Database::Airport_Database()
+AirportDB::AirportDB()
 {
     dbms.execute("CREATE TABLE Boarding (passengerName VARCHAR(20),"
                                         "planeModel    VARCHAR(20),"
@@ -24,11 +24,11 @@ Airport_Database::Airport_Database()
                                                  "planeModel);");
 }
 
-Airport_Database::~Airport_Database()
+AirportDB::~AirportDB()
 {
 }
 
-void Airport_Database::newAirlineList(string name)
+void AirportDB::newAirlineList(string name)
 {
     dbms.execute("CREATE TABLE " + name + " (name VARCHAR(20),"
                                             "HQ   VARCHAR(10),"
@@ -39,7 +39,7 @@ void Airport_Database::newAirlineList(string name)
     airlineLists.insert(name);
 }
 
-void Airport_Database::newPassengerList(string name)
+void AirportDB::newPassengerList(string name)
 {
     dbms.execute("CREATE TABLE " + name + " (name        VARCHAR(20),"
                                             "age         INTEGER,"
@@ -52,7 +52,7 @@ void Airport_Database::newPassengerList(string name)
     passengerLists.insert(name);
 }
 
-void Airport_Database::newPlaneList(string name)
+void AirportDB::newPlaneList(string name)
 {
     dbms.execute("CREATE TABLE " + name + " (model     VARCHAR(20),"
                                             "capacity  INTEGER,"
@@ -63,7 +63,7 @@ void Airport_Database::newPlaneList(string name)
     planeLists.insert(name);
 }
 
-void Airport_Database::addPlane(string model, int capacity, string list)
+void AirportDB::addPlane(string model, int capacity, string list)
 {
     if(planeLists.find(list) == planeLists.end())
         throw "List not found!";
@@ -72,7 +72,7 @@ void Airport_Database::addPlane(string model, int capacity, string list)
                                                             + to_string(capacity) + ");");
 }
 
-void Airport_Database::addPassenger(string name, int age, int baggage, string destination, string list)
+void AirportDB::addPassenger(string name, int age, int baggage, string destination, string list)
 {
     if(passengerLists.find(list) == passengerLists.end())
     throw "List not found!";
@@ -83,7 +83,7 @@ void Airport_Database::addPassenger(string name, int age, int baggage, string de
                                                        "\"" + destination        + "\");");
 }
 
-void Airport_Database::addAirline(string name, string HQ, string list)
+void AirportDB::addAirline(string name, string HQ, string list)
 {
     if(airlineLists.find(list) == airlineLists.end())
             throw "List not found!";
@@ -92,19 +92,19 @@ void Airport_Database::addAirline(string name, string HQ, string list)
                                                        "\"" + HQ   + "\");");
 }
 
-void Airport_Database::board(string passengerName, string planeModel)
+void AirportDB::board(string passengerName, string planeModel)
 {
     dbms.execute("INSERT INTO Boarding VALUES FROM (\"" + passengerName + "\", "
                                                    "\"" + planeModel    + "\");");
 }
 
-void Airport_Database::own(string airlineName, string planeModel)
+void AirportDB::own(string airlineName, string planeModel)
 {
     dbms.execute("INSERT INTO Owns VALUES FROM (\"" + airlineName + "\", "
                                                "\"" + planeModel  + "\");");
 }
 
-void Airport_Database::removePassenger(string name, string list)
+void AirportDB::removePassenger(string name, string list)
 {
     if(passengerLists.find(list) == passengerLists.end())
             throw "List not found!";
@@ -112,7 +112,7 @@ void Airport_Database::removePassenger(string name, string list)
     dbms.execute("DELETE FROM " + list + " WHERE name == \"" + name + "\";");
 }
 
-void Airport_Database::removePlane(string model, string list)
+void AirportDB::removePlane(string model, string list)
 {
     if(planeLists.find(list) == planeLists.end())
             throw "List not found!";
@@ -120,7 +120,7 @@ void Airport_Database::removePlane(string model, string list)
     dbms.execute("DELETE FROM " + list + " WHERE model == \"" + model + "\";");
 }
 
-void Airport_Database::removeAirline(string name, string list)
+void AirportDB::removeAirline(string name, string list)
 {
     if(airlineLists.find(list) == airlineLists.end())
             throw "List not found!";
@@ -128,57 +128,50 @@ void Airport_Database::removeAirline(string name, string list)
     dbms.execute("DELETE FROM " + list + " WHERE name == \"" + name + "\";");
 }
 
-void Airport_Database::disembark(string passengerName, string planeModel)
+void AirportDB::disembark(string passengerName, string planeModel)
 {
     dbms.execute("DELETE FROM Boarding WHERE passengerName == \"" + passengerName + '"'
                                        + "&& planeModel    == \"" + planeModel    + "\";");
 }
 
-void Airport_Database::disown(string airlineName, string planeModel)
+void AirportDB::disown(string airlineName, string planeModel)
 {
     dbms.execute("DELETE FROM Boarding WHERE airlineName == \"" + airlineName + '"'
                                        + "&& planeModel  == \"" + planeModel  + "\";");
 }
 
-void Airport_Database::updatePassenger(string name, string list, int updatedBaggage)
+void AirportDB::updatePassenger(string name, string list, int updatedBaggage)
 {
     dbms.execute("UPDATE " + list + " SET baggage = " + to_string(updatedBaggage)
                                   + " WHERE name == \"" + name + "\";");
 }
 
-void Airport_Database::updateAirline(string name, string list, string newHQ)
+void AirportDB::updateAirline(string name, string list, string newHQ)
 {
     dbms.execute("UPDATE " + list + " SET baggage = \"" + name  + '"'
                                   + " WHERE name == \"" + newHQ + "\";");
 }
 
-void Airport_Database::save(string list)
+void AirportDB::save(string list)
 {
-    dbms.execute("WRITE Boarding;");
-    dbms.execute("WRITE Owns;");
-    for(string list : planeLists)
+    if(     airlineLists.find(list)   != airlineLists.end()
+         || passengerLists.find(list) != passengerLists.end()
+         || planeLists.find(list)     != planeLists.end())
         dbms.execute("WRITE " + list + ";");
-    for(string list : passengerLists)
-        dbms.execute("WRITE " + list + ";");
-    for(string list : airlineLists)
-        dbms.execute("WRITE " + list + ";");
-
+    else throw "List not found!";
 }
 
-void Airport_Database::load(string list)
+void AirportDB::load(string list)
 {
-    dbms.execute("OPEN Boarding;");
-    dbms.execute("OPEN Owns;");
-    for(string list : planeLists)
+    if(     airlineLists.find(list)   == airlineLists.end()
+         && passengerLists.find(list) == passengerLists.end()
+         && planeLists.find(list)     == planeLists.end())
         dbms.execute("OPEN " + list + ";");
-    for(string list : passengerLists)
-        dbms.execute("OPEN " + list + ";");
-    for(string list : airlineLists)
-        dbms.execute("OPEN " + list + ";");
+    else throw "List already exists!";
 }
 
 // Lincoln
-void Airport_Database::merge(string list1, string list2)
+void AirportDB::merge(string list1, string list2)
 {
 	if (airlineLists.find(list1) != airlineLists.end()
 	        && airlineLists.find(list2) != airlineLists.end()){
@@ -196,7 +189,7 @@ void Airport_Database::merge(string list1, string list2)
 	dbms.execute(list1 + "AND" + list2 + " <-" + list1 + " + " + list2 + ";");
 }
 
-void Airport_Database::subtract(string list1, string list2)
+void AirportDB::subtract(string list1, string list2)
 {
 	if (airlineLists.find(list1) != airlineLists.end()
 	        && airlineLists.find(list2) != airlineLists.end()){
@@ -214,7 +207,7 @@ void Airport_Database::subtract(string list1, string list2)
 	dbms.execute(list1 + "MINUS" + list2 + "<-" + list1 + " - " + list2 + ";");
 }
 
-vector<string> Airport_Database::listPassengerNames(string list)
+vector<string> AirportDB::listPassengerNames(string list)
 {
     // Store the result in some temporary table
 	auto data = dbms.execute(list + "PASSENGERS" + " <- project (name) " + list + ";");
@@ -229,7 +222,7 @@ vector<string> Airport_Database::listPassengerNames(string list)
 	return names;
 }
 
-list<vector<string>> Airport_Database::filterHeavyBaggage(string list, int baggageLimit)
+list<vector<string>> AirportDB::filterHeavyBaggage(string list, int baggageLimit)
 {
 	string baggageMax = to_string(baggageLimit);
 	auto data = dbms.execute(list + "WithoutHeavyBaggage <- select (baggage < " + baggageMax + ") " + list + ";");

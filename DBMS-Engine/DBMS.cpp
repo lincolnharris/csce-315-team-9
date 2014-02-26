@@ -200,7 +200,6 @@ void DBMS::create_cmd(string name, vector< pair<string, Type> >& attributes, vec
     relations[name] = table;
 }
 
-
 void DBMS::delete_cmd(string name)
 { // Shayan
     relations.erase(name);

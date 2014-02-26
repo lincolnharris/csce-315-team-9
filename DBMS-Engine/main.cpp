@@ -30,7 +30,7 @@ ParsedResult<int> test_ParsedResult()
 }
 
 
-int main()
+int main_test()
 {
     // Testing parsing and evaluation of Conditions
     DBMS db;

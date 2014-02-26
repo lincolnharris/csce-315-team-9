@@ -17,7 +17,7 @@ using std::vector;
 using std::unordered_set;
 using std::list;
 
-class Airport_Database
+class AirportDB
 {
     DBMS dbms;
 
@@ -26,8 +26,8 @@ class Airport_Database
     unordered_set<string> planeLists;
 
 public:
-    Airport_Database();
-    ~Airport_Database();
+    AirportDB();
+    ~AirportDB();
 
     // Creation
     void newAirlineList(string name);
@@ -64,7 +64,7 @@ public:
     void subtract(string list1, string list2); // Subtraction
 
     vector<string> listPassengerNames(string list);   // Projection
-                                                             // Selection
+                                                      // Selection
     list<vector<string>> filterHeavyBaggage(string list, int baggageLimit);
 };
 
