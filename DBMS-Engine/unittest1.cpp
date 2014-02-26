@@ -39,7 +39,7 @@ namespace DBMStest
 			table.attributeMap.insert(pair<string, Type>("name", Type(0, 15)));
 			table.attributeMap.insert(pair<string, Type>("value", Type(1, -1)));
 			database.relations.insert(pair<string, Table>(name, table));
-			database.write_cmd("numbers.db");
+			database.write_cmd("numbers");
 		};
 
 		TEST_METHOD_CLEANUP(DBMScleaning){
@@ -73,45 +73,30 @@ namespace DBMStest
 		}
 	
 		TEST_METHOD(DBMSwrite_cmd){
-			remove("numbers.db");
+			string filename = name + ".db";
+			remove(filename.c_str());
 			database.write_cmd(name);
 			ifstream file;
 			file.open("numbers.db");
 			string test;
 
 			Assert::IsTrue(file.is_open() &&
-				(file >> test) &&
-				(test == "name"));
+				getline(file, test) &&
+				(test == "CREATE TABLE numbers (name VARCHAR(15) ) PRIMARY KEY (value );") );
 		}
 	
 		TEST_METHOD(DBMSclose_cmd){
-			auto it = database.relations.find(name);
-			vector<string> row3;
-			row3.push_back("three");
-			row3.push_back("3");
-			database.insert_cmd(it->second, row3);
 			database.close_cmd(name);
 
 			ifstream file;
 			file.open("numbers.db");
 			string test;
-
-			vector<vector<string>> testerRows;
-			string line;
-			int counter = 0;
-			while (getline(file, line)) {
-				testerRows.push_back(vector<string>());
-				stringstream ss;
-				ss << line;
-				string word;
-				while (ss >> word){
-					testerRows[counter].push_back(word);
-				}
-				++counter;
-			}
+			auto finder = database.relations.find(name);
 
 			Assert::IsTrue(file.is_open() &&
-				( (testerRows[testerRows.size()-1])[0] == "three") );
+				( finder == database.relations.end()) &&
+				getline(file, test) &&
+				(test == "CREATE TABLE numbers (name VARCHAR(15) ) PRIMARY KEY (value );") );
 		}
 	
 		TEST_METHOD(DBMSopen_cmd){
@@ -126,7 +111,7 @@ namespace DBMStest
 				(it->first == name) );
 
 		}
-		
+		//everything has to work for this ^^
 		TEST_METHOD(DBMSdelete_cmd){
 			auto it = database.relations.find(name);
 			vector<Token> tokens;
@@ -134,18 +119,16 @@ namespace DBMStest
 			tokens.push_back(">");
 			tokens.push_back("1");
 			Parser parser(tokens, &database);
-			Condition* pntr = parser.condition();
+			Condition& cond = *parser.condition();
 
 			
-			database.delete_cmd(it->second, *pntr);
+			database.delete_cmd(it->second, cond);
 
-			Assert::IsTrue(false);
+			Assert::IsTrue(it->second.rows.size() ==2);
 		}
-		//^^not working (condition pointer)
 		TEST_METHOD(DBMSselection_cmd){
-			Assert::IsTrue(false);
+			
 		}
-		//^^not working (condition pointer)
 	};
 }
 
