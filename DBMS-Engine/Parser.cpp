@@ -229,15 +229,48 @@ bool Parser::match(string toMatch)
 	return false;
 }
 
+bool Parser::command()
+{
+    int start = counter; // Saving where we started from in case we need to backtrack
+    auto result = open_cmd();
+    if(result) return true;
+
+    result = close_cmd();
+    if(result) return true;
+
+    result = write_cmd();
+    if(result) return true;
+
+    result = exit_cmd();
+    if(result) return true;
+
+    result = show_cmd();
+    if(result) return true;
+
+    result = create_cmd();
+    if(result) return true;
+
+    result = update_cmd();
+    if(result) return true;
+
+    result = insert_cmd();
+    if(result) return true;
+
+    result = delete_cmd();
+    if(result) return true;
+
+    counter = start; // Backtrack
+    return false;
+}
+
 ///////////////////////// LINCOLN /////////////////////////////
 bool Parser::open_cmd(){
 	int start = counter;
 
-	if (tokens[counter].str != "OPEN"){
+	if ( !match("OPEN") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	auto name = relation_name();
 	if (!name)
@@ -252,11 +285,10 @@ bool Parser::open_cmd(){
 bool Parser::close_cmd(){
 	int start = counter;
 
-	if (tokens[counter].str != "CLOSE"){
+	if ( !match("CLOSE") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	auto name = relation_name();
 	if (!name)
@@ -271,11 +303,10 @@ bool Parser::close_cmd(){
 bool Parser::write_cmd(){
 	int start = counter;
 
-	if (tokens[counter].str != "WRITE"){
+	if ( !match("WRITE") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	auto name = relation_name();
 	if (!name)
@@ -290,11 +321,10 @@ bool Parser::write_cmd(){
 bool Parser::exit_cmd(){
 	int start = counter;
 
-	if (tokens[counter].str != "EXIT"){
+	if ( !match("EXIT") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 	dbms->exit_cmd();
 	return true;
 }
@@ -302,11 +332,10 @@ bool Parser::exit_cmd(){
 bool Parser::show_cmd(){
 	int start = counter;
 
-	if (tokens[counter].str != "SHOW"){
+	if ( !match("SHOW") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	auto table = atomic_expr();
 	if (!table)
@@ -322,16 +351,14 @@ bool Parser::show_cmd(){
 bool Parser::create_cmd(){
 	int start = counter;
 
-	if (tokens[counter].str != "CREATE"){
+	if ( !match("CREATE") ){
 		counter = start;
 		return false;
 	}
-	++counter;
-	if (tokens[counter].str != "TABLE"){
+	if ( !match("TABLE") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	auto name = relation_name();
 	if (!name)
@@ -340,11 +367,10 @@ bool Parser::create_cmd(){
 		return false;
 	}
 
-	if (tokens[counter].str != "("){
+	if ( !match("(") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	auto typed_att_list = typed_attribute_list();
 	if (!typed_att_list){
@@ -352,42 +378,36 @@ bool Parser::create_cmd(){
 		return false;
 	}
 
-	if (tokens[counter].str != ")"){
+	if ( !match(")") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
-	if (tokens[counter].str != "PRIMARY"){
+	if ( !match("PRIMARY") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
-	if (tokens[counter].str != "KEY"){
+	if ( !match("KEY") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
-	if (tokens[counter].str != "("){
+	if ( !match("(") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	auto att_list = attribute_list();
 	if (!att_list){
 		counter = start;
 		return false;
 	}
-	++counter;
 
-	if (tokens[counter].str != ")"){
+	if ( !match(")") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	dbms->create_cmd(name, typed_att_list, att_list);
 	return true;
@@ -396,11 +416,10 @@ bool Parser::create_cmd(){
 bool Parser::update_cmd(){
 	int start = counter;
 
-	if (tokens[counter].str != "UPDATE"){
+	if ( !match("UPDATE") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	auto Rname = relation_name();
 	if (!Rname){
@@ -408,11 +427,10 @@ bool Parser::update_cmd(){
 		return false;
 	}
 
-	if (tokens[counter].str != "SET"){
+	if ( !match("SET") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	auto Aname = attribute_name();
 	if (!Aname){
@@ -420,11 +438,10 @@ bool Parser::update_cmd(){
 		return false;
 	}
 
-	if (tokens[counter].str != "="){
+	if ( !match("=") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	auto lit = literal();
 	if (!lit){
@@ -432,15 +449,17 @@ bool Parser::update_cmd(){
 		return false;
 	}
 
-	vector<string> Anames;
-	Anames.push_back(Aname);
-	vector<string> lits;
-	lits.push_back(lit);
+	vector<pair<int, string>> fieldsToUpdate;
+	auto it = dbms->relations.find(Rname);
+	if(it == dbms->relations.end() ) throw("No table with the name " + Rname);
+	auto Ait = it->second.attributeMap.find(Aname);
+	if(Ait == it->second.attributeMap.end() ) throw("Attribute not foud");
+	fieldsToUpdate.push_back(pair<int,string>( Ait->second.index, lit ));
 
 	while (true){
 		int tempStart = counter;
 
-		if (tokens[counter].str != ","){
+		if ( !match(",") ){
 			counter = tempStart;
 			break;
 		}
@@ -450,25 +469,24 @@ bool Parser::update_cmd(){
 			counter = tempStart;
 			break;
 		}
-		if (tokens[counter].str != "="){
+		if ( !match("=") ){
 			counter = tempStart;
 			break;
 		}
-		++counter;
 		lit = literal();
 		if (!lit) {
 			counter = tempStart;
 			break;
 		}
-		Anames.push_back(Aname);
-		lits.push_back(lit);
+		Ait = it->second.attributeMap.find(Aname);
+		if(Ait == it->second.attributeMap.end() ) throw("Attribute not foud");
+		fieldsToUpdate.push_back(pair<int,string>( Ait->second.index, lit ));
 	}
 
-	if (tokens[counter].str != "WHERE"){
+	if ( !match("WHERE") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	auto cond = condition();
 	if (!cond) {
@@ -476,26 +494,22 @@ bool Parser::update_cmd(){
 		return false;
 	}
 
-
-	unordered_map<string, Table>::iterator it = dbms->relations.find(Rname);
-	//dbms->update_cmd(it->second, ) needs to be looked at
+	dbms->update_cmd(it->second,fieldsToUpdate, *cond);
 	return true;
 }
 
 bool Parser::insert_cmd(){
 	int start = counter;
 
-	if (tokens[counter].str != "INSERT"){
+	if ( !match("INSERT") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
-	if (tokens[counter].str != "INTO"){
+	if ( !match("INTO") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	auto name = relation_name();
 	if (!name) {
@@ -503,20 +517,17 @@ bool Parser::insert_cmd(){
 		return false;
 	}
 
-	if (tokens[counter].str != "VALUES"){
+	if ( !match("VALUES") ){
 		counter = start;
 		return false;
 	}
-	++counter;
-	if (tokens[counter].str != "FROM"){
+	if ( !match("FROM") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 
-	if (tokens[counter].str == "RELATION") {
-		++counter;
+	if ( match("RELATION") ){
 		auto exp = expr();
 		if (!exp){
 			counter = start;
@@ -527,8 +538,7 @@ bool Parser::insert_cmd(){
 		return true;
 	}
 	else {
-		if (tokens[counter].str == "(") {
-			++counter;
+		if ( match("(") ){
 			auto lit = literal();
 			if (!lit){
 				counter = start;
@@ -539,26 +549,23 @@ bool Parser::insert_cmd(){
 			while (true){
 				int tempStart = counter;
 
-				if (tokens[counter].str != ",") {
+				if ( !match(",") ){
 					counter = tempStart;
 					break;
 				}
-				++counter;
 				lit = literal();
 				if (!lit) {
 					counter = tempStart;
 					break;
 				}
 			}
-
-			if (tokens[counter].str != ")"){
+			if ( !match(")") ){
 				counter = start;
 				return false;
 			}
 			unordered_map<string, Table>::iterator it = dbms->relations.find(name);
-			//dbms-> insert( it->second, something else);
+			dbms->insert_cmd( it->second, lits);
 			return true;
-
 		}
 		else{
 			counter = start;
@@ -570,16 +577,14 @@ bool Parser::insert_cmd(){
 bool Parser::delete_cmd(){
 	int start = counter;
 
-	if (tokens[counter].str != "DELETE"){
+	if ( !match("DELETE") ){
 		counter = start;
 		return false;
 	}
-	++counter;
-	if (tokens[counter].str != "FROM"){
+	if ( !match("FROM") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	auto name = relation_name();
 	if (!name){
@@ -587,11 +592,10 @@ bool Parser::delete_cmd(){
 		return false;
 	}
 
-	if (tokens[counter].str != "WHERE"){
+	if ( !match("WHERE") ){
 		counter = start;
 		return false;
 	}
-	++counter;
 
 	auto cond = condition();
 	if (!cond){
@@ -624,11 +628,10 @@ ParsedResult<vector<pair<string, Type>>> Parser::typed_attribute_list(){
 	ts.push_back(t);
 	while (true){
 		int tempStart = counter;
-		if (tokens[counter].str != ","){
+		if ( !match(",") ){
 			counter = tempStart;
 			break;
 		}
-		++counter;
 		name = attribute_name();
 		if (!name) {
 			counter = tempStart;
@@ -654,25 +657,23 @@ ParsedResult<vector<pair<string, Type>>> Parser::typed_attribute_list(){
 
 ParsedResult<Type> Parser::type(){
 	int start = counter;
-	if (tokens[counter].str == "VARCHAR"){
-		++counter;
-		if (tokens[counter].str != "(") {
+	if ( match("VARCHAR") ){
+		if ( !match("(") ){
 			counter = start;
 			return false;
 		}
-		++counter;
 		int integr = integer();
 		if (!integr){
 			counter = start;
 			return false;
 		}
-		if (tokens[counter].str != ")") {
+		if ( !match(")") ){
 			counter = start;
 			return false;
 		}
 		return Type(1, integr);
 	}
-	else if (tokens[counter].str == "INTEGER") {
+	else if ( match("INTEGER") ){
 		return Type(1, -1);
 	}
 	else{
@@ -697,14 +698,11 @@ ParsedResult<Table> Parser::program(){
 
 	auto qry = query();
 	if (!qry){
-		//auto cmmd = command();
-		//if ( !cmmd ){
-		//  counter = start;
-		//  return false;
-		//}
-		//else{
-		//
-		//}
+		auto cmmd = command();
+		if ( !cmmd ){
+		  counter = start;
+		  return false;
+		}
 		return Table(); //just for now until command() is made
 	}
 	else return qry;
