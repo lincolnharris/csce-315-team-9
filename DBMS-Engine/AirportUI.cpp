@@ -27,25 +27,25 @@ AirportUI::AirportUI()
     new_entry_menu   = new Menu;
 
     *start_menu = {
-            { "Create a new list", bind(present_menu, create_list_menu) },
+            { "Create a new list",            bind(present_menu, create_list_menu) },
             { "Open a previously saved list", bind(&AirportUI::open_list, this) },
-            { "Save a list", bind(&AirportUI::save_list, this) },
-            { "Add an entry to a list", bind(present_menu, new_entry_menu) },
-            { "Exit", []() { exit(0); } },
+            { "Save a list",                  bind(&AirportUI::save_list, this) },
+            { "Add an entry to a list",       bind(present_menu, new_entry_menu) },
+            { "Exit",                         []() { exit(0); } },
     };
 
     *create_list_menu = {
             { "List of passengers", bind(&AirportUI::add_passenger_list, this) },
-            { "List of airlines", bind(&AirportUI::add_airline_list, this) },
-            { "List of planes", bind(&AirportUI::add_plane_list, this) },
-            { "Back", bind(present_menu, start_menu) },
+            { "List of airlines",   bind(&AirportUI::add_airline_list, this) },
+            { "List of planes",     bind(&AirportUI::add_plane_list, this) },
+            { "Back",               bind(present_menu, start_menu) },
     };
 
     *new_entry_menu = {
             { "List of passengers", bind(&AirportUI::add_passenger, this) },
-            { "List of airlines", bind(&AirportUI::add_airline, this) },
-            { "List of planes", bind(&AirportUI::add_plane, this) },
-            { "Back", bind(present_menu, start_menu) },
+            { "List of airlines",   bind(&AirportUI::add_airline, this) },
+            { "List of planes",     bind(&AirportUI::add_plane, this) },
+            { "Back",               bind(present_menu, start_menu) },
     };
 
     while(true) present_menu(start_menu);
