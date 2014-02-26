@@ -67,6 +67,8 @@ public:
 	bool update_cmd();
 	bool insert_cmd();
 	bool delete_cmd();
+    bool delete_relation_cmd();
+    bool command();
 	ParsedResult<vector<pair<string, Type>>> typed_attribute_list();
 	ParsedResult<Type> type();
 	ParsedResult<int> integer();
