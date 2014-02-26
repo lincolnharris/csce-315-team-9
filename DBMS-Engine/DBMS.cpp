@@ -6,6 +6,8 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <cstdio>
+#include <cctype>
 
 using namespace std;
 
@@ -29,116 +31,80 @@ const string VARCHAR = "VARCHAR";
 const string INTEGER = "INTEGER";
 
 Table DBMS::open_cmd(string name){
-	//initialize some basic data
-	ifstream file;
+	//set up file
+	fstream file;
 	file.open(name + fileType);
-	if (!file.is_open()) return Table(); //could not open the file
-	vector< vector<string> > rows;
-
-	//get all the rows
+	if( !file.is_open() ) return Table();
+	//send each line to the parser
 	string line;
-	int counter = 0;
 	while (getline(file, line)) {
-		rows.push_back(vector<string>());
-		stringstream ss;
-		ss << line;
-		string word;
-		while (ss >> word){
-			rows[counter].push_back(word);
-		}
-		++counter;
+		execute(line);
 	}
-
-	//get the attributes and their types
-	vector<pair<string, Type> > attributes;
-	int size = rows[0].size();
-	for (int i = 0; i < size; i += 2){
-		string type = (rows[0])[i + 1];
-		Type t;
-		t.index = i / 2;
-		if (type.substr(0, 7) == VARCHAR) {
-			int j = VARCHAR.size() + 1;
-			string c = "";
-			while (type[j] != ')'){
-				c += type[j];
-				++j;
-			}
-			t.type = atoi(c.c_str());
-		}
-		else {
-			t.type = -1;
-		}
-		pair<string, Type> temp((rows[0])[i], t);
-		attributes.push_back(temp);
-	}
-	file.close();
-
-	//create the table
-	create_cmd(name, attributes, vector<string>());
-	//get a pointer to the table
+	//find the table and return it
 	unordered_map<string, Table>::iterator it = relations.find(name);
-	//insert all of the rows into the table
-	for (int i = 1; i<rows.size(); ++i){
-		insert_cmd(it->second, rows[i]);
-	}
-
 	return it->second;
 }
 
 void DBMS::close_cmd(string name){
-	//initialize some basic data
-	unordered_map<string, Table>::iterator it = relations.find(name);
-	if (it == relations.end()) return; //could not find the relation
-	ofstream file;
-	file.open(name + fileType);
-	if (!file.is_open()) return; //could not open the file
-
-	//get the first line (attributes)
-	vector<string> attributes;
-	vector<int> sizes;
-	Table* ptable = &(it->second);
-	for (auto& attribute : ptable->attributeMap){
-		attributes.push_back(attribute.first);
-		int size = attribute.second.type;
-		if (size == -1){
-			attributes.push_back(INTEGER);
-			sizes.push_back(15);
-		}
-		else{
-			sizes.push_back(size);
-			char s[sizeof(int)];
-			_itoa_s(size, s, sizeof(int) , 10);
-			attributes.push_back(VARCHAR + "(" + s + ")");
-		}
-	}
-
-	//add to file
-	int numOfColumns = sizes.size();
-	for (int i = 0; i<numOfColumns * 2; i += 2){
-		string temp = attributes[i] + " " + attributes[i + 1]+ " ";
-		while (temp.size() <= sizes[i / 2]){
-			temp += " ";
-		}
-		file << temp;
-	}
-	file << '\n';
-
-	//add the rows to the file
-	for (vector<string> row : ptable->rows){
-		for (int i = 0; i<numOfColumns; ++i){
-			string line = row[i];
-			while (line.size() < sizes[i]) line += " ";
-			file << line;
-		}
-		file << '\n';
-	}
-	file.close();
+	write_cmd(name);
+	relations.erase(name);
 }
 
 void DBMS::write_cmd(string name){
+	//clear file
+	remove((name + fileType).c_str());
+	//create new file
 	ofstream file;
-	file.open(name + fileType);
-	close_cmd(name);
+	file.open(name+fileType);
+	if ( !file.is_open() ) return;
+	//get pointer to table
+	auto iterator = relations.find(name);
+	if( iterator == relations.end() ) return;
+	Table* ptable = &(iterator->second);
+	//create table command
+	file << "CREATE TABLE " + name + " (";
+	int size = (int)relations.size();
+	for(int i=0; i < size; ++i){
+		auto it = ptable->attributeMap.begin();
+		int index = -1;
+		string attribute;
+		while( it != ptable->attributeMap.end() ){
+			if (it->second.index == i){
+				attribute = it->first + " ";
+				if( it->second.type == -1){
+					attribute += INTEGER;
+				}
+				else{
+					attribute += VARCHAR + "(" + to_string(it->second.type) + ")";
+				}
+				break;
+			}
+			++it;
+		}
+		file << attribute + " ";
+	}
+	file << ") PRIMARY KEY (";
+	for(string key: ptable->keys){
+		file << key << " ";
+	}
+	file << ");\n";
+	//INSERT INTO command for each row
+	auto last = ptable->rows.end();
+	for( auto iter = ptable->rows.begin(); iter != last; ++iter){
+		file << "INSERT INTO " << name << " VALUES FROM (";
+		auto end = iter->end();
+		for(auto itratr = iter->begin(); itratr != end; ++itratr){
+			--end;
+			if (isdigit( (*itratr)[0]) )
+				file << *itratr;
+			else
+				file << "\"" + *itratr + "\"";
+			if( itratr != end )
+				file << ", ";
+			++end;
+		}
+		file << ");\n";
+	}
 	file.close();
 }
 
@@ -204,11 +170,9 @@ void DBMS::create_cmd(string name, vector< pair<string, Type> >& attributes, vec
 
 void DBMS::delete_cmd(Table& table, Condition& cond)
 {// Lincoln
-	for (list<vector<string>>::iterator it = table.rows.begin(); it != table.rows.end(); ++it){//go through each row
-		if (cond(*it, table)) table.rows.erase(it);//if the row passes the condition, delete the row
-	}
-	// TODO make it efficient with remove_if, right now it makes a pass
-	// over the list on each .erase() call
+    table.rows.remove_if([&table, &cond](const vector<string>& row) {
+       return cond(row, table);
+    });
 }
 
 void DBMS::update_cmd(Table& table, vector<pair<int, string>>& fieldsToUpdate, Condition& cond) // tuple<attributeName, Value>
