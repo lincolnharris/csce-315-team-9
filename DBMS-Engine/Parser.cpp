@@ -970,7 +970,7 @@ ParsedResult<string>    Parser::attribute_name()
 ParsedResult<Table> Parser::project_AND_rename() /////////////////////////////////
 {
     // Project/Rename:: = ( attribute-list) atomic_expr
-
+    --counter;
     int start = counter;
 
     // Is it project or rename
@@ -985,29 +985,24 @@ ParsedResult<Table> Parser::project_AND_rename() ///////////////////////////////
         return false;
     }
 
-
     // is next string (
     if ( !match("(") )
     {
         counter = start;
         return false;
     }
-
     // Find attribute list
-    vector<string> Atrb_List;
-    Atrb_List = attribute_list();
-    if (!attribute_list())
+    auto Atrb_List = attribute_list();
+    if (!Atrb_List)
     {
         counter = start;
         return false;
     }
-
     if ( !match(")") )
     {
         counter = start;
         return false;
     }
-
     // Read atomic_expr
     auto table = atomic_expr();
     if (!table)
@@ -1015,7 +1010,7 @@ ParsedResult<Table> Parser::project_AND_rename() ///////////////////////////////
         counter = start;
         return false;
     }
-
+    
     if (Op == "project")
     {
         return dbms->projection(Atrb_List, table);
