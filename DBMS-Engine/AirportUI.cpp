@@ -26,7 +26,7 @@ AirportUI::AirportUI()
     create_list_menu  = new Menu;
     new_entry_menu    = new Menu;
     remove_entry_menu = new Menu;
-    update_entry_menu       = new Menu;
+    update_entry_menu = new Menu;
 
     *start_menu = {
             { "Create a new list",            bind(present_menu, create_list_menu) },
@@ -35,8 +35,11 @@ AirportUI::AirportUI()
             { "Add an entry to a list",       bind(present_menu, new_entry_menu) },
             { "Remove an entry from a list",  bind(present_menu, remove_entry_menu) },
             { "Update an entry in a list",    bind(present_menu, update_entry_menu) },
-            { "Add an entry to a list",       bind(present_menu, new_entry_menu) },
-            { "Add an entry to a list",       bind(present_menu, new_entry_menu) },
+            { "Merge two lists",              bind(&AirportUI::merge_lists, this) },
+            { "Subtract two lists",           bind(&AirportUI::subtract_lists, this) },
+            { "List passenger names",         bind(&AirportUI::list_passenger_names, this) },
+            { "Filter out passengers with "
+              "heavy baggage",                bind(&AirportUI::filter_heavy_baggage, this) },
             { "Exit",                         []() { exit(0); } },
     };
 
