@@ -874,7 +874,6 @@ ParsedResult<Table> Parser::expr()
 }
 
 
-
 ParsedResult<Table> Parser::atomic_expr()
 {
     int start = counter;
