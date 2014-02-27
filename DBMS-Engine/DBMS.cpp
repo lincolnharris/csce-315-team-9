@@ -405,49 +405,59 @@ Table DBMS::union_(const Table& t1, const Table& t2)
         }
     }
 
-    // Do the attributes index match for table1 & table2?
-    Type type;
+    // Do the attributes indecies match for table1 & table2?
+	int old_index2 = 0;
 
     // Search through table1 attributeMap
-    for (auto & t : table1.attributeMap)
+    for (auto & t1Map : table1.attributeMap)
     {
-        // If table2.attributeMap index != t.attributeMap index
-        if ( table2.attributeMap.find(t.first)->second.index != t.second.index )
+        // If table2.attributeMap index != table2.attributeMap index
+        if ( table2.attributeMap.find(t1Map.first)->second.index != t1Map.second.index )
         {
-            // Re-assign table2.attributeMap type, or give it temp value
-            type = table2.attributeMap.find(t.first)->second;
+            // record location of index of attributeMap
+			old_index2 = table2.attributeMap.find(t1Map.first)->second.index;
 
-            // move attrb values to corresponding indx to table1
-            for(vector<string> row : table2.rows)
+			// must swap attributeMap2 items within itself, to match attrbMap1
+			for (auto & t2Map : table2.attributeMap)
+			{
+				if (t2Map.second.index == t1Map.second.index)
+				{
+					// this t2Map index will swap with other t2Map index
+					t2Map.second.index = old_index2;
+					break;
+				}
+			}
+			table2.attributeMap.find(t1Map.first)->second.index = t1Map.second.index;
+
+            // move attrb values to corresponding indx in table1
+            for(auto& row2 : table2.rows)
             {
-                // move value from current to aligned with table1
-                row.insert(row.begin() + t.second.index, row[type.index]);
-                row.erase(row.begin() + type.index);
+                // move value to match new table2 attributeMap alignment 
+				string temp_value = row2[old_index2];
+				row2.erase(row2.begin() + old_index2);
+				row2.insert(row2.begin() + t1Map.second.index, temp_value);
             }
-
-            // Current table2 attribute map index = table1 attribute index, now are same indx
-            table2.attributeMap.find(t.first)->second.index = t.second.index;
         }
     }
 
 
     bool duplicate = true;
     // Union the tables, while checking for duplicates
-    for(vector<string> row1 : table1.rows)  // check table1
+    for(auto row2 : table2.rows)  // check table1
     {
-        for(vector<string> row2 : table2.rows) // with all of table2 entries
+        for(auto row1 : table1.rows) // with all of table2 entries
         {
-            for (int j = 0; j < row2.size(); j++)
-            {
-                if ( row1[j] != row2[j])
-                    duplicate = false;
-            }
-        }
+			if (row2 != row1)
+			{
+				duplicate = false;
+				break;
+			}
+	    }
 
         // No duplicate found, copy table1[0] into table2.front
         if (duplicate == false)
         {
-            table2.rows.push_front(row1);
+            table1.rows.push_back(row2);
         }
 
         // Reset duplicate
@@ -460,75 +470,77 @@ Table DBMS::union_(const Table& t1, const Table& t2)
 
 Table DBMS::difference(const Table& t1, const Table& t2)
 {
-    // Dmitry
+	// Dmitry
 
-    Table table1 = t1;
-    Table table2 = t1;
+	// Make new copies of table, to manipulate then display
+	Table table1 = t1;
+	Table table2 = t2;
 
-    // Does t1 & t2 have same number of attributs?
-    if (table1.attributeMap.size() != table2.attributeMap.size())
-    {
-        throw "Not union Compatible";
-    }
+	// Does table1 & table2 have same number of attributs?
+	if (table1.attributeMap.size() != table2.attributeMap.size())
+	{
+		throw "Error! Not union compatible";
+	}
 
-    // Do both have the same type of attributes?
-    string name;
-    for (auto & t : table1.attributeMap)
-    {
-        if (table2.attributeMap.find(t.first) == table2.attributeMap.end())
-        {
-            throw "Attributes do not match";
-        }
-    }
+	// Do both have the same type of attributes?
+	string name;
+	for (auto & t : table1.attributeMap)
+	{
+		if (table2.attributeMap.find(t.first) == table2.attributeMap.end())
+		{
+			throw "Attributes do not match";
+		}
+	}
 
-    // Do the attributes index/location match for table1 & table2?
-    Type type;
-    // iterate through every attribute index
-    for (auto & map1 : table1.attributeMap)
-    {
-        // If table2.attributeMap index != t.attributeMap index
-        if ( table2.attributeMap.find(map1.first)->second.index != map1.second.index )
-        {
-            // Re-assign table2.attributeMap type, or give it temp value
-            type = table2.attributeMap.find(map1.first)->second;
+	// Do the attributes indecies match for table1 & table2?
+	int old_index2 = 0;
 
-            // move attrb values to corresponding indx to table1
-            for(vector<string> row2 : table2.rows)
-            {
-                // move value from current to aligned with table1
-                row2.insert(row2.begin() + map1.second.index, row2[type.index]);
-                row2.erase(row2.begin() + type.index);
-            }
+	// Search through table1 attributeMap
+	for (auto & t1Map : table1.attributeMap)
+	{
+		// If table2.attributeMap index != table2.attributeMap index
+		if (table2.attributeMap.find(t1Map.first)->second.index != t1Map.second.index)
+		{
+			// record location of index of attributeMap
+			old_index2 = table2.attributeMap.find(t1Map.first)->second.index;
 
-            // Current table2 attribute map index = table1 attribute index, now are same indx
-            table2.attributeMap.find(map1.first)->second.index = map1.second.index;
-        }
-    }
+			// must swap attributeMap2 items within itself, to match attrbMap1
+			//////////////////// ISSUE 
+			// Must move attributeMap index to where  below item is moving to
+
+			table2.attributeMap.find(t1Map.first)->second.index = t1Map.second.index;
+
+			// move attrb values to corresponding indx in table1
+			for (auto& row2 : table2.rows)
+			{
+				// move value to match new table2 attributeMap alignment 
+				string temp_value = row2[old_index2];
+				row2.erase(row2.begin() + old_index2);
+				row2.insert(row2.begin() + t1Map.second.index, temp_value);
+			}
+		}
+	}
     // Both tables have same order of attribute types
 
-    // Copy current table1, clean its list, use to fill final table to return
+    // difference is final output table
     Table difference = table1;
-    table1.rows.erase(table1.rows.begin(), table1.rows.end());
-
+    
     bool duplicate = false;
     // Subtract
-    for(vector<string> row1 : table1.rows)  // check table1
+    for(auto & row1 : table1.rows)  // check table1
     {
-        for(vector<string> row2 : table2.rows) // with all of table2 entries
+        for(auto &  row2 : table2.rows) // with all of table2 entries
         {
-            for (int i = 0; i < row2.size(); i++)
+            // if copy of rows, do not add to new table
+            if ( row1 == row2 )
             {
-                // if copy of rows, do not add to new table
-                if ( row1[i] == row2[i] )
-                {
-                    duplicate = true;
-                }
+                duplicate = true;
             }
-
-        }
+		}
 
         if (!duplicate)
-        {
+        {	
+			// row1 checkes out for all of table2.rows, safe to add
             difference.rows.push_back(row1);
         }
 
