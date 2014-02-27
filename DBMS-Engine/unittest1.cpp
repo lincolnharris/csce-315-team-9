@@ -82,7 +82,7 @@ namespace DBMStest
 
 			Assert::IsTrue(file.is_open() &&
 				getline(file, test) &&
-				(test == "CREATE TABLE numbers (name VARCHAR(15) ) PRIMARY KEY (value );") );
+				(test == "CREATE TABLE numbers (name VARCHAR(15), value INTEGER) PRIMARY KEY (value );") );
 		}
 	
 		TEST_METHOD(DBMSclose_cmd){
@@ -96,7 +96,7 @@ namespace DBMStest
 			Assert::IsTrue(file.is_open() &&
 				( finder == database.relations.end()) &&
 				getline(file, test) &&
-				(test == "CREATE TABLE numbers (name VARCHAR(15) ) PRIMARY KEY (value );") );
+				(test == "CREATE TABLE numbers (name VARCHAR(15), value INTEGER) PRIMARY KEY (value );") );
 		}
 	
 		TEST_METHOD(DBMSopen_cmd){
@@ -109,9 +109,8 @@ namespace DBMStest
 
 			Assert::IsTrue(file.is_open() &&
 				(it->first == name) );
-
 		}
-		//everything has to work for this ^^
+
 		TEST_METHOD(DBMSdelete_cmd){
 			auto it = database.relations.find(name);
 			vector<Token> tokens;
@@ -126,6 +125,7 @@ namespace DBMStest
 
 			Assert::IsTrue(it->second.rows.size() ==2);
 		}
+
 		TEST_METHOD(DBMSselection_cmd){
 			
 		}
@@ -147,15 +147,15 @@ namespace PARSERTest{
 			attributes.push_back(pair<string, Type>("value", Type(1, -1)));
 			keys.push_back("value");
 			vector<string> row0;
-			row0.push_back("zero");
+			row0.push_back("\"zero\"");
 			row0.push_back("0");
 			rows.push_back(row0);
 			vector<string> row1;
-			row1.push_back("one");
+			row1.push_back("\"one\"");
 			row1.push_back("1");
 			rows.push_back(row1);
 			vector<string> row2;
-			row2.push_back("two");
+			row2.push_back("\"two\"");
 			row2.push_back("2");
 			rows.push_back(row2);
 			table.rows = rows;
@@ -163,7 +163,7 @@ namespace PARSERTest{
 			table.attributeMap.insert(pair<string, Type>("name", Type(0, 15)));
 			table.attributeMap.insert(pair<string, Type>("value", Type(1, -1)));
 			database.relations.insert(pair<string, Table>(name, table));
-			database.write_cmd("numbers.db");
+			database.write_cmd("numbers");
 		};
 
 		TEST_METHOD_CLEANUP(PARSERcleaning){
@@ -245,50 +245,66 @@ namespace PARSERTest{
 		TEST_METHOD(PARSERcreate_cmd){
 			tokens.push_back("CREATE");
 			tokens.push_back("TABLE");
-			tokens.push_back("Colors");
+			tokens.push_back("species");
 			tokens.push_back("(");
-			tokens.push_back("color");
+			tokens.push_back("kind");
 			tokens.push_back("VARCHAR");
 			tokens.push_back("(");
-			tokens.push_back("15");
+			tokens.push_back("10");
 			tokens.push_back(")");
-			tokens.push_back(",");
-			tokens.push_back("weight");
-			tokens.push_back("INTEGER");
 			tokens.push_back(")");
 			tokens.push_back("PRIMARY");
 			tokens.push_back("KEY");
 			tokens.push_back("(");
-			tokens.push_back("color");
+			tokens.push_back("kind");
 			tokens.push_back(")");
 
 			Parser parse(tokens, &database);
+			vector<string> key;
+			key.push_back("kind");
 
-			Assert::IsTrue(parse.create_cmd());
+			Assert::IsTrue(parse.create_cmd() &&
+				(database.relations.find("species") != database.relations.end()) &&
+				(database.relations.find("species")->second.keys == key) );
 		}
-		//^^ doesnt work beacuse of attribute list
+
+		TEST_METHOD(PARSEdelete_cmd){
+			tokens.push_back("DELETE");
+			tokens.push_back("FROM");
+			tokens.push_back("numbers");
+			tokens.push_back("WHERE");
+			tokens.push_back("value");
+			tokens.push_back(">");
+			tokens.push_back("1");
+
+			Parser parser(tokens, &database);
+
+			Assert::IsTrue(parser.delete_cmd());
+		}
+
 		TEST_METHOD(PARSERupdate_cmd){
 			tokens.push_back("UPDATE");
 			tokens.push_back("numbers");
 			tokens.push_back("SET");
 			tokens.push_back("name");
 			tokens.push_back("=");
-			tokens.push_back("called");
-			tokens.push_back("weight");
+			tokens.push_back("\"ONE\"");
+			tokens.push_back(",");
+			tokens.push_back("value");
 			tokens.push_back("=");
-			tokens.push_back("power");
+			tokens.push_back("11");
 			tokens.push_back("WHERE");
 			tokens.push_back("(");
-			tokens.push_back("weight");
+			tokens.push_back("value");
 			tokens.push_back("==");
-			tokens.push_back("10");
+			tokens.push_back("1");
 			tokens.push_back(")");
 
 			Parser parse(tokens, &database);
 
 			Assert::IsTrue(parse.update_cmd());
 		}
-		//^^figure out why not working (condition pointer)
+
 		TEST_METHOD(PARSEinsert_cmd1){
 			tokens.push_back("INSERT");
 			tokens.push_back("INTO");
@@ -307,37 +323,24 @@ namespace PARSERTest{
 		}
 
 		TEST_METHOD(PARSEinsert_cmd2){
+			database.execute("CREATE TABLE animals (name VARCHAR(20), kind VARCHAR(8), value INTEGER) PRIMARY KEY (name, kind);");
+			database.execute("INSERT INTO animals VALUES FROM (\"Spot\", \"dog\", 10);");
 			tokens.push_back("INSERT");
 			tokens.push_back("INTO");
 			tokens.push_back("numbers");
 			tokens.push_back("VALUES");
 			tokens.push_back("FROM");
 			tokens.push_back("RELATION");
-			tokens.push_back("select");
+			tokens.push_back("project");
 			tokens.push_back("(");
-			tokens.push_back("kind");
-			tokens.push_back("==");
-			tokens.push_back("\"dog\"");
+			tokens.push_back("value");
+			tokens.push_back(")");
 			tokens.push_back("animals");
+			tokens.push_back(";");
 
 			Parser parser(tokens, &database);
 
 			Assert::IsTrue(parser.insert_cmd());
 		}
-		//^^^ doesnt work (condition pointer)
-		TEST_METHOD(PARSEdelete_cmd){
-			tokens.push_back("DELETE");
-			tokens.push_back("FROM");
-			tokens.push_back("numbers");
-			tokens.push_back("WHERE");
-			tokens.push_back("value");
-			tokens.push_back(">");
-			tokens.push_back("1");
-
-			Parser parser(tokens, &database);
-
-			Assert::IsTrue(parser.delete_cmd());
-		}
-		//^^^ doesnt work (condition pointer)
 	};
 }
