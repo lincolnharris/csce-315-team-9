@@ -396,7 +396,7 @@ Table DBMS::union_(const Table& t1, const Table& t2)
 					break;
 				}
 			}
-			
+
 
             // move attrb values to corresponding indx in table1
             for(auto& row2 : table2.rows)
@@ -525,7 +525,6 @@ Table DBMS::difference(const Table& t1, const Table& t2)
         return difference;
 }
 
-
 Table DBMS::cross_product(const Table& t1, const Table& t2)
 {
     // Shayan
@@ -553,88 +552,5 @@ Table DBMS::cross_product(const Table& t1, const Table& t2)
 Table DBMS::natural_join(const Table& t1, const Table& t2)
 {
     
-    // Dmitrys
-    Table table1 = t1;
-    Table table2 = t2;
-
-    // create new_index list to hold where table1 attributes will go in table2
-    unordered_map<string, int> new_index;   
-    vector<string> similar_attrb;
-    int indx_temp = 0;
-    string attrb_temp_name;
-
-    // find max index size sin table2
-    int max2 = 0;
-    for(auto& map2 : table2.attributeMap)
-    {
-        if (max2 < map2.second.index)
-        {
-            max2 = map2.second.index;
-        }
-    }
-
-    int i = 1;
-    for (auto& map1 : table1.attributeMap)  // check table1 
-    {
-
-        // Hold attrb name in temp string
-        attrb_temp_name = table2.attributeMap.find(map1.first)->first;
-
-        // Similar Attribute
-        if (table2.attributeMap.find(map1.first) != table2.attributeMap.end())
-        {
-            // give a new_indesx to table1's attrb value, so that it will match
-            // into table2 attrb column
-            indx_temp = table2.attributeMap.find(map1.first)->second.index;
-
-            // Pair current name and its new index together
-            pair<string, int> temp(attrb_temp_name, indx_temp);
-            new_index.insert(temp);
-        }
-        
-        // Not Similar Attribute
-        else
-        {
-            // new index = map2 + counter. This will be a new attrb column
-            // in table2, hence it needs new proper index.
-            indx_temp = max2 + i;
-
-            // Pair current name and its new index together
-            pair<string, int> temp(attrb_temp_name, indx_temp);
-            new_index.insert(temp);
-            
-            i++;        
-        }
-    }
     
-
-
-    bool param_same = true;
-    // Iterate through all the rows in table1
-    for(auto& rows1 : table1.rows)
-    {
-        // Compare rows[i] to all rows in t2
-        for(auto& rows2 : t2.rows)
-        {
-            for (int i = 0; i < rows2.size(); i++)
-            {
-				/*
-                // if values match, continue
-                if (rows2[i] == new_index.find(rows2[i])->second)
-                {
-                    
-                }
-
-                // if values don't exist/match, append to column
-                else
-                {
-
-                }
-				*/
-            }
-        }
-    }
-
-
-    return t2;
 }
