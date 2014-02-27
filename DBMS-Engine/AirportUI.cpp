@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -32,6 +33,7 @@ AirportUI::AirportUI()
             { "Create a new list",            bind(present_menu, create_list_menu) },
             { "Open a previously saved list", bind(&AirportUI::open_list, this) },
             { "Save a list",                  bind(&AirportUI::save_list, this) },
+            { "Print a list on the screen",   bind(&AirportUI::show_list, this) },
             { "Add an entry to a list",       bind(present_menu, new_entry_menu) },
             { "Remove an entry from a list",  bind(present_menu, remove_entry_menu) },
             { "Update an entry in a list",    bind(present_menu, update_entry_menu) },
@@ -83,7 +85,8 @@ void AirportUI::present_menu(Menu* menu)
     cout << "---------------------------------------------" << endl;
     int i = 1;
     for(auto& option : *menu) // <option text, action>
-        cout << '(' << i++ << ") " << option.first << endl;
+        cout << '(' << i++ << ") " << (i >= 11 /* 2 digits */ ? "" : " ")
+             << option.first << endl;
     cout << endl << "Please type the index of your desired option:" << endl;
 
     // Getting user input:

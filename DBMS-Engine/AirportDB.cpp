@@ -172,11 +172,11 @@ void AirportDB::load(string list)
 
 void AirportDB::show(string list)
 {
-    if(     airlineLists.find(list)   == airlineLists.end()
-         && passengerLists.find(list) == passengerLists.end()
-         && planeLists.find(list)     == planeLists.end())
+    if(     airlineLists.find(list)   != airlineLists.end()
+         || passengerLists.find(list) != passengerLists.end()
+         || planeLists.find(list)     != planeLists.end())
         dbms.execute("SHOW " + list + ";");
-    else throw "List already exists!";
+    else throw "List not found!";
 }
 
 // Lincoln
