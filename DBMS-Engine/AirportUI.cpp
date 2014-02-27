@@ -189,7 +189,7 @@ void AirportUI::save_list()
     database.save(listName);
 }
 
-void AirportUI::save_list()
+void AirportUI::show_list()
 {
     cout << "Enter the name of the list to show:" << endl;
     string listName;
