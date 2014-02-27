@@ -325,17 +325,12 @@ ParsedResult<Table> Parser::program()
         auto cmd_result = command();
         if(cmd_result)
             result = Table();
-        else
-        {
-            counter = start; // Backtrack
-            return false;
-        }
+        else throw "Could not parse!";
     }
     if(match(";"))
         return result;
 
-    counter = start; // Backtrack
-    return false;
+    throw "Could not parse!";
 }
 
 bool Parser::match(string match)

@@ -21,9 +21,7 @@ class AirportDB
 {
     DBMS dbms;
 
-    unordered_set<string> airlineLists;
-    unordered_set<string> passengerLists;
-    unordered_set<string> planeLists;
+    unordered_set<string> lists;
 
 public:
     AirportDB();

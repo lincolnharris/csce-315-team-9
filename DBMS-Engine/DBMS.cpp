@@ -102,7 +102,7 @@ void DBMS::write_cmd(string name){
             if (isdigit( (*itratr)[0]) )
                 file << *itratr;
             else
-                file << "\"" + *itratr + "\"";
+                file << *itratr;
             if( itratr != end )
                 file << ", ";
             ++end;
@@ -113,9 +113,7 @@ void DBMS::write_cmd(string name){
 }
 
 
-void DBMS::exit_cmd(){ exit(0);
-    }
-
+void DBMS::exit_cmd(){ exit(0); }
 
 void DBMS::show_cmd(Table& table){
     //get the first line (attributes)
