@@ -85,8 +85,11 @@ void AirportUI::present_menu(Menu* menu)
     cout << "---------------------------------------------" << endl;
     int i = 1;
     for(auto& option : *menu) // <option text, action>
-        cout << '(' << i++ << ") " << (i >= 11 /* 2 digits */ ? "" : " ")
+    {
+        cout << '(' << i << ") " << (i >= 10 /* 2 digits */ ? "" : " ")
              << option.first << endl;
+        i++;
+    }
     cout << endl << "Please type the index of your desired option:" << endl;
 
     // Getting user input:
