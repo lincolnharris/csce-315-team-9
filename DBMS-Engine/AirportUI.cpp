@@ -22,14 +22,20 @@ AirportUI::AirportUI()
      * To avoid this, I passed the POINTER to the actual Menu object, so I
      * can preallocate the Menu objects before I pass them to bind.
      */
-    start_menu       = new Menu;
-    create_list_menu = new Menu;
-    new_entry_menu   = new Menu;
+    start_menu        = new Menu;
+    create_list_menu  = new Menu;
+    new_entry_menu    = new Menu;
+    remove_entry_menu = new Menu;
+    update_entry_menu       = new Menu;
 
     *start_menu = {
             { "Create a new list",            bind(present_menu, create_list_menu) },
             { "Open a previously saved list", bind(&AirportUI::open_list, this) },
             { "Save a list",                  bind(&AirportUI::save_list, this) },
+            { "Add an entry to a list",       bind(present_menu, new_entry_menu) },
+            { "Remove an entry from a list",  bind(present_menu, remove_entry_menu) },
+            { "Update an entry in a list",    bind(present_menu, update_entry_menu) },
+            { "Add an entry to a list",       bind(present_menu, new_entry_menu) },
             { "Add an entry to a list",       bind(present_menu, new_entry_menu) },
             { "Exit",                         []() { exit(0); } },
     };
@@ -42,10 +48,27 @@ AirportUI::AirportUI()
     };
 
     *new_entry_menu = {
-            { "List of passengers", bind(&AirportUI::add_passenger, this) },
-            { "List of airlines",   bind(&AirportUI::add_airline, this) },
-            { "List of planes",     bind(&AirportUI::add_plane, this) },
-            { "Back",               bind(present_menu, start_menu) },
+            { "Add a passenger",           bind(&AirportUI::add_passenger, this) },
+            { "Add an airline",            bind(&AirportUI::add_airline, this) },
+            { "Add a plane",               bind(&AirportUI::add_plane, this) },
+            { "Add an ownership relation", bind(&AirportUI::add_owning, this) },
+            { "Add a boarding relation",   bind(&AirportUI::add_boarding, this) },
+            { "Back",                      bind(present_menu, start_menu) },
+    };
+
+    *remove_entry_menu = {
+            { "Remove a passenger",           bind(&AirportUI::remove_passenger, this) },
+            { "Remove an airline",            bind(&AirportUI::remove_airline, this) },
+            { "Remove a plane",               bind(&AirportUI::remove_plane, this) },
+            { "Remove an ownership relation", bind(&AirportUI::remove_owning, this) },
+            { "Remove a boarding relation",   bind(&AirportUI::remove_boarding, this) },
+            { "Back",                         bind(present_menu, start_menu) },
+    };
+
+    *update_entry_menu = {
+            { "Change a passenger's baggage", bind(&AirportUI::update_passenger, this) },
+            { "Change an airline's HQ",       bind(&AirportUI::update_airline, this) },
+            { "Back",                         bind(present_menu, start_menu) },
     };
 
     while(true) present_menu(start_menu);
@@ -164,6 +187,58 @@ void AirportUI::save_list()
     if(!(cin >> listName))
         throw "Invalid input! Try again!";
     database.save(listName);
+}
+
+void AirportUI::add_owning()
+{
+}
+
+void AirportUI::add_boarding()
+{
+}
+
+void AirportUI::remove_passenger()
+{
+}
+
+void AirportUI::remove_airline()
+{
+}
+
+void AirportUI::remove_plane()
+{
+}
+
+void AirportUI::remove_owning()
+{
+}
+
+void AirportUI::remove_boarding()
+{
+}
+
+void AirportUI::update_passenger()
+{
+}
+
+void AirportUI::update_airline()
+{
+}
+
+void AirportUI::merge_lists()
+{
+}
+
+void AirportUI::subtract_lists()
+{
+}
+
+void AirportUI::list_passenger_names()
+{
+}
+
+void AirportUI::filter_heavy_baggage()
+{
 }
 
 

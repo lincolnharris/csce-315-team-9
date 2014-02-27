@@ -27,18 +27,42 @@ typedef std::vector<std::pair<std::string, std::function<void()>>> Menu;
 class AirportUI
 {
     AirportDB database;
-    Menu *start_menu, *create_list_menu, *new_entry_menu;
+    Menu *start_menu, *create_list_menu, *new_entry_menu,
+         *remove_entry_menu, *update_entry_menu;
 
+    // File IO
     void open_list();
     void save_list();
 
+    // Creation
     void add_passenger_list();
     void add_airline_list();
     void add_plane_list();
 
+    // Adding
     void add_passenger();
     void add_airline();
     void add_plane();
+    void add_owning();
+    void add_boarding();
+
+    // Removing
+    void remove_passenger();
+    void remove_airline();
+    void remove_plane();
+    void remove_owning();
+    void remove_boarding();
+
+    // Updating
+    void update_passenger();
+    void update_airline();
+
+    // Relational
+    void merge_lists();
+    void subtract_lists();
+
+    void list_passenger_names();
+    void filter_heavy_baggage();
 
 
     static void present_menu(Menu* menu);
