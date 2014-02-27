@@ -142,12 +142,20 @@ void AirportUI::add_passenger_list()
 
 void AirportUI::add_airline_list()
 {
-    //TODO
+    cout << "Enter the list's name:" << endl;
+    string name;
+    if(!(cin >> name))
+        cout << "Invalid input! Please try again." << endl;
+    database.newAirlineList(name);
 }
 
 void AirportUI::add_plane_list()
 {
-    //TODO
+    cout << "Enter the list's name:" << endl;
+    string name;
+    if(!(cin >> name))
+        cout << "Invalid input! Please try again." << endl;
+    database.newPlaneList(name);
 }
 
 void AirportUI::add_passenger()
@@ -174,7 +182,12 @@ void AirportUI::add_plane()
 
 void AirportUI::add_airline()
 {
-    //TODO
+    cout << "Enter the airline's name, headquarters, and the name of the "
+            "list to which you want to add the airline, separated by space:" << endl;
+    string name, headquarters, list;
+    while(!(cin >> name >> headquarters >> list))
+        throw "Invalid input! Try again!";
+    database.addAirline(name, headquarters, list);
 }
 
 void AirportUI::open_list()
@@ -206,13 +219,21 @@ void AirportUI::show_list()
 
 void AirportUI::add_owning()
 {
-
-    //TODO
+    cout << "Enter the name of the airline and the name of the model: " << endl;
+    string airline, model;
+    if(!(cin >> airline >> model))
+        throw "Invalid input! Try again!";
+    database.own(airline, model);
 }
 
 void AirportUI::add_boarding()
 {
-    //TODO
+    cout << "Enter the name of the passenger followed by the "
+            "plane model that the passenger is boarding:" << endl;
+    string name, model;
+    if(!(cin >> name >> model))
+        throw "Invalid input! Try again!";
+    database.board(name, model);
 }
 
 void AirportUI::remove_passenger()
@@ -227,22 +248,42 @@ void AirportUI::remove_passenger()
 
 void AirportUI::remove_airline()
 {
-    //todo
+    cout << "Enter the name of the airline and the name of "
+            "the list the airline should be removed from:" << endl;
+    string airline, list;
+    if(!(cin >> airline >> list))
+        throw "Invalid input! Try again!";
+    database.removeAirline(airline, list);
 }
 
 void AirportUI::remove_plane()
 {
-    //todo
+    cout << "Enter the model of the plane and the name of "
+            "the list the plane should be removed from:" << endl;
+    string airline, list;
+    if(!(cin >> airline >> list))
+        throw "Invalid input! Try again!";
+    database.removePlane(airline, list);
 }
 
 void AirportUI::remove_owning()
 {
-    //todo
+    cout << "Enter the name of the airline and the model of "
+            "the the plane that is no longer owned:" << endl;
+    string airline, model;
+    if(!(cin >> airline >> model))
+        throw "Invalid input! Try again!";
+    database.disown(airline, model);
 }
 
 void AirportUI::remove_boarding()
 {
-    //todo
+    cout << "Enter the name of the passenger and the model of "
+            "the the plane to be disembarked:" << endl;
+    string passenger, model;
+    if(!(cin >> passenger >> model))
+        throw "Invalid input! Try again!";
+    database.disembark(passenger, model);
 }
 
 void AirportUI::update_passenger()
@@ -258,8 +299,12 @@ void AirportUI::update_passenger()
 
 void AirportUI::update_airline()
 {
-
-    //todo
+    cout << "Enter the name of the airline, the name of the list, "
+            "and the new headquarters of the airline:" << endl;
+    string airline, list, hq;
+    if(!(cin >> airline >> list >> hq))
+        throw "Invalid input! Try again!";
+    database.updateAirline(airline, list, hq);
 }
 
 void AirportUI::merge_lists()
