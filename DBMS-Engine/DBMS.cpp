@@ -424,10 +424,12 @@ Table DBMS::union_(const Table& t1, const Table& t2)
 				{
 					// this t2Map index will swap with other t2Map index
 					t2Map.second.index = old_index2;
+					table2.attributeMap.find(t1Map.first)->second.index = 
+														t1Map.second.index;
 					break;
 				}
 			}
-			table2.attributeMap.find(t1Map.first)->second.index = t1Map.second.index;
+			
 
             // move attrb values to corresponding indx in table1
             for(auto& row2 : table2.rows)
@@ -440,30 +442,29 @@ Table DBMS::union_(const Table& t1, const Table& t2)
         }
     }
 
+	bool duplicate = false;
 
-    bool duplicate = true;
     // Union the tables, while checking for duplicates
-    for(auto row2 : table2.rows)  // check table1
+    for(auto & row2 : table2.rows)  // check table1
     {
-        for(auto row1 : table1.rows) // with all of table2 entries
+        for(auto & row1 : table1.rows) // with all of table2 entries
         {
-			if (row2 != row1)
+			if (row1 == row2)
 			{
-				duplicate = false;
-				break;
+				duplicate = true;
 			}
 	    }
 
-        // No duplicate found, copy table1[0] into table2.front
-        if (duplicate == false)
+		// No duplicate found
+        if (!duplicate)
         {
             table1.rows.push_back(row2);
         }
 
-        // Reset duplicate
-        duplicate = true;
+        // Reset 
+		duplicate = false;
     }
-    return table2;
+    return table1;
 }
 
 
@@ -505,10 +506,18 @@ Table DBMS::difference(const Table& t1, const Table& t2)
 			old_index2 = table2.attributeMap.find(t1Map.first)->second.index;
 
 			// must swap attributeMap2 items within itself, to match attrbMap1
-			//////////////////// ISSUE 
-			// Must move attributeMap index to where  below item is moving to
+			for (auto & t2Map : table2.attributeMap)
+			{
+				if (t2Map.second.index == t1Map.second.index)
+				{
+					// this t2Map index will swap with other t2Map index
+					t2Map.second.index = old_index2;
+					table2.attributeMap.find(t1Map.first)->second.index =
+						t1Map.second.index;
+					break;
+				}
+			}
 
-			table2.attributeMap.find(t1Map.first)->second.index = t1Map.second.index;
 
 			// move attrb values to corresponding indx in table1
 			for (auto& row2 : table2.rows)
@@ -521,11 +530,10 @@ Table DBMS::difference(const Table& t1, const Table& t2)
 		}
 	}
     // Both tables have same order of attribute types
+	Table difference;
+	difference.attributeMap = table1.attributeMap;
+	bool similar = false;
 
-    // difference is final output table
-    Table difference = table1;
-    
-    bool duplicate = false;
     // Subtract
     for(auto & row1 : table1.rows)  // check table1
     {
@@ -533,22 +541,21 @@ Table DBMS::difference(const Table& t1, const Table& t2)
         {
             // if copy of rows, do not add to new table
             if ( row1 == row2 )
-            {
-                duplicate = true;
-            }
+            {			
+				similar = true;
+				break;
+			}
 		}
 
-        if (!duplicate)
-        {	
-			// row1 checkes out for all of table2.rows, safe to add
-            difference.rows.push_back(row1);
-        }
+		if (!similar)
+		{
+			difference.rows.push_back(row1);
+		}
 
-        // Reset duplicate
-        duplicate = false;
+		// Reset
+		similar = false;
     }
         return difference;
-
 }
 
 
