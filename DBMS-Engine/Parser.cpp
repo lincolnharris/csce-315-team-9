@@ -775,6 +775,11 @@ ParsedResult<string> Parser::relation_name()
         return false;
     }
 
+    if (dbms->relations.find(result) == dbms->relations.end())
+    {
+        throw "Relation Not Found";
+    }
+
     return result;
 }
 
@@ -815,7 +820,6 @@ ParsedResult<Table> Parser::expr()
 
     return table;
 }
-
 
 
 ParsedResult<Table> Parser::atomic_expr()
@@ -918,7 +922,7 @@ ParsedResult<string>    Parser::attribute_name()
 ParsedResult<Table> Parser::project_AND_rename() /////////////////////////////////
 {
     // Project/Rename:: = ( attribute-list) atomic_expr
-
+    --counter;
     int start = counter;
 
     // Is it project or rename
@@ -933,29 +937,24 @@ ParsedResult<Table> Parser::project_AND_rename() ///////////////////////////////
         return false;
     }
 
-
     // is next string (
     if ( !match("(") )
     {
         counter = start;
         return false;
     }
-
     // Find attribute list
-    vector<string> Atrb_List;
-    Atrb_List = attribute_list();
-    if (!attribute_list())
+    auto Atrb_List = attribute_list();
+    if (!Atrb_List)
     {
         counter = start;
         return false;
     }
-
     if ( !match(")") )
     {
         counter = start;
         return false;
     }
-
     // Read atomic_expr
     auto table = atomic_expr();
     if (!table)
@@ -1013,7 +1012,6 @@ ParsedResult<Table> Parser::relational_algebra()
         case 'J': 
             if(Op == "Join")
                 return dbms->natural_join(table1, table2);     // Join
-        default:    return false;
+        default:    counter = start; return false;
     }
 }
-
