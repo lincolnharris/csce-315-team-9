@@ -827,6 +827,11 @@ ParsedResult<string> Parser::relation_name()
         return false;
     }
 
+	if (dbms->relations.find(result) == dbms->relations.end())
+	{
+		throw "Relation Not Found";
+	}
+
     return result;
 }
 
