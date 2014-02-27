@@ -130,10 +130,7 @@ void AirportUI::add_passenger_list()
     cout << "Enter the list's name:" << endl;
     string name;
     if(!(cin >> name))
-    {
         cout << "Invalid input! Please try again." << endl;
-        present_menu(create_list_menu);
-    }
     database.newPassengerList(name);
 }
 
@@ -194,54 +191,99 @@ void AirportUI::save_list()
 
 void AirportUI::add_owning()
 {
+
+    //TODO
 }
 
 void AirportUI::add_boarding()
 {
+    //TODO
 }
 
 void AirportUI::remove_passenger()
 {
+    cout << "Enter the name of the passenger and the list from which "
+            "you want to remove the passenger, separated by space:" << endl;
+    string name,list;
+    if(!(cin >> name >> list))
+        throw "Invalid input! Try again!";
+    database.removePassenger(name, list);
 }
 
 void AirportUI::remove_airline()
 {
+    //todo
 }
 
 void AirportUI::remove_plane()
 {
+    //todo
 }
 
 void AirportUI::remove_owning()
 {
+    //todo
 }
 
 void AirportUI::remove_boarding()
 {
+    //todo
 }
 
 void AirportUI::update_passenger()
 {
+    cout << "Enter the name of the passenger, the updated baggage value, and the "
+            "list from which you want to remove the passenger, separated by space:" << endl;
+    int baggage;
+    string name, list;
+    if(!(cin >> name >> baggage >> list))
+        throw "Invalid input! Try again!";
+    database.updatePassenger(name, list, baggage);
 }
 
 void AirportUI::update_airline()
 {
+
+    //todo
 }
 
 void AirportUI::merge_lists()
 {
+    cout << "Enter the name of two lists to merge, separated by space:" << endl;
+    string list1, list2;
+    if(!(cin >> list1 >> list2))
+        throw "Invalid input! Try again!";
+    database.merge(list1, list2);
 }
 
 void AirportUI::subtract_lists()
 {
+    cout << "Enter the name of two lists to subtract, separated by space:"
+            "(order matters)" << endl;
+    string list1, list2;
+    if(!(cin >> list1 >> list2))
+        throw "Invalid input! Try again!";
+    database.subtract(list1, list2);
 }
 
 void AirportUI::list_passenger_names()
 {
+    cout << "Enter the list's name:" << endl;
+    string name;
+    if(!(cin >> name))
+        cout << "Invalid input! Please try again." << endl;
+    database.listPassengerNames(name);
 }
 
 void AirportUI::filter_heavy_baggage()
 {
+    cout << "Enter the list's name, followed by the baggage limit, "
+            "separated by space:" << endl;
+    string name;
+    int limit;
+    if(!(cin >> name >> limit))
+        cout << "Invalid input! Please try again." << endl;
+    database.filterHeavyBaggage(name, limit);
 }
 
 
