@@ -373,7 +373,7 @@ Table DBMS::union_(const Table& t1, const Table& t2)
     }
 
     // Do the attributes indecies match for table1 & table2?
-	int old_index2 = 0;
+    int old_index2 = 0;
 
     // Search through table1 attributeMap
     for (auto & t1Map : table1.attributeMap)
@@ -382,54 +382,54 @@ Table DBMS::union_(const Table& t1, const Table& t2)
         if ( table2.attributeMap.find(t1Map.first)->second.index != t1Map.second.index )
         {
             // record location of index of attributeMap
-			old_index2 = table2.attributeMap.find(t1Map.first)->second.index;
+            old_index2 = table2.attributeMap.find(t1Map.first)->second.index;
 
-			// must swap attributeMap2 items within itself, to match attrbMap1
-			for (auto & t2Map : table2.attributeMap)
-			{
-				if (t2Map.second.index == t1Map.second.index)
-				{
-					// this t2Map index will swap with other t2Map index
-					t2Map.second.index = old_index2;
-					table2.attributeMap.find(t1Map.first)->second.index = 
-														t1Map.second.index;
-					break;
-				}
-			}
+            // must swap attributeMap2 items within itself, to match attrbMap1
+            for (auto & t2Map : table2.attributeMap)
+            {
+                if (t2Map.second.index == t1Map.second.index)
+                {
+                    // this t2Map index will swap with other t2Map index
+                    t2Map.second.index = old_index2;
+                    table2.attributeMap.find(t1Map.first)->second.index =
+                                                        t1Map.second.index;
+                    break;
+                }
+            }
 
 
             // move attrb values to corresponding indx in table1
             for(auto& row2 : table2.rows)
             {
                 // move value to match new table2 attributeMap alignment 
-				string temp_value = row2[old_index2];
-				row2.erase(row2.begin() + old_index2);
-				row2.insert(row2.begin() + t1Map.second.index, temp_value);
+                string temp_value = row2[old_index2];
+                row2.erase(row2.begin() + old_index2);
+                row2.insert(row2.begin() + t1Map.second.index, temp_value);
             }
         }
     }
 
-	bool duplicate = false;
+    bool duplicate = false;
 
     // Union the tables, while checking for duplicates
     for(auto & row2 : table2.rows)  // check table1
     {
         for(auto & row1 : table1.rows) // with all of table2 entries
         {
-			if (row1 == row2)
-			{
-				duplicate = true;
-			}
-	    }
+            if (row1 == row2)
+            {
+                duplicate = true;
+            }
+        }
 
-		// No duplicate found
+        // No duplicate found
         if (!duplicate)
         {
             table1.rows.push_back(row2);
         }
 
         // Reset 
-		duplicate = false;
+        duplicate = false;
     }
     return table1;
 }
@@ -438,68 +438,68 @@ Table DBMS::union_(const Table& t1, const Table& t2)
 
 Table DBMS::difference(const Table& t1, const Table& t2)
 {
-	// Dmitry
+    // Dmitry
 
-	// Make new copies of table, to manipulate then display
-	Table table1 = t1;
-	Table table2 = t2;
+    // Make new copies of table, to manipulate then display
+    Table table1 = t1;
+    Table table2 = t2;
 
-	// Does table1 & table2 have same number of attributs?
-	if (table1.attributeMap.size() != table2.attributeMap.size())
-	{
-		throw "Error! Not union compatible";
-	}
+    // Does table1 & table2 have same number of attributs?
+    if (table1.attributeMap.size() != table2.attributeMap.size())
+    {
+        throw "Error! Not union compatible";
+    }
 
-	// Do both have the same type of attributes?
-	string name;
-	for (auto & t : table1.attributeMap)
-	{
-		if (table2.attributeMap.find(t.first) == table2.attributeMap.end())
-		{
-			throw "Attributes do not match";
-		}
-	}
+    // Do both have the same type of attributes?
+    string name;
+    for (auto & t : table1.attributeMap)
+    {
+        if (table2.attributeMap.find(t.first) == table2.attributeMap.end())
+        {
+            throw "Attributes do not match";
+        }
+    }
 
-	// Do the attributes indecies match for table1 & table2?
-	int old_index2 = 0;
+    // Do the attributes indecies match for table1 & table2?
+    int old_index2 = 0;
 
-	// Search through table1 attributeMap
-	for (auto & t1Map : table1.attributeMap)
-	{
-		// If table2.attributeMap index != table2.attributeMap index
-		if (table2.attributeMap.find(t1Map.first)->second.index != t1Map.second.index)
-		{
-			// record location of index of attributeMap
-			old_index2 = table2.attributeMap.find(t1Map.first)->second.index;
+    // Search through table1 attributeMap
+    for (auto & t1Map : table1.attributeMap)
+    {
+        // If table2.attributeMap index != table2.attributeMap index
+        if (table2.attributeMap.find(t1Map.first)->second.index != t1Map.second.index)
+        {
+            // record location of index of attributeMap
+            old_index2 = table2.attributeMap.find(t1Map.first)->second.index;
 
-			// must swap attributeMap2 items within itself, to match attrbMap1
-			for (auto & t2Map : table2.attributeMap)
-			{
-				if (t2Map.second.index == t1Map.second.index)
-				{
-					// this t2Map index will swap with other t2Map index
-					t2Map.second.index = old_index2;
-					table2.attributeMap.find(t1Map.first)->second.index =
-						t1Map.second.index;
-					break;
-				}
-			}
+            // must swap attributeMap2 items within itself, to match attrbMap1
+            for (auto & t2Map : table2.attributeMap)
+            {
+                if (t2Map.second.index == t1Map.second.index)
+                {
+                    // this t2Map index will swap with other t2Map index
+                    t2Map.second.index = old_index2;
+                    table2.attributeMap.find(t1Map.first)->second.index =
+                        t1Map.second.index;
+                    break;
+                }
+            }
 
 
-			// move attrb values to corresponding indx in table1
-			for (auto& row2 : table2.rows)
-			{
-				// move value to match new table2 attributeMap alignment 
-				string temp_value = row2[old_index2];
-				row2.erase(row2.begin() + old_index2);
-				row2.insert(row2.begin() + t1Map.second.index, temp_value);
-			}
-		}
-	}
+            // move attrb values to corresponding indx in table1
+            for (auto& row2 : table2.rows)
+            {
+                // move value to match new table2 attributeMap alignment
+                string temp_value = row2[old_index2];
+                row2.erase(row2.begin() + old_index2);
+                row2.insert(row2.begin() + t1Map.second.index, temp_value);
+            }
+        }
+    }
     // Both tables have same order of attribute types
-	Table difference;
-	difference.attributeMap = table1.attributeMap;
-	bool similar = false;
+    Table difference;
+    difference.attributeMap = table1.attributeMap;
+    bool similar = false;
 
     // Subtract
     for(auto & row1 : table1.rows)  // check table1
@@ -508,19 +508,19 @@ Table DBMS::difference(const Table& t1, const Table& t2)
         {
             // if copy of rows, do not add to new table
             if ( row1 == row2 )
-            {			
-				similar = true;
-				break;
-			}
-		}
+            {
+                similar = true;
+                break;
+            }
+        }
 
-		if (!similar)
-		{
-			difference.rows.push_back(row1);
-		}
+        if (!similar)
+        {
+            difference.rows.push_back(row1);
+        }
 
-		// Reset
-		similar = false;
+        // Reset
+        similar = false;
     }
         return difference;
 }
