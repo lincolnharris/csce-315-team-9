@@ -102,7 +102,7 @@ void DBMS::write_cmd(string name){
 			if (isdigit( (*itratr)[0]) )
 				file << *itratr;
 			else
-				file << "\"" + *itratr + "\"";
+				file << *itratr;
 			if( itratr != end )
 				file << ", ";
 			++end;
