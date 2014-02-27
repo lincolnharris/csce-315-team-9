@@ -102,7 +102,7 @@ pair<string, bool> Operand::getValue(const vector<string>& row, const Table& tab
     if(node == LITERAL)
     {
         if(isQuoted(operand)) // If it's a literal string, set the flag to false
-            return pair<string, bool>(removeQuotes(operand), false);
+            return pair<string, bool>(operand, false);
         return pair<string, bool>(operand, true);
     }
     else if(node == ATTRIBUTE)

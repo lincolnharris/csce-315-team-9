@@ -48,21 +48,13 @@ int main_test()
 
     t.keys = vector<string>{"Age", "Tree"};
 
-    vector<Token> tokens = Tokenizer::tokenize("(Age == Tree &&  \"Pine\" == Flower) || First_Name == \"Johnny\" ");
+    vector<Token> tokens = Tokenizer::tokenize("DELETE FROM Test WHERE First_Name == \"Johnny\";");
     Parser p(tokens, &db);
-    Condition& cond = *p.condition();
+    p.program();
 
-    auto it = t.rows.begin();
-    if(!cond(*it, t)) throw "";
-
-    it++;
-    if(cond(*it, t)) throw "";
-
-    it++;
-    if(!cond(*it, t)) throw "";
-
-    it++;
-    if(!cond(*it, t)) throw "";
+    vector<Token> tokens1 = Tokenizer::tokenize("SHOW Test;");
+    Parser p1(tokens1, &db);
+    p1.program();
     return 1;
 
     // TESTING TOKENIZER!
