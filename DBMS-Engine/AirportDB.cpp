@@ -214,7 +214,7 @@ list<vector<string>> AirportDB::filterHeavyBaggage(string list, int baggageLimit
 {
 	string baggageMax = to_string(baggageLimit);
 	auto data = dbms.execute(list + "WithoutHeavyBaggage <- select (baggage < " + baggageMax + ") " + list + ";");
-	dbms.execute("DELETE " + list + "WithoutHeavyBaggage");
+    dbms.execute("DELETE " + list + "WithoutHeavyBaggage;");
 	return data;
 }
 

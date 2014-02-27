@@ -41,7 +41,6 @@ ParsedResult<Condition*> Parser::condition()
         }
         else break;
     }
-    cout << condTree->toString() << endl; //DEBUG
     return condTree;
 }
 
@@ -157,13 +156,12 @@ ParsedResult<string> Parser::op()
 
     string op_result = tokens[counter];
     if(!regex_match(op_result, regex("==|!=|<=|>=|<|>")))
-    {
+    { 
         counter = start; // Backtrack
         return false;
     }
     counter++;
 
-    cout << (string)op_result << endl;
     return op_result;
 }
 
@@ -273,6 +271,12 @@ ParsedResult<Table> Parser::query()
         return false;
     }
 
+    if(!match(";"))
+    {
+        counter = start;
+        return false;
+    }
+
     if(dbms->relations.find(relname_result) != dbms->relations.end())
         throw "A relation with this name already exists!";
     dbms->relations[relname_result] = expr_result;
@@ -309,6 +313,9 @@ bool Parser::command()
     result = delete_cmd();
     if(result) return true;
 
+    result = delete_relation_cmd();
+    if(result) return true;
+
     counter = start; // Backtrack
     return false;
 }
@@ -326,14 +333,11 @@ ParsedResult<Table> Parser::program()
     else
     {
         auto cmd_result = command();
-        if(cmd_result)
+        if(cmd_result && match(";"))
             result = Table();
         else throw "Could not parse!";
     }
-    if(match(";"))
-        return result;
-
-    throw "Could not parse!";
+    return result;
 }
 
 bool Parser::match(string match)
@@ -802,32 +806,33 @@ ParsedResult<Table> Parser::expr()
     // atomic expression, OR one of the following operations
     // check if atomic expression
     Table table;
-    if ( match("select") )
+    if(match("select"))
     {
         table = selection();
     }
 
-    else if ( match("project") || match("rename") )
+    else
     {
-        table = project_AND_rename();
-    }
-
-    else if ( (match("union")) || match("difference") ||
-          match("natural-join") || match("project") )
-    {
-        table = relational_algebra();
-    }
-
-    else // If current word is not an expression function
-    {    // then it must be atomic expression
-        auto atomic_table = atomic_expr();
-        if( !atomic_table)
+        auto pandr_result = project_AND_rename();
+        if(pandr_result)
+            table = pandr_result;
+        else
         {
-            counter = start;
-            return false;
+            auto relational_result = relational_algebra();
+            if(relational_result)
+                table = relational_result;
+
+            else // If current word is not an expression function
+            {    // then it must be atomic expression
+                auto atomic_table = atomic_expr();
+                if(!atomic_table)
+                {
+                    counter = start;
+                    return false;
+                }
+            }
         }
     }
-
     return table;
 }
 
@@ -839,6 +844,8 @@ ParsedResult<Table> Parser::atomic_expr()
     Table table;
     
     // Is current word a TABLE?
+    if(counter >= tokens.size())
+        return false;
     if (dbms->relations.find(tokens[counter].str) 
                         != dbms->relations.end())
     {
@@ -932,7 +939,6 @@ ParsedResult<string>    Parser::attribute_name()
 ParsedResult<Table> Parser::project_AND_rename() /////////////////////////////////
 {
     // Project/Rename:: = ( attribute-list) atomic_expr
-    --counter;
     int start = counter;
 
     // Is it project or rename
@@ -1003,6 +1009,11 @@ ParsedResult<Table> Parser::relational_algebra()
     }
 
     // Store operator for the operation
+    if(counter >= tokens.size())
+    {
+        counter = start;
+        return false;
+    }
     string Op = tokens[counter].str;
     counter++;
 

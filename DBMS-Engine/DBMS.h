@@ -43,7 +43,7 @@ public:
     Table union_(const Table& t1, const Table& t2);
     Table difference(const Table& t1, const Table& t2);
     Table cross_product(const Table& t1, const Table& t2);
-    Table natural_join(const Table& t1, const Table& t2);
+    Table natural_join(Table& t1, Table& t2);
 
     // App Interaction
     list<vector<string>> execute(string input); // Returns multiple lines of output, if any.

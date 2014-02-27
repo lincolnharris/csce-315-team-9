@@ -119,14 +119,12 @@ void AirportUI::present_menu(Menu* menu)
         // The combination of all 3 of these seemed to flush cin for me.
         // The problem is that sync is implementation defined.
         cin.clear(); cin.sync();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "Possible invalid input! Error: <" << c << '>' << endl;
         present_menu(menu);
     }
     catch (...)
     {
         cin.clear(); cin.sync();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cout << "An error has occurred. Possible engine failure!";
     }
 }
@@ -332,7 +330,12 @@ void AirportUI::list_passenger_names()
     string name;
     if(!(cin >> name))
         cout << "Invalid input! Please try again." << endl;
-    database.listPassengerNames(name);
+
+    cout << "| ";
+    for(string s : database.listPassengerNames(name))
+        cout << s << " | ";
+    cout << endl;
+    
 }
 
 void AirportUI::filter_heavy_baggage()
@@ -343,7 +346,15 @@ void AirportUI::filter_heavy_baggage()
     int limit;
     if(!(cin >> name >> limit))
         cout << "Invalid input! Please try again." << endl;
-    database.filterHeavyBaggage(name, limit);
+
+    cout << "| Name | Age | Baggage | Destination |" << endl;
+    for(auto& row : database.filterHeavyBaggage(name, limit))
+    {
+        cout << "| ";
+        for(auto& s : row)
+            cout << s << " | ";
+        cout << endl;
+    }
 }
 
 

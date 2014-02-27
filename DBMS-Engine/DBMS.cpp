@@ -549,7 +549,7 @@ Table DBMS::cross_product(const Table& t1, const Table& t2)
     return xprod;
 }
 
-Table DBMS::natural_join(const Table& t1, const Table& t2)
+Table DBMS::natural_join(Table& t1, Table& t2)
 {
     vector<string> common;
     for(auto& pair : t1.attributeMap)
@@ -557,5 +557,20 @@ Table DBMS::natural_join(const Table& t1, const Table& t2)
             common.push_back(pair.first);
     
     Table result;
+
+    for(auto& row1 : t1.rows)
+    {
+        for(auto& row2 : t2.rows)
+        {
+            //  Are there any other rows with the exact same common values?
+            for(string s : common)
+            {
+                int index1 = t1.attributeMap[s].index;
+                int index2 = t2.attributeMap[s].index;
+                if(row1[index1] != row2[index2]) continue;
+                break;
+            }
+        }
+    }
     return result;
 }
