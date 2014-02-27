@@ -170,6 +170,15 @@ void AirportDB::load(string list)
     else throw "List already exists!";
 }
 
+void AirportDB::show(string list)
+{
+    if(     airlineLists.find(list)   == airlineLists.end()
+         && passengerLists.find(list) == passengerLists.end()
+         && planeLists.find(list)     == planeLists.end())
+        dbms.execute("SHOW " + list + ";");
+    else throw "List already exists!";
+}
+
 // Lincoln
 void AirportDB::merge(string list1, string list2)
 {

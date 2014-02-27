@@ -55,9 +55,10 @@ public:
     void updatePassenger(string name, string list, int updatedBaggage);
     void updateAirline(string name, string list, string newHQ);
 
-    // File IO
+    // IO
     void save(string list);
     void load(string list);
+    void show(string list);
 
     // Relational
     void merge(string list1, string list2);    // Union
@@ -66,5 +67,6 @@ public:
     vector<string> listPassengerNames(string list);   // Projection
                                                       // Selection
     list<vector<string>> filterHeavyBaggage(string list, int baggageLimit);
+
 };
 

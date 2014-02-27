@@ -30,9 +30,10 @@ class AirportUI
     Menu *start_menu, *create_list_menu, *new_entry_menu,
          *remove_entry_menu, *update_entry_menu;
 
-    // File IO
+    // IO
     void open_list();
     void save_list();
+    void show_list()
 
     // Creation
     void add_passenger_list();

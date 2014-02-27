@@ -189,6 +189,15 @@ void AirportUI::save_list()
     database.save(listName);
 }
 
+void AirportUI::save_list()
+{
+    cout << "Enter the name of the list to show:" << endl;
+    string listName;
+    if(!(cin >> listName))
+        throw "Invalid input! Try again!";
+    database.show(listName);
+}
+
 void AirportUI::add_owning()
 {
 
