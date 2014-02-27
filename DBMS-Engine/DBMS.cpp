@@ -551,6 +551,11 @@ Table DBMS::cross_product(const Table& t1, const Table& t2)
 
 Table DBMS::natural_join(const Table& t1, const Table& t2)
 {
+    vector<string> common;
+    for(auto& pair : t1.attributeMap)
+        if(t2.attributeMap.find(pair.first) != t2.attributeMap.end())
+            common.push_back(pair.first);
     
-    
+    Table result;
+    return result;
 }

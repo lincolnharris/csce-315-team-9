@@ -212,6 +212,9 @@ bool Parser::delete_relation_cmd()
         return false;
     }
 
+    if(dbms->relations.find(relname_result) == dbms->relations.end())
+        throw "Relation not found!";
+
     dbms->delete_cmd(relname_result);
     return true;
 }
@@ -359,6 +362,8 @@ bool Parser::open_cmd(){
         counter = start; // Backtrack
         return false;
     }
+    if(dbms->relations.find(name) == dbms->relations.end())
+        throw "Relation not found!";
     dbms->open_cmd(name);
     return true;
 }
@@ -377,6 +382,8 @@ bool Parser::close_cmd(){
         counter = start; // Backtrack
         return false;
     }
+    if(dbms->relations.find(name) == dbms->relations.end())
+        throw "Relation not found!";
     dbms->close_cmd(name);
     return true;
 }
@@ -395,6 +402,8 @@ bool Parser::write_cmd(){
         counter = start; // Backtrack
         return false;
     }
+    if(dbms->relations.find(name) == dbms->relations.end())
+        throw "Relation not found!";
     dbms->write_cmd(name);
     return true;
 }
@@ -479,6 +488,8 @@ bool Parser::create_cmd(){
         counter = start;
         return false;
     }
+    if(dbms->relations.find(name) != dbms->relations.end())
+        throw "Relation already exists!";
     dbms->create_cmd(name, typed_att_list, att_list);
     return true;
 }
@@ -604,6 +615,8 @@ bool Parser::insert_cmd(){
             return false;
         }
         unordered_map<string, Table>::iterator it = dbms->relations.find(name);
+        if(it == dbms->relations.end())
+            throw "Relation not found!";
         dbms->insert_cmd(it->second, exp);
         return true;
     }
@@ -672,6 +685,8 @@ bool Parser::delete_cmd(){
         counter = start;
         return false;
     }
+    if(dbms->relations.find(name) == dbms->relations.end())
+        throw "Relation not found!";
     auto it = dbms->relations.find(name);
     dbms->delete_cmd(it->second, *cond);
     return true;
