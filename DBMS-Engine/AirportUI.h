@@ -64,6 +64,7 @@ class AirportUI
 
     void list_passenger_names();
     void filter_heavy_baggage();
+	void natural_join();
 
 
     static void present_menu(Menu* menu);

@@ -17,11 +17,12 @@ AirportDB::AirportDB()
                                         "planeModel    VARCHAR(20))"
                                         "PRIMARY KEY (passengerName,"
                                                      "planeModel);");
-
+	lists.insert("Boarding");
     dbms.execute("CREATE TABLE Owns (airlineName VARCHAR(20),"
                                     "planeModel  VARCHAR(20))"
                                     "PRIMARY KEY (airlineName,"
                                                  "planeModel);");
+	lists.insert("Owns");
 }
 
 AirportDB::~AirportDB()
@@ -183,6 +184,16 @@ void AirportDB::merge(string list1, string list2)
 	}
 	else throw "Cannot merge!";
 	dbms.execute(list1 + "AND" + list2 + " <-" + list1 + " + " + list2 + ";");
+}
+
+void AirportDB::natural_join(string list1, string list2)
+{
+	if (lists.find(list1) != lists.end()
+		&& lists.find(list2) != lists.end()){
+		lists.insert(list1 + "JOIN" + list2);
+	}
+	else throw "Cannot JOIN!";
+	dbms.execute(list1 + "JOIN" + list2 + " <-" + list1 + " JOIN " + list2 + ";");
 }
 
 void AirportDB::subtract(string list1, string list2)

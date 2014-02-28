@@ -66,5 +66,7 @@ public:
                                                       // Selection
     list<vector<string>> filterHeavyBaggage(string list, int baggageLimit);
 
+	void natural_join(string list1, string list2);
+
 };
 

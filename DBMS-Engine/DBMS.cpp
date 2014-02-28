@@ -551,25 +551,41 @@ Table DBMS::cross_product(const Table& t1, const Table& t2)
 
 Table DBMS::natural_join(Table& t1, Table& t2)
 {
-    vector<string> common;
-    for(auto& pair : t1.attributeMap)
-        if(t2.attributeMap.find(pair.first) != t2.attributeMap.end())
-            common.push_back(pair.first);
-    
     Table result;
+	vector<string> common;
+	int i = 0;
+	for (auto& pair : t1.attributeMap)
+	{
+		if (t2.attributeMap.find(pair.first) != t2.attributeMap.end())
+            common.push_back(pair.first);
+		result.attributeMap[pair.first] = Type(i++, pair.second.type);
+	}
+	for (auto& pair : t2.attributeMap)
+		result.attributeMap[pair.first] = Type(i++, pair.second.type);
+    
 
     for(auto& row1 : t1.rows)
     {
         for(auto& row2 : t2.rows)
         {
+			bool passed = true;
             //  Are there any other rows with the exact same common values?
             for(string s : common)
             {
                 int index1 = t1.attributeMap[s].index;
                 int index2 = t2.attributeMap[s].index;
-                if(row1[index1] != row2[index2]) continue;
-                break;
+				passed &= row1[index1] != row2[index2];
             }
+			if (!passed) break;
+			result.rows.push_back(vector<string>(result.attributeMap.size()));
+			for (auto& pair : t1.attributeMap)
+			{
+				if (t2.attributeMap.find(pair.first) != t2.attributeMap.end())
+					continue;
+				result.rows.back()[result.attributeMap[pair.first].index] = row1[t1.attributeMap[pair.first].index];
+			}
+			for (auto& pair : t2.attributeMap)
+				result.rows.back()[result.attributeMap[pair.first].index] = row2[t2.attributeMap[pair.first].index];
         }
     }
     return result;

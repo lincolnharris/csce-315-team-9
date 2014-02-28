@@ -366,8 +366,7 @@ bool Parser::open_cmd(){
         counter = start; // Backtrack
         return false;
     }
-    if(dbms->relations.find(name) == dbms->relations.end())
-        throw "Relation not found!";
+
     dbms->open_cmd(name);
     return true;
 }
@@ -1031,7 +1030,7 @@ ParsedResult<Table> Parser::relational_algebra()
         case '-': return dbms->difference(table1, table2);
         case '*': return dbms->cross_product(table1, table2);
         case 'J': 
-            if(Op == "Join")
+            if(Op == "JOIN")
                 return dbms->natural_join(table1, table2);     // Join
         default:    counter = start; return false;
     }

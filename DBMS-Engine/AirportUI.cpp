@@ -42,6 +42,7 @@ AirportUI::AirportUI()
             { "List passenger names",         bind(&AirportUI::list_passenger_names, this) },
             { "Filter out passengers with "
               "heavy baggage",                bind(&AirportUI::filter_heavy_baggage, this) },
+			{ "Naturally join two lists",     bind(&AirportUI::natural_join, this) },
             { "Exit",                         []() { exit(0); } },
     };
 
@@ -134,7 +135,7 @@ void AirportUI::add_passenger_list()
     cout << "Enter the list's name:" << endl;
     string name;
     if(!(cin >> name))
-        cout << "Invalid input! Please try again." << endl;
+		throw "Invalid input! Please try again.";
     database.newPassengerList(name);
 }
 
@@ -143,7 +144,7 @@ void AirportUI::add_airline_list()
     cout << "Enter the list's name:" << endl;
     string name;
     if(!(cin >> name))
-        cout << "Invalid input! Please try again." << endl;
+		throw "Invalid input! Please try again.";
     database.newAirlineList(name);
 }
 
@@ -152,7 +153,7 @@ void AirportUI::add_plane_list()
     cout << "Enter the list's name:" << endl;
     string name;
     if(!(cin >> name))
-        cout << "Invalid input! Please try again." << endl;
+		throw "Invalid input! Please try again.";
     database.newPlaneList(name);
 }
 
@@ -329,7 +330,7 @@ void AirportUI::list_passenger_names()
     cout << "Enter the list's name:" << endl;
     string name;
     if(!(cin >> name))
-        cout << "Invalid input! Please try again." << endl;
+		throw "Invalid input! Please try again.";
 
     cout << "| ";
     for(string s : database.listPassengerNames(name))
@@ -344,8 +345,8 @@ void AirportUI::filter_heavy_baggage()
             "separated by space:" << endl;
     string name;
     int limit;
-    if(!(cin >> name >> limit))
-        cout << "Invalid input! Please try again." << endl;
+	if (!(cin >> name >> limit))
+		throw "Invalid input! Please try again.";
 
     cout << "| Name | Age | Baggage | Destination |" << endl;
     for(auto& row : database.filterHeavyBaggage(name, limit))
@@ -357,6 +358,14 @@ void AirportUI::filter_heavy_baggage()
     }
 }
 
+void AirportUI::natural_join()
+{
+	cout << "Enter the name of two lists to naturally join, separated by space:" << endl;
+	string list1, list2;
+	if (!(cin >> list1 >> list2))
+		throw "Invalid input! Try again!";
+	database.natural_join(list1, list2);
+}
 
 int main()
 {
